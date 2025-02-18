@@ -1,0 +1,46 @@
+# Flutter/Dart
+.dart_tool/
+.packages
+.pub-cache/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+.metadata
+
+# IDEs
+.idea/
+.vscode/
+
+# Flutter dependencies
+generated_plugin_registrant.dart
+
+# Miscellaneous
+*.iml
+*.swp
+*.lock
+*.log
+
+# Android
+android/.gradle/
+android/app/build/
+android/local.properties
+android/key.properties
+android/build/
+
+# Windows
+windows/flutter/ephemeral/
+**/windows/Debug/
+**/windows/Release/
+
+# Firebase
+firebase_app_id_file.json
+
+# Fastlane
+**/fastlane/report.xml
+**/fastlane/Preview.html
+**/fastlane/screenshots/
+**/fastlane/test_output/
+
+
+# Flutter cache (geral)
+flutter/bin/cache/
