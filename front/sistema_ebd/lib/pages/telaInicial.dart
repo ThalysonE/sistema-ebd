@@ -22,7 +22,6 @@ class _TelainicialState extends State<Telainicial> {
           stops: [0.4, 0.85]
         )
       ),
-      height: double.infinity,
       width: double.infinity,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
