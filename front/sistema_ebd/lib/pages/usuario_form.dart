@@ -13,6 +13,7 @@ class UsuarioForm extends StatefulWidget {
 class _UsuarioFormState extends State<UsuarioForm> {
   final keyform = GlobalKey<FormState>();
   bool ativadoLembrar = false;
+  bool esconderSenha = true;
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -44,7 +45,7 @@ class _UsuarioFormState extends State<UsuarioForm> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Usuario',
+                    'Usuário',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       fontSize: 14,
                       fontWeight: FontWeight.bold
@@ -67,6 +68,20 @@ class _UsuarioFormState extends State<UsuarioForm> {
                         ),
                         borderRadius: BorderRadius.circular(10)
                       ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 1.5,
+                          color: Colors.red
+                        ),
+                        borderRadius: BorderRadius.circular(10)
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 1.5,
+                          color: Theme.of(context).buttonTheme.colorScheme!.primary
+                        ),
+                        borderRadius: BorderRadius.circular(10)
+                      ),
                       label: Text(
                         'Erica',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -78,6 +93,12 @@ class _UsuarioFormState extends State<UsuarioForm> {
                     ),
                     textInputAction: TextInputAction.next,
                     keyboardType: TextInputType.text,
+                    validator: (value){
+                      if(value == null || value.isEmpty){
+                        return 'Por favor, insira um nome de usuário.';
+                      }
+                      return null;
+                    },
                   ),
                   SizedBox(height: 35,),
                   Row(
@@ -118,17 +139,48 @@ class _UsuarioFormState extends State<UsuarioForm> {
                         ),
                         borderRadius: BorderRadius.circular(10)
                       ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 1.5,
+                          color: Colors.red
+                        ),
+                        borderRadius: BorderRadius.circular(10)
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 1.5,
+                          color: Theme.of(context).buttonTheme.colorScheme!.primary
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      suffixIcon: IconButton(
+                        onPressed: (){
+                          setState(() {
+                            esconderSenha = !esconderSenha;
+                          });
+                        }, 
+                        icon: Icon(esconderSenha?Icons.remove_red_eye_outlined:Icons.remove_red_eye)
+                      ),
+                      
                       label: Text(
                         '. . . . . ',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontSize: 20,
                           color: Color(0xFFAFADBE),
                           fontWeight: FontWeight.bold
                         ),
                       ),
                       floatingLabelBehavior: FloatingLabelBehavior.never
                     ),
-                    keyboardType: TextInputType.visiblePassword,
+                    keyboardType:TextInputType.visiblePassword,
+                    obscureText: esconderSenha,
+                    validator: (value){
+                      if(value == null || value.isEmpty){
+                        return 'Por favor, insira uma senha válida.';
+                      }else if(value.length < 6){
+                        return 'Insira uma senha maior que 6 digitos';
+                      } 
+                      return null;
+                    },
                   ),
                   SizedBox(height: 15,),
                   Row(
@@ -168,6 +220,9 @@ class _UsuarioFormState extends State<UsuarioForm> {
                         )
                       ),
                       onPressed: (){
+                        if(keyform.currentState?.validate()==true){
+                          print('Passou no teste');
+                        }
                       }, 
                       child: Text(
                         'Login',
