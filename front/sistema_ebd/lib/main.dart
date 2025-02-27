@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:sistema_ebd/pages/telaInicial.dart';
 import 'package:sistema_ebd/pages/usuario_form.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:sistema_ebd/utils/rotas.dart';
 void main(List<String> args) {
   runApp(MyApp());
 }
@@ -21,10 +21,12 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 8), (){
+    WidgetsBinding.instance.addPostFrameCallback((_){
+    Timer(const Duration(seconds: 5), (){
       setState(() {
         logovisivel = false;
       });
+    });
     });
   }
 
@@ -39,6 +41,9 @@ class _MyAppState extends State<MyApp> {
         ),
         textTheme: GoogleFonts.interTextTheme()
       ),
+      routes: {
+        AppRotas.login: (context) => UsuarioForm()
+      },
       home: Scaffold(
         body: logovisivel? Telainicial(): UsuarioForm()
       ),
