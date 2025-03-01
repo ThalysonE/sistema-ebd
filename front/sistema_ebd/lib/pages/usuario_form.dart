@@ -14,6 +14,7 @@ class _UsuarioFormState extends State<UsuarioForm> {
   final keyform = GlobalKey<FormState>();
   bool ativadoLembrar = false;
   bool esconderSenha = true;
+  
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -220,7 +221,7 @@ class _UsuarioFormState extends State<UsuarioForm> {
                         )
                       ),
                       onPressed: (){
-                        if(keyform.currentState?.validate()==true){
+                        if(keyform.currentState?.validate() == true){
                           print('Passou no teste');
                         }
                       }, 
