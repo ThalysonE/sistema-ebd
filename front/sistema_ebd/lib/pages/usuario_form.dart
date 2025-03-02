@@ -1,6 +1,8 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:sistema_ebd/Data/http/http_client.dart';
+import 'package:sistema_ebd/Data/repositories/login_repositories.dart';
 
 
 class UsuarioForm extends StatefulWidget {
@@ -12,8 +14,11 @@ class UsuarioForm extends StatefulWidget {
 
 class _UsuarioFormState extends State<UsuarioForm> {
   final keyform = GlobalKey<FormState>();
+  final LoginRepository loginRepository = LoginRepository(client: HttpClient());
   bool ativadoLembrar = false;
   bool esconderSenha = true;
+  String _login ='';
+  String _senha ='';
   
   @override
   Widget build(BuildContext context) {
@@ -100,6 +105,9 @@ class _UsuarioFormState extends State<UsuarioForm> {
                       }
                       return null;
                     },
+                    onSaved: (value){
+                      _login = value!;
+                    },
                   ),
                   SizedBox(height: 35,),
                   Row(
@@ -182,6 +190,9 @@ class _UsuarioFormState extends State<UsuarioForm> {
                       } 
                       return null;
                     },
+                    onSaved: (value){
+                      _senha = value!;
+                    },
                   ),
                   SizedBox(height: 15,),
                   Row(
@@ -221,8 +232,10 @@ class _UsuarioFormState extends State<UsuarioForm> {
                         )
                       ),
                       onPressed: (){
-                        if(keyform.currentState?.validate() == true){
-                          print('Passou no teste');
+                        if(keyform.currentState!.validate()){
+                          keyform.currentState!.save();
+                          print('login: ${_login}\nsenha: ${_senha}');
+                          loginRepository.authLogin(login: _login, senha: _senha);
                         }
                       }, 
                       child: Text(
