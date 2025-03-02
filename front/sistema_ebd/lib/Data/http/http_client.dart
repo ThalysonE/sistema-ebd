@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:flutter/material.dart';
 
 abstract class IHttpClient{
   Future get({required url});
@@ -18,7 +17,7 @@ class HttpClient implements IHttpClient{
     return await client.post(
       Uri.parse(url),
       body: jsonEncode(body),
-      
+      headers: {'Content-Type': 'application/json'}
     );
   }
   

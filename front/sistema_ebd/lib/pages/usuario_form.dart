@@ -19,7 +19,36 @@ class _UsuarioFormState extends State<UsuarioForm> {
   bool esconderSenha = true;
   String _login ='';
   String _senha ='';
-  
+  void AutenticarUsuario() async{
+    if(keyform.currentState!.validate()){
+      keyform.currentState!.save();
+      var statusCode = await loginRepository.authLogin(login: _login, senha: _senha);
+      print(statusCode);
+      if(statusCode == 200){
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>Placeholder()));
+      } else if(statusCode == 401){
+        MostrarErro('Nome de usuário ou senha inválidos.');
+      } else if(statusCode == null){
+        MostrarErro('Erro ao tentar realizar o login, tente novamente mais tarde.');
+      }
+    }
+  }
+   MostrarErro(String msg){
+    return ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.red,
+        duration: Duration(seconds: 2),
+        content: Center(
+          child: Text(
+            msg,
+            style: TextStyle(
+              color: Colors.white
+            ),
+          ),
+        )
+      )
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -102,6 +131,8 @@ class _UsuarioFormState extends State<UsuarioForm> {
                     validator: (value){
                       if(value == null || value.isEmpty){
                         return 'Por favor, insira um nome de usuário.';
+                      }else if(value.length<3){
+                        return 'Nome de usuário deve ter mais de 3 caracteres';
                       }
                       return null;
                     },
@@ -185,8 +216,8 @@ class _UsuarioFormState extends State<UsuarioForm> {
                     validator: (value){
                       if(value == null || value.isEmpty){
                         return 'Por favor, insira uma senha válida.';
-                      }else if(value.length < 6){
-                        return 'Insira uma senha maior que 6 digitos';
+                      }else if(value.length < 8){
+                        return 'Insira uma senha maior que 8 digitos';
                       } 
                       return null;
                     },
@@ -232,11 +263,7 @@ class _UsuarioFormState extends State<UsuarioForm> {
                         )
                       ),
                       onPressed: (){
-                        if(keyform.currentState!.validate()){
-                          keyform.currentState!.save();
-                          print('login: ${_login}\nsenha: ${_senha}');
-                          loginRepository.authLogin(login: _login, senha: _senha);
-                        }
+                        AutenticarUsuario();
                       }, 
                       child: Text(
                         'Login',
