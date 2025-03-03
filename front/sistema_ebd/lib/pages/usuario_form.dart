@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:sistema_ebd/Data/http/http_client.dart';
 import 'package:sistema_ebd/Data/repositories/login_repositories.dart';
+import 'package:sistema_ebd/pages/tela_principal.dart';
 
 
 class UsuarioForm extends StatefulWidget {
@@ -25,7 +26,7 @@ class _UsuarioFormState extends State<UsuarioForm> {
       var statusCode = await loginRepository.authLogin(login: _login, senha: _senha);
       print(statusCode);
       if(statusCode == 200){
-        Navigator.push(context, MaterialPageRoute(builder: (context)=>Placeholder()));
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>TelaPrincipal()));
       } else if(statusCode == 401){
         MostrarErro('Nome de usuário ou senha inválidos.');
       } else if(statusCode == null){
