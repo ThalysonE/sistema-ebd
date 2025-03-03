@@ -27,6 +27,11 @@ flutter:
   assets:
     - assets/images/logo_ebd.png
     - assets/images/icon_perfil.png
+    - assets/images/icone_opcoes/cadastro_aula_icon.png
+    - assets/images/icone_opcoes/gerenciar_classe_icon.png
+    - assets/images/icone_opcoes/gerenciar_membros_icon.png
+    - assets/images/icone_opcoes/registro_aula_icon.png
+
   uses-material-design: true
 
 
