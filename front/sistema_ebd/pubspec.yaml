@@ -26,6 +26,7 @@ dev_dependencies:
 flutter:
   assets:
     - assets/images/logo_ebd.png
+    - assets/images/icon_perfil.png
   uses-material-design: true
 
 
