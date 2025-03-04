@@ -16,7 +16,7 @@ class LoginRepository implements ILoginRepository {
     var dados = {'username':login.toLowerCase(),'password':senha};
     try{
       final resposta = await client.post(
-      url: 'http://10.0.2.2:3333/auth/login',
+      url: 'http://192.168.0.75:3333/auth/login',
       body: dados,
     );
       final body = jsonDecode(resposta.body);

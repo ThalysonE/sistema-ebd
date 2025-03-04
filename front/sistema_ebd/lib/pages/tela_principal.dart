@@ -12,12 +12,13 @@ class TelaPrincipal extends StatefulWidget {
 
 class _TelaPrincipalState extends State<TelaPrincipal> {
   int itemMenu = 0;
+
   Widget ListaOpcoes() {
     return Column(
       children: [
         Container(
           width: double.infinity,
-          height: 150,
+          height: 135,
           padding: EdgeInsets.only(top: 25, left: 30, right: 30),
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -66,7 +67,7 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
           ),
         ),
         Container(
-          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+          padding: EdgeInsets.only(top: 25, bottom: 20, left: 28, right: 28),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -81,66 +82,81 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
               Row(
                 children: [
                   Expanded(
-                    child: Card(
-                      child: InkWell(
-                        splashColor: Theme.of(context).primaryColor,
-                        borderRadius: BorderRadius.circular(12),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 10,
-                            horizontal: 10,
-                          ),
-                          child: Column(
-                            children: [
-                              Image.asset(
-                                'assets/images/icone_opcoes/registro_aula_icon.png',
-                                width: 63,
-                                height: 63,
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                'Registro de Aulas',
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.labelMedium?.copyWith(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold,
+                    child: SizedBox(
+                      height: 137,
+                      child: Card(
+                        child: InkWell(
+                          highlightColor: Color.fromARGB(108, 101, 149, 231),
+                          splashColor: const Color.fromARGB(108, 101, 149, 231),
+                          onTap: () {
+                            print('foi');
+                          },
+                          borderRadius: BorderRadius.circular(12),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 10,
+                              horizontal: 10,
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  'assets/images/icone_opcoes/registro_aula_icon.png',
+                                  width: 63,
+                                  height: 63,
                                 ),
-                              ),
-                            ],
+                                SizedBox(height: 4),
+                                Text(
+                                  'Registro de Aulas',
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.labelMedium?.copyWith(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(width: 18),
+                  SizedBox(width: 12),
                   Expanded(
-                    child: Card(
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 10,
-                            horizontal: 10,
-                          ),
-                          child: Column(
-                            children: [
-                              Image.asset(
-                                'assets/images/icone_opcoes/cadastro_aula_icon.png',
-                                width: 63,
-                                height: 63,
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                'Cadastrar Aula',
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.labelMedium?.copyWith(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold,
+                    child: SizedBox(
+                      height: 137,
+                      child: Card(
+                        child: InkWell(
+                          highlightColor: Color.fromARGB(108, 101, 149, 231),
+                          splashColor: const Color.fromARGB(108, 101, 149, 231),
+                          onTap: () {},
+                          borderRadius: BorderRadius.circular(12),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 10,
+                              horizontal: 10,
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  'assets/images/icone_opcoes/cadastro_aula_icon.png',
+                                  width: 63,
+                                  height: 63,
                                 ),
-                              ),
-                            ],
+                                SizedBox(height: 4),
+                                Text(
+                                  'Cadastrar Aula',
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.labelMedium?.copyWith(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -153,7 +169,7 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
         ),
         SizedBox(height: 15),
         Container(
-          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+          padding: EdgeInsets.only(top: 20, bottom: 20, left: 28, right: 28),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -168,65 +184,80 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
               Row(
                 children: [
                   Expanded(
-                    child: Card(
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 10,
-                            horizontal: 10,
-                          ),
-                          child: Column(
-                            children: [
-                              Image.asset(
-                                'assets/images/icone_opcoes/gerenciar_membros_icon.png',
-                                width: 63,
-                                height: 63,
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                'Gerenciar Membros',
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.labelMedium?.copyWith(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold,
+                    child: SizedBox(
+                      height: 137,
+                      child: Card(
+                        child: InkWell(
+                          highlightColor: Color.fromARGB(108, 101, 149, 231),
+                          splashColor: const Color.fromARGB(108, 101, 149, 231),
+                          onTap: () {},
+                          borderRadius: BorderRadius.circular(12),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 10,
+                              horizontal: 10,
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  'assets/images/icone_opcoes/gerenciar_membros_icon.png',
+                                  width: 63,
+                                  height: 63,
                                 ),
-                              ),
-                            ],
+                                SizedBox(height: 8),
+                                Text(
+                                  'Gerenciar Membros',
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.labelMedium?.copyWith(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(width: 18),
+                  SizedBox(width: 12),
                   Expanded(
-                    child: Card(
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 10,
-                            horizontal: 10,
-                          ),
-                          child: Column(
-                            children: [
-                              Image.asset(
-                                'assets/images/icone_opcoes/gerenciar_classe_icon.png',
-                                width: 63,
-                                height: 63,
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                'Gerenciar Classe',
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.labelMedium?.copyWith(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold,
+                    child: SizedBox(
+                      height: 137,
+                      child: Card(
+                        child: InkWell(
+                          highlightColor: Color.fromARGB(108, 101, 149, 231),
+                          splashColor: const Color.fromARGB(108, 101, 149, 231),
+                          onTap: () {},
+                          borderRadius: BorderRadius.circular(12),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 10,
+                              horizontal: 10,
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  'assets/images/icone_opcoes/gerenciar_classe_icon.png',
+                                  width: 63,
+                                  height: 63,
                                 ),
-                              ),
-                            ],
+                                SizedBox(height: 8),
+                                Text(
+                                  'Gerenciar Classe',
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.labelMedium?.copyWith(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -240,20 +271,23 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
       ],
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Material(
       child: Scaffold(
         backgroundColor: Color(0xFFfaf9fe),
-        body: itemMenu == 0? ListaOpcoes(): TelaEmAndamento(),
+        body: SingleChildScrollView(
+          child: itemMenu == 0 ? ListaOpcoes() : TelaEmAndamento(),
+        ),
         bottomNavigationBar: BottomNavigationBar(
           showSelectedLabels: false,
           showUnselectedLabels: false,
           iconSize: 28,
           currentIndex: itemMenu,
-          onTap: (index){
+          onTap: (index) {
             setState(() {
-              itemMenu= index;
+              itemMenu = index;
             });
           },
           items: [
