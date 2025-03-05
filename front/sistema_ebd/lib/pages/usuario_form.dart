@@ -1,30 +1,30 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sistema_ebd/Data/http/http_client.dart';
+import 'package:sistema_ebd/Data/providers/usuario_provider.dart';
 import 'package:sistema_ebd/Data/repositories/login_repositories.dart';
 import 'package:sistema_ebd/pages/tela_principal.dart';
 
 
-class UsuarioForm extends StatefulWidget {
+class UsuarioForm extends ConsumerStatefulWidget {
   const UsuarioForm({super.key});
 
   @override
-  State<UsuarioForm> createState() => _UsuarioFormState();
+  ConsumerState<UsuarioForm> createState() => _UsuarioFormState();
 }
 
-class _UsuarioFormState extends State<UsuarioForm> {
+class _UsuarioFormState extends ConsumerState<UsuarioForm> {
   final keyform = GlobalKey<FormState>();
-  final LoginRepository loginRepository = LoginRepository(client: HttpClient());
+  
   bool ativadoLembrar = false;
   bool esconderSenha = true;
+  bool isLoading = false;
   String _login ='';
   String _senha ='';
-  void AutenticarUsuario() async{
-    if(keyform.currentState!.validate()){
+  void AutenticarUsuario(WidgetRef refUser) async{
       keyform.currentState!.save();
-      var statusCode = await loginRepository.authLogin(login: _login, senha: _senha);
-      print(statusCode);
+      final usuarioProvider = refUser.read(usuarioLogado.notifier);
+      var statusCode = await usuarioProvider.login(_login, _senha);
       if(statusCode == 200){
         Navigator.push(context, MaterialPageRoute(builder: (context)=>TelaPrincipal()));
       } else if(statusCode == 401){
@@ -32,7 +32,7 @@ class _UsuarioFormState extends State<UsuarioForm> {
       } else if(statusCode == null){
         MostrarErro('Erro ao tentar realizar o login, tente novamente mais tarde.');
       }
-    }
+    
   }
    MostrarErro(String msg){
     return ScaffoldMessenger.of(context).showSnackBar(
@@ -51,7 +51,12 @@ class _UsuarioFormState extends State<UsuarioForm> {
     );
   }
   @override
+  void initState() {
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
+    
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 30),
@@ -264,7 +269,9 @@ class _UsuarioFormState extends State<UsuarioForm> {
                         )
                       ),
                       onPressed: (){
-                        AutenticarUsuario();
+                        if(keyform.currentState!.validate()){
+                          AutenticarUsuario(ref);
+                        }
                       }, 
                       child: Text(
                         'Login',

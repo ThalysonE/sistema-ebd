@@ -1,12 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sistema_ebd/pages/telaInicial.dart';
 import 'package:sistema_ebd/pages/usuario_form.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sistema_ebd/utils/rotas.dart';
 void main(List<String> args) {
-  runApp(MyApp());
+  runApp(
+    ProviderScope(
+      child: MyApp()
+    )
+  );
 }
 
 class MyApp extends StatefulWidget {

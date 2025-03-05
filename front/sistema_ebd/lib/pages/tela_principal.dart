@@ -1,18 +1,22 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sistema_ebd/Data/providers/usuario_provider.dart';
+import 'package:sistema_ebd/models/usuario.dart';
 import 'package:sistema_ebd/pages/tela_em_andamento.dart';
 
-class TelaPrincipal extends StatefulWidget {
+class TelaPrincipal extends ConsumerStatefulWidget {
   const TelaPrincipal({super.key});
 
   @override
-  State<TelaPrincipal> createState() => _TelaPrincipalState();
+  ConsumerState<TelaPrincipal> createState() => _TelaPrincipalState();
 }
 
-class _TelaPrincipalState extends State<TelaPrincipal> {
+class _TelaPrincipalState extends ConsumerState<TelaPrincipal> {
   int itemMenu = 0;
-
+  late UsuarioLogado usuario;
+  
   Widget ListaOpcoes() {
     return Column(
       children: [
@@ -49,7 +53,7 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
                   ),
                   SizedBox(height: 5),
                   Text(
-                    'Professor!👋',
+                    usuario.usuario,
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       color: Colors.white,
                       fontSize: 22,
@@ -271,9 +275,14 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
       ],
     );
   }
-
+  @override
+  void initState() {
+    super.initState();
+  
+  }
   @override
   Widget build(BuildContext context) {
+    usuario = ref.read(usuarioLogado);
     return Material(
       child: Scaffold(
         backgroundColor: Color(0xFFfaf9fe),
