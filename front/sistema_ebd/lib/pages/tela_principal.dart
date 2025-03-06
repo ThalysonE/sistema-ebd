@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sistema_ebd/Data/providers/usuario_provider.dart';
+import 'package:sistema_ebd/Data/repositories/membros_repositories.dart';
 import 'package:sistema_ebd/models/usuario.dart';
 import 'package:sistema_ebd/pages/tela_em_andamento.dart';
 
@@ -283,6 +284,7 @@ class _TelaPrincipalState extends ConsumerState<TelaPrincipal> {
   @override
   Widget build(BuildContext context) {
     usuario = ref.read(usuarioLogado);
+    MembrosRepositories().getMembros(numeroPage: 1,token: usuario.token);
     return Material(
       child: Scaffold(
         backgroundColor: Color(0xFFfaf9fe),
