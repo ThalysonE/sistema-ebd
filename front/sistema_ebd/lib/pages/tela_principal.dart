@@ -6,6 +6,7 @@ import 'package:sistema_ebd/Data/providers/usuario_provider.dart';
 import 'package:sistema_ebd/Data/repositories/membros_repositories.dart';
 import 'package:sistema_ebd/models/usuario.dart';
 import 'package:sistema_ebd/pages/tela_em_andamento.dart';
+import 'package:sistema_ebd/pages/tela_membros.dart';
 
 class TelaPrincipal extends ConsumerStatefulWidget {
   const TelaPrincipal({super.key});
@@ -17,7 +18,7 @@ class TelaPrincipal extends ConsumerStatefulWidget {
 class _TelaPrincipalState extends ConsumerState<TelaPrincipal> {
   int itemMenu = 0;
   late UsuarioLogado usuario;
-  
+
   Widget ListaOpcoes() {
     return Column(
       children: [
@@ -195,7 +196,14 @@ class _TelaPrincipalState extends ConsumerState<TelaPrincipal> {
                         child: InkWell(
                           highlightColor: Color.fromARGB(108, 101, 149, 231),
                           splashColor: const Color.fromARGB(108, 101, 149, 231),
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => TelaMembros(),
+                              ),
+                            );
+                          },
                           borderRadius: BorderRadius.circular(12),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
@@ -276,15 +284,15 @@ class _TelaPrincipalState extends ConsumerState<TelaPrincipal> {
       ],
     );
   }
+
   @override
   void initState() {
     super.initState();
-  
   }
+
   @override
   Widget build(BuildContext context) {
     usuario = ref.read(usuarioLogado);
-    MembrosRepositories().getMembros(numeroPage: 1,token: usuario.token);
     return Material(
       child: Scaffold(
         backgroundColor: Color(0xFFfaf9fe),

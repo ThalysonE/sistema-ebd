@@ -16,7 +16,7 @@ class MembrosRepositories implements IMembrosRepository{
   
   Future<List<Membro>?> getMembros({required int numeroPage, required String token})async{
     final dio = Dio();
-    final List<Membro> membros= [];
+    List<Membro> membros= [];
     final body = {
       'page': numeroPage
     };
