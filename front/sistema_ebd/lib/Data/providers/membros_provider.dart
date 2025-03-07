@@ -2,6 +2,7 @@
 
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sistema_ebd/Data/http/http_client.dart';
 import 'package:sistema_ebd/Data/providers/usuario_provider.dart';
 import 'package:sistema_ebd/Data/repositories/membros_repositories.dart';
 import 'package:sistema_ebd/models/membro.dart';
@@ -17,13 +18,14 @@ class MembroProvider extends StateNotifier<List<Membro>>{
   MembroProvider({required this.usuario}):super([]);
 
   Future loadMembros({required int page}) async{
-    final repository = MembrosRepositories();
+    final repository = MembrosRepositories(client: HttpClient());
+    
     try{
       final membros = await repository.getMembros(numeroPage: page, token: usuario.token);
       state.addAll(membros!.toList());
-      print(state);
+      state.sort((a,b)=>a.nome.toLowerCase().compareTo(b.nome.toLowerCase()));
     }catch(e){
-      print('Erro no provider.');
+      print('Erro no provider: ${e.toString()}');
     } 
   }
 }
