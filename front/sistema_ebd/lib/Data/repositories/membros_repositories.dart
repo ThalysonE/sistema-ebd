@@ -23,7 +23,7 @@ class MembrosRepositories implements IMembrosRepository{
     final url = Uri.parse('http://192.168.0.75:3333/member').replace(
       queryParameters: {
         "page": numeroPage.toString(),
-        "perPage": "20"
+        "perPage": "15"
       }
     );
     try{
