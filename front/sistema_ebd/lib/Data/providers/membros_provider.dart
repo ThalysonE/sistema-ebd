@@ -28,4 +28,14 @@ class MembroProvider extends StateNotifier<List<Membro>>{
       print('Erro no provider: ${e.toString()}');
     } 
   }
+  Future searchMembro({required String nome}) async{
+    final repository = MembrosRepositories(client: HttpClient());
+    try{
+      final membros = await repository.searchMembro(nome: nome, token: usuario.token);
+      return membros;
+    }catch(e){
+      print('Erro no provider: ${e.toString()}');
+      return null;
+    }
+  }
 }

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sistema_ebd/Data/providers/membros_provider.dart';
 import 'package:sistema_ebd/Data/variaveisGlobais/variaveis_globais.dart';
 import 'package:sistema_ebd/models/membro.dart';
+import 'dart:async';
 
 class TelaMembros extends ConsumerStatefulWidget {
   const TelaMembros({super.key});
@@ -15,8 +16,11 @@ class TelaMembros extends ConsumerStatefulWidget {
 class _TelaMembrosState extends ConsumerState<TelaMembros> {
   late List<Membro> membros;
   ScrollController _controller = ScrollController();
+  Timer? _debounce;
   bool isLoading = true;
   bool novosMembros = true;
+  bool pesquisando = false;
+  List<Membro> resultadoPesquisa = [];
   void fetchMembros(int _page) async {
     await ref.read(listaMembros.notifier).loadMembros(page: _page).then((_) {
       setState(() {});
@@ -37,10 +41,9 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
     }
     _controller.addListener(() {
       if (_controller.position.maxScrollExtent == _controller.offset) {
-        if(ref.read(listaMembros).length < totalMembros){
+        if (ref.read(listaMembros).length < totalMembros) {
           fetchMembros(++paginaAtual);
-        }else{
-          
+        } else {
           setState(() {
             novosMembros = false;
           });
@@ -48,9 +51,29 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
       }
     });
   }
-  void SearchMember(){
 
+  void searchMembro(String query) async {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(Duration(milliseconds: 700), () async {
+      List<Membro> resultado = await ref
+          .read(listaMembros.notifier)
+          .searchMembro(nome: query);
+      if (resultado.isNotEmpty) {
+        setState(() {
+          resultadoPesquisa = resultado;
+        });
+      } else if (resultado.isEmpty) {
+        print('Nada encontrado');
+      }
+    });
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     membros = ref.watch(listaMembros);
@@ -67,6 +90,15 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
+              onTap: () {
+                setState(() {
+                  pesquisando = true;
+                });
+              },
+              onTapOutside: (event) => setState(() {
+                pesquisando = false;
+              }),
+              onChanged: searchMembro,
               leading: Icon(Icons.search),
               hintText: 'Procurar',
               hintStyle: MaterialStateProperty.all(
@@ -79,87 +111,142 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
             ),
           ),
           SizedBox(height: 20),
-          Expanded(
-            child: ListView.builder(
-              controller: _controller,
-              itemCount: membros.length + 1,
-              itemBuilder: (context, index) {
-                if (index < membros.length) {
-                  final item = membros[index];
-                  return Container(
-                    margin: EdgeInsets.symmetric(vertical: 2.5, horizontal: 5),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Color.fromARGB(218, 231, 230, 237),
-                        width: 1,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.white,
-                    ),
-                    child: ListTile(
-                      contentPadding: EdgeInsets.only(
-                        left: 16,
-                        top: 4,
-                        bottom: 4,
-                        right: 10,
-                      ),
-                      leading: Image.asset(
-                        'assets/images/icon_perfil.png',
-                        width: 36,
-                      ),
-                      title: Text(
-                        item.nome,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.displayMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 15,
+          pesquisando ==false
+              ? Expanded(
+                child: ListView.builder(
+                  controller: _controller,
+                  itemCount: membros.length + 1,
+                  itemBuilder: (context, index) {
+                    if (index < membros.length) {
+                      final item = membros[index];
+                      return Container(
+                        margin: EdgeInsets.symmetric(
+                          vertical: 2.5,
+                          horizontal: 5,
                         ),
-                      ),
-                      trailing: PopupMenuButton(
-                        itemBuilder:
-                            (context) => [
-                              PopupMenuItem(
-                                value: 'editar',
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.edit,
-                                      color: Colors.amber,
-                                      size: 20,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Color.fromARGB(218, 231, 230, 237),
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(8),
+                          color: Colors.white,
+                        ),
+                        child: ListTile(
+                          contentPadding: EdgeInsets.only(
+                            left: 16,
+                            top: 4,
+                            bottom: 4,
+                            right: 10,
+                          ),
+                          leading: Image.asset(
+                            'assets/images/icon_perfil.png',
+                            width: 36,
+                          ),
+                          title: Text(
+                            item.nome,
+                            style: Theme.of(
+                              context,
+                            ).textTheme.displayMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 15,
+                            ),
+                          ),
+                          trailing: PopupMenuButton(
+                            itemBuilder:
+                                (context) => [
+                                  PopupMenuItem(
+                                    value: 'editar',
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.edit,
+                                          color: Colors.amber,
+                                          size: 20,
+                                        ),
+                                        SizedBox(width: 10),
+                                        Text('Editar'),
+                                      ],
                                     ),
-                                    SizedBox(width: 10),
-                                    Text('Editar'),
-                                  ],
+                                  ),
+                                  PopupMenuItem(
+                                    value: 'excluir',
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.delete,
+                                          color: Colors.red,
+                                          size: 20,
+                                        ),
+                                        SizedBox(width: 10),
+                                        Text('Excluir'),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                          ),
+                        ),
+                      );
+                    } else {
+                      return Padding(
+                        padding: EdgeInsets.all(30),
+                        child: Center(
+                          child:
+                              novosMembros
+                                  ? CircularProgressIndicator()
+                                  : SizedBox(height: 25),
+                        ),
+                      );
+                    }
+                  },
+                ),
+              )
+              : Expanded(
+                child:
+                    resultadoPesquisa.isEmpty
+                        ? Center(child: Text('Carregando'))
+                        : ListView.builder(
+                          itemCount: resultadoPesquisa.length,
+                          itemBuilder: (context, index) {
+                            final item = resultadoPesquisa[index];
+                            return Container(
+                              margin: EdgeInsets.symmetric(
+                                vertical: 2.5,
+                                horizontal: 5,
+                              ),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Color.fromARGB(218, 231, 230, 237),
+                                  width: 1,
+                                ),
+                                borderRadius: BorderRadius.circular(8),
+                                color: Colors.white,
+                              ),
+                              child: ListTile(
+                                contentPadding: EdgeInsets.only(
+                                  left: 16,
+                                  top: 4,
+                                  bottom: 4,
+                                  right: 10,
+                                ),
+                                leading: Image.asset(
+                                  'assets/images/icon_perfil.png',
+                                  width: 36,
+                                ),
+                                title: Text(
+                                  item.nome,
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.displayMedium?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 15,
+                                  ),
                                 ),
                               ),
-                              PopupMenuItem(
-                                value: 'excluir',
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.delete,
-                                      color: Colors.red,
-                                      size: 20,
-                                    ),
-                                    SizedBox(width: 10),
-                                    Text('Excluir'),
-                                  ],
-                                ),
-                              ),
-                            ],
-                      ),
-                    ),
-                  );
-                } else {
-                  return Padding(
-                    padding: EdgeInsets.all(30),
-                    child: Center(child: novosMembros? CircularProgressIndicator(): SizedBox(height: 25,)),
-                  );
-                }
-              },
-            ),
-          ),
+                            );
+                          },
+                        ),
+              ),
         ],
       );
     }

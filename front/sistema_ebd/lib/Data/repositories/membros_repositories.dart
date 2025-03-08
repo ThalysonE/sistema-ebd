@@ -45,6 +45,31 @@ class MembrosRepositories implements IMembrosRepository{
     }
     return null;
   }
+  Future<List<Membro>?> searchMembro({required String nome, required String token}) async{
+    List<Membro> resultMembros = [];
+    final url = Uri.parse('http://192.168.0.75:3333/member').replace(
+      queryParameters: {
+        "name": nome,
+      }
+    );
+    try{
+      final resposta = await client.get(url: url, token: token);
+      if(resposta.statusCode == 200){
+        final body = jsonDecode(resposta.body);
+        print(body);
+        body['members'].map((item){
+          final membro = Membro.fromMap(item);
+          resultMembros.add(membro);
+        }).toList();
+        return resultMembros;
+      }
+    }
+    catch(e){
+      print('Erro ao pesquisar membro: ${e.toString()}');
+    }
+    return null;
+  }
+
   
 
 }
