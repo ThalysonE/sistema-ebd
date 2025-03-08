@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:sistema_ebd/Data/http/http_client.dart';
@@ -17,22 +18,19 @@ class AuthUsuario extends StateNotifier<UsuarioLogado>{
   AuthUsuario({required this.repository}): super(UsuarioLogado('', ''));
 
   late String erro;
-  bool isLoading = false;
   Future login(String usuario, String senha) async{
-    isLoading = true;
     try{
       dynamic resposta = await repository.authLogin(login: usuario, senha: senha);
       if(resposta.statusCode == 200){
         final body = jsonDecode(resposta.body);
         state = UsuarioLogado(usuario, body['access_token']);
       }
-      print(resposta.statusCode);
+      await Future.delayed(Duration(milliseconds: 500));
       return resposta.statusCode; 
     }catch(e){
       erro = e.toString();
+      return null;
     }
-    isLoading = false;
-    return null;
   }
 
 }
