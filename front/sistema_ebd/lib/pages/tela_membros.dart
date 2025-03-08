@@ -26,13 +26,12 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
       setState(() {});
     });
   }
-
   @override
   void initState() {
     super.initState();
     final membroProvider = ref.read(listaMembros);
     if (membroProvider.isEmpty) {
-      ref.read(listaMembros.notifier).loadMembros(page: paginaAtual).then((_) {
+      ref.read(listaMembros.notifier).loadMembros(page: paginaAtual).then((_){
         setState(() {
           isLoading = false;
         });
@@ -92,7 +91,6 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
-
               onChanged: searchMembro,
               leading: Icon(Icons.search),
               hintText: 'Procurar',
