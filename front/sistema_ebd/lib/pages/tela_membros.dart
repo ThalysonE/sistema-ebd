@@ -30,7 +30,8 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
   @override
   void initState() {
     super.initState();
-    if (ref.read(listaMembros).isEmpty) {
+    final membroProvider = ref.read(listaMembros);
+    if (membroProvider.isEmpty) {
       ref.read(listaMembros.notifier).loadMembros(page: paginaAtual).then((_) {
         setState(() {
           isLoading = false;
@@ -41,7 +42,7 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
     }
     _controller.addListener(() {
       if (_controller.position.maxScrollExtent == _controller.offset) {
-        if (ref.read(listaMembros).length < totalMembros) {
+        if (membroProvider.length < totalMembros) {
           fetchMembros(++paginaAtual);
         } else {
           setState(() {
@@ -55,16 +56,17 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
   void searchMembro(String query) async {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(Duration(milliseconds: 700), () async {
-      List<Membro> resultado = await ref
-          .read(listaMembros.notifier)
-          .searchMembro(nome: query);
-      if (resultado.isNotEmpty) {
-        setState(() {
+      List<Membro> resultado = await ref.read(listaMembros.notifier).searchMembro(nome: query);
+      print('Chamou');
+      setState(() {
+        pesquisando = true;
+        if (resultado.isNotEmpty) {
           resultadoPesquisa = resultado;
-        });
-      } else if (resultado.isEmpty) {
-        print('Nada encontrado');
-      }
+        }
+        if(query.isEmpty){
+          pesquisando = false;
+        }
+      });
     });
   }
 
@@ -90,20 +92,13 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
-              onTap: () {
-                setState(() {
-                  pesquisando = true;
-                });
-              },
-              onTapOutside: (event) => setState(() {
-                pesquisando = false;
-              }),
+
               onChanged: searchMembro,
               leading: Icon(Icons.search),
               hintText: 'Procurar',
               hintStyle: MaterialStateProperty.all(
                 Theme.of(context).textTheme.titleMedium!.copyWith(
-                  fontSize: 16,
+                  fontSize: 15,
                   fontWeight: FontWeight.w500,
                   color: Color(0xFF9A9A9A),
                 ),
@@ -111,7 +106,7 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
             ),
           ),
           SizedBox(height: 20),
-          pesquisando ==false
+          pesquisando == false
               ? Expanded(
                 child: ListView.builder(
                   controller: _controller,
@@ -204,7 +199,7 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
               : Expanded(
                 child:
                     resultadoPesquisa.isEmpty
-                        ? Center(child: Text('Carregando'))
+                        ? Center(child: Text('Nenhum resultado encontrado.'))
                         : ListView.builder(
                           itemCount: resultadoPesquisa.length,
                           itemBuilder: (context, index) {

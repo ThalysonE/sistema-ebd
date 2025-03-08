@@ -56,7 +56,6 @@ class MembrosRepositories implements IMembrosRepository{
       final resposta = await client.get(url: url, token: token);
       if(resposta.statusCode == 200){
         final body = jsonDecode(resposta.body);
-        print(body);
         body['members'].map((item){
           final membro = Membro.fromMap(item);
           resultMembros.add(membro);
