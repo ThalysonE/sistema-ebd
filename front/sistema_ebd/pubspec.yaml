@@ -18,7 +18,12 @@ dependencies:
   http: ^1.3.0
   flutter_riverpod: ^2.6.1
   dio: ^5.8.0+1
+  flutter_native_splash: ^2.4.5
   
+flutter_native_splash:
+  color: "#034279"  # Cor de fundo
+  image: assets/images/logo_ebd.png  # Caminho para a imagem
+  android: true
 
 dev_dependencies:
   flutter_test:
@@ -36,6 +41,5 @@ flutter:
     - assets/images/icone_opcoes/registro_aula_icon.png
 
   uses-material-design: true
-
 
 
