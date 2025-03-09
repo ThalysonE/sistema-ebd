@@ -30,7 +30,7 @@ class _UsuarioFormState extends ConsumerState<UsuarioForm> {
     final usuarioProvider = refUser.read(usuarioLogado.notifier);
     var statusCode = await usuarioProvider.login(_login, _senha);
     if (statusCode == 200) {
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => TelaPrincipal()),
       );
