@@ -26,12 +26,13 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
       setState(() {});
     });
   }
+
   @override
   void initState() {
     super.initState();
     final membroProvider = ref.read(listaMembros);
     if (membroProvider.isEmpty) {
-      ref.read(listaMembros.notifier).loadMembros(page: paginaAtual).then((_){
+      ref.read(listaMembros.notifier).loadMembros(page: paginaAtual).then((_) {
         setState(() {
           isLoading = false;
         });
@@ -55,14 +56,16 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
   void searchMembro(String query) async {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(Duration(milliseconds: 700), () async {
-      List<Membro> resultado = await ref.read(listaMembros.notifier).searchMembro(nome: query);
+      List<Membro> resultado = await ref
+          .read(listaMembros.notifier)
+          .searchMembro(nome: query);
       print('Chamou');
       setState(() {
         pesquisando = true;
         if (resultado.isNotEmpty) {
           resultadoPesquisa = resultado;
         }
-        if(query.isEmpty){
+        if (query.isEmpty) {
           pesquisando = false;
         }
       });
@@ -234,6 +237,39 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
                                     fontWeight: FontWeight.w600,
                                     fontSize: 15,
                                   ),
+                                ),
+                                trailing: PopupMenuButton(
+                                  itemBuilder:
+                                      (context) => [
+                                        PopupMenuItem(
+                                          value: 'editar',
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.edit,
+                                                color: Colors.amber,
+                                                size: 20,
+                                              ),
+                                              SizedBox(width: 10),
+                                              Text('Editar'),
+                                            ],
+                                          ),
+                                        ),
+                                        PopupMenuItem(
+                                          value: 'excluir',
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.delete,
+                                                color: Colors.red,
+                                                size: 20,
+                                              ),
+                                              SizedBox(width: 10),
+                                              Text('Excluir'),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
                                 ),
                               ),
                             );
