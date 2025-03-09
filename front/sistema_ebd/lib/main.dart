@@ -19,17 +19,17 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool logovisivel = true;
+  //bool logovisivel = true;
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Timer(const Duration(seconds: 5), () {
-        setState(() {
-          logovisivel = false;
-        });
-      });
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   Timer(const Duration(seconds: 5), () {
+    //     setState(() {
+    //       logovisivel = false;
+    //     });
+    //   });
+    // });
   }
 
   @override
@@ -45,7 +45,7 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
       routes: {AppRotas.login: (context) => UsuarioForm()},
-      home: Scaffold(body: logovisivel ? Telainicial() : UsuarioForm()),
+      home: Scaffold(body:UsuarioForm()),
     );
   }
 }
