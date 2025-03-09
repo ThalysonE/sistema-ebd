@@ -1,8 +1,5 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sistema_ebd/pages/telaInicial.dart';
 import 'package:sistema_ebd/pages/usuario_form.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sistema_ebd/utils/rotas.dart';
@@ -19,17 +16,9 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  //bool logovisivel = true;
   @override
   void initState() {
     super.initState();
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   Timer(const Duration(seconds: 5), () {
-    //     setState(() {
-    //       logovisivel = false;
-    //     });
-    //   });
-    // });
   }
 
   @override
