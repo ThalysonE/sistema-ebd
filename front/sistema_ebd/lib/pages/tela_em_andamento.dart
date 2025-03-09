@@ -5,14 +5,19 @@ class TelaEmAndamento extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Material(
-      child: Center(
-        child: Padding(
-          padding: EdgeInsets.only(top: 300),
-          child: Text(
-            'Em desenvolvimento...',
-            style: TextStyle(color: Colors.black),
-          ),
+    return  Material(
+      child: Scaffold(
+        backgroundColor:Color(0xFFfaf9fe) ,
+        body: Center(
+            child: Text(
+              'Em desenvolvimento...',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 15,
+                fontWeight: FontWeight.w500
+              ),
+              
+            ),
         ),
       ),
     );

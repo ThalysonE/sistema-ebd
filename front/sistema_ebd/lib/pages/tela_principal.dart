@@ -296,9 +296,7 @@ class _TelaPrincipalState extends ConsumerState<TelaPrincipal> {
     return Material(
       child: Scaffold(
         backgroundColor: Color(0xFFfaf9fe),
-        body: SingleChildScrollView(
-          child: itemMenu == 0 ? ListaOpcoes() : TelaEmAndamento(),
-        ),
+        body:  itemMenu == 0 ? ListaOpcoes() : TelaEmAndamento(),
         bottomNavigationBar: BottomNavigationBar(
           showSelectedLabels: false,
           showUnselectedLabels: false,
