@@ -6,6 +6,9 @@ import 'package:sistema_ebd/Data/variaveisGlobais/variaveis_globais.dart';
 import 'package:sistema_ebd/models/membro.dart';
 import 'dart:async';
 
+import 'package:sistema_ebd/pages/membro_cadastro_form.dart';
+import 'package:sistema_ebd/utils/appbar.dart';
+
 class TelaMembros extends ConsumerStatefulWidget {
   const TelaMembros({super.key});
 
@@ -282,26 +285,17 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
     return Material(
       child: Scaffold(
         backgroundColor: Color(0xFFfaf9fe),
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-          centerTitle: true,
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(Icons.chevron_left, size: 30),
-            color: Colors.white,
-          ),
-          title: Text(
-            'Controle de Membros',
-            style: Theme.of(context).textTheme.titleMedium!.copyWith(
-              fontSize: 16.5,
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
-            ),
-          ),
-        ),
+        appBar: CriarAppBar(context, "Controle de Membros"),
         body: conteudo,
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => MembroCadastro()),
+            );
+          },
+        ),
       ),
     );
   }

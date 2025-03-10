@@ -22,7 +22,6 @@ class _UsuarioFormState extends ConsumerState<UsuarioForm> {
   String _senha = '';
 
   void AutenticarUsuario(WidgetRef refUser) async {
-    print('Chamando');
     setState(() {
       isLoading = true;
     });
@@ -42,7 +41,7 @@ class _UsuarioFormState extends ConsumerState<UsuarioForm> {
       );
     }
     setState(() {
-      isLoading = false;
+      isLoading = false; 
     });
   }
 
