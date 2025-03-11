@@ -295,7 +295,6 @@ class _TelaPrincipalState extends ConsumerState<TelaPrincipal> {
     usuario = ref.read(usuarioLogado);
     return Material(
       child: Scaffold(
-        backgroundColor: Color(0xFFfaf9fe),
         body:  itemMenu == 0 ? ListaOpcoes() : TelaEmAndamento(),
         bottomNavigationBar: BottomNavigationBar(
           showSelectedLabels: false,
@@ -309,10 +308,7 @@ class _TelaPrincipalState extends ConsumerState<TelaPrincipal> {
           },
           items: [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Início'),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_month),
-              label: 'Aulas',
-            ),
+            BottomNavigationBarItem(icon: Icon(Icons.calendar_month),label: 'Aulas'),
             BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
           ],
         ),

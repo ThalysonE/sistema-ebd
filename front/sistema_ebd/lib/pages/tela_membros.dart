@@ -1,11 +1,10 @@
-import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sistema_ebd/Data/providers/membros_provider.dart';
 import 'package:sistema_ebd/Data/variaveisGlobais/variaveis_globais.dart';
 import 'package:sistema_ebd/models/membro.dart';
 import 'dart:async';
-
 import 'package:sistema_ebd/pages/membro_cadastro_form.dart';
 import 'package:sistema_ebd/utils/appbar.dart';
 
@@ -29,7 +28,6 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
       setState(() {});
     });
   }
-
   @override
   void initState() {
     super.initState();
@@ -55,7 +53,6 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
       }
     });
   }
-
   void searchMembro(String query) async {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(Duration(milliseconds: 700), () async {
@@ -74,7 +71,6 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
       });
     });
   }
-
   @override
   void dispose() {
     super.dispose();
@@ -284,7 +280,6 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
     }
     return Material(
       child: Scaffold(
-        backgroundColor: Color(0xFFfaf9fe),
         appBar: CriarAppBar(context, "Controle de Membros"),
         body: conteudo,
         floatingActionButton: FloatingActionButton(

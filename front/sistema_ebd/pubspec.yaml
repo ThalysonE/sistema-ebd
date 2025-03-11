@@ -20,6 +20,7 @@ dependencies:
   dio: ^5.8.0+1
   flutter_native_splash: ^2.4.5
   flutter_launcher_icons: ^0.14.3
+  intl: ^0.20.2
   
 flutter_native_splash:
   color: "#034279"  # Cor de fundo
