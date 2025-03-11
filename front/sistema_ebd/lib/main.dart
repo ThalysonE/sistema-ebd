@@ -32,9 +32,13 @@ class _MyAppState extends State<MyApp> {
         appBarTheme: AppBarTheme(
           backgroundColor: Color.fromARGB(255, 13, 95, 167),
         ),
+        scaffoldBackgroundColor: Color(0xFFfaf9fe)
       ),
       routes: {AppRotas.login: (context) => UsuarioForm()},
-      home: Scaffold(body:UsuarioForm()),
+      home: Scaffold(
+        backgroundColor: Colors.white,
+        body:UsuarioForm()
+      ),
     );
   }
 }
