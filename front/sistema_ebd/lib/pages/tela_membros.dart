@@ -16,7 +16,7 @@ class TelaMembros extends ConsumerStatefulWidget {
 }
 
 class _TelaMembrosState extends ConsumerState<TelaMembros> {
-  late List<Membro> membros;
+  
   ScrollController _controller = ScrollController();
   Timer? _debounce;
   bool isLoading = true;
@@ -79,7 +79,7 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
 
   @override
   Widget build(BuildContext context) {
-    membros = ref.watch(listaMembros);
+    List<Membro> membros = ref.watch(listaMembros);
     Widget conteudo;
     if (isLoading) {
       conteudo = Center(child: CircularProgressIndicator());
