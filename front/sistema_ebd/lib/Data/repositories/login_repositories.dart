@@ -12,9 +12,10 @@ class LoginRepository implements ILoginRepository{
   @override
   Future<dynamic> authLogin({required String login, required String senha}) async {
     var dados = {'username':login.toLowerCase(),'password':senha};
+    final url = Uri.parse('http://192.168.0.75:3333/auth/login');
     try{
       final resposta = await client.post(
-      url: 'http://192.168.0.75:3333/auth/login',
+      url: url,
       body: dados,
     );
       return resposta;
