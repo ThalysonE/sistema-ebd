@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:sistema_ebd/utils/appbar.dart';
 import 'package:intl/intl.dart';
@@ -18,6 +17,7 @@ class _MembroCadastroState extends State<MembroCadastro> {
     super.initState();
     _dateController.text = DateFormat('dd/MM/yyy').format(DateTime.now());
   }
+
   Future<void> selecionarData() async {
     final DateTime? dataSelecionada = await showDatePicker(
       context: context,
@@ -31,100 +31,175 @@ class _MembroCadastroState extends State<MembroCadastro> {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Material(
       child: Scaffold(
         appBar: CriarAppBar(context, "Adicionar Membro"),
-        body: Padding(
-          padding: const EdgeInsets.only(top: 40, right: 20, left: 20),
-          child: Form(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Nome',
-                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                SizedBox(height: 15),
-                TextFormField(
-                  decoration: InputDecoration(
-                    filled: true,
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        width: 1.5,
-                        color: Color(0xFFD0D5DD),
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        width: 1.5,
-                        color:
-                            Theme.of(context).buttonTheme.colorScheme!.primary,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderSide: BorderSide(width: 1.5, color: Colors.red),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        width: 1.5,
-                        color:
-                            Theme.of(context).buttonTheme.colorScheme!.primary,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
-                    label: Text(
-                      'Gabriel',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Color(0xFFAFADBE),
-                        fontWeight: FontWeight.w700,
-                      ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 40, right: 20, left: 20),
+            child: Form(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Nome',
+                    style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                ),
-                SizedBox(height: 30),
-                Text(
-                  'Data de Nascimento',
-                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                SizedBox(height: 15),
-                TextFormField(
-                  readOnly: true,
-                  decoration: InputDecoration(
-                    filled: true,
-                    prefixIcon: Icon(Icons.date_range),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        width: 1.5,
-                        color: Color(0xFFD0D5DD),
+                  SizedBox(height: 15),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      filled: true,
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 1.5,
+                          color: Color(0xFFD0D5DD),
+                        ),
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        width: 1.5,
-                        color:
-                            Theme.of(context).buttonTheme.colorScheme!.primary,
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 1.5,
+                          color:
+                              Theme.of(
+                                context,
+                              ).buttonTheme.colorScheme!.primary,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      borderRadius: BorderRadius.circular(10),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(width: 1.5, color: Colors.red),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 1.5,
+                          color:
+                              Theme.of(
+                                context,
+                              ).buttonTheme.colorScheme!.primary,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      label: Text(
+                        'Gabriel',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Color(0xFFAFADBE),
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                     ),
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
                   ),
-                  controller: _dateController,
-                  onTap: selecionarData
-                ),
-              ],
+                  SizedBox(height: 30),
+                  Text(
+                    'Data de Nascimento',
+                    style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: 15),
+                  TextFormField(
+                    readOnly: true,
+                    decoration: InputDecoration(
+                      filled: true,
+                      prefixIcon: Icon(Icons.date_range),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 1.5,
+                          color: Color(0xFFD0D5DD),
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 1.5,
+                          color:
+                              Theme.of(
+                                context,
+                              ).buttonTheme.colorScheme!.primary,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                    ),
+                    controller: _dateController,
+                    onTap: selecionarData,
+                  ),
+                  SizedBox(height: 30),
+                  Text(
+                    'Sexo',
+                    style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: 15),
+                  DropdownMenu(
+                    width: 200,
+                    textStyle: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(fontSize: 14),
+                    inputDecorationTheme: InputDecorationTheme(
+                      filled: true,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                          width: 1.5,
+                          color: Color(0xFFD0D5DD),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                          width: 1.5,
+                          color:
+                              Theme.of(
+                                context,
+                              ).buttonTheme.colorScheme!.primary,
+                        ),
+                      ),
+                    ),
+
+                    initialSelection: 'masc',
+                    enableSearch: false,
+                    dropdownMenuEntries: [
+                      DropdownMenuEntry(value: 'masc', label: 'Masculino'),
+                      DropdownMenuEntry(value: 'fem', label: 'Feminino'),
+                    ],
+                    onSelected: (selecao) {},
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+          child: ElevatedButton.icon(
+            icon: Icon(Icons.add_circle_outline, color: Colors.white),
+            onPressed: () {},
+            style: ElevatedButton.styleFrom(
+              padding: EdgeInsets.symmetric(vertical: 13, horizontal: 100),
+              backgroundColor: Color(0xFF1565C0),
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+            ),
+            label: Text(
+              'Cadastrar',
+              style: Theme.of(context,).textTheme.bodyMedium?.copyWith(
+                color: Colors.white,
+                fontSize: 15
+              ),
             ),
           ),
         ),
