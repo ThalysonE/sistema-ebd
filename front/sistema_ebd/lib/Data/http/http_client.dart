@@ -4,24 +4,26 @@ import 'package:http/http.dart' as http;
 
 abstract class IHttpClient {
   Future get({required url, required token});
-  Future post({required url, required body});
+  Future post({required url, required body, String? token});
 }
 
 class HttpClient implements IHttpClient {
   final client = http.Client();
 
   Future get({required url, required token}) async {
-    return await client.get(
-      url,
-      headers: {'Authorization':'Bearer ${token}'}
-    );
+    return await client.get(url, headers: {'Authorization': 'Bearer ${token}'});
   }
- 
-  Future post({required url, required body}) async {
+
+  Future post({required url, required body, String? token}) async {
+    final header = {
+      'Content-Type': 'application/json',
+      if (token != null) 'Authorization': 'Bearer ${token}',
+    };
+    print(header);
     return await client.post(
-      Uri.parse(url),
-      body: jsonEncode(body),
-      headers: {'Content-Type': 'application/json',},
+      url, 
+      body: jsonEncode(body), 
+      headers: header
     );
   }
 }
