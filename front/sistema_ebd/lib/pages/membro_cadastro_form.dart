@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:sistema_ebd/Data/providers/membros_provider.dart';
 import 'package:sistema_ebd/utils/appbar.dart';
 import 'package:intl/intl.dart';
-
-class MembroCadastro extends StatefulWidget {
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+class MembroCadastro extends ConsumerStatefulWidget {
   const MembroCadastro({super.key});
 
   @override
-  State<MembroCadastro> createState() => _MembroCadastroState();
+  ConsumerState<MembroCadastro> createState() => _MembroCadastroState();
 }
 
-class _MembroCadastroState extends State<MembroCadastro> {
-  DateTime? dataNasc;
-  TextEditingController _dateController = TextEditingController();
+class _MembroCadastroState extends ConsumerState<MembroCadastro> {
+  final formKey = GlobalKey<FormState>();
+  TextEditingController _dataController = TextEditingController();
+  TextEditingController _nomeController = TextEditingController();
+  TextEditingController _sexoController = TextEditingController();
   @override
   void initState() {
     super.initState();
-    _dateController.text = DateFormat('dd/MM/yyy').format(DateTime.now());
+    _dataController.text = DateFormat('dd/MM/yyy').format(DateTime.now());
   }
 
   Future<void> selecionarData() async {
@@ -26,12 +29,45 @@ class _MembroCadastroState extends State<MembroCadastro> {
     );
     if (dataSelecionada != null) {
       setState(() {
-        _dateController.text =
+        _dataController.text =
             DateFormat('dd/MM/yyyy').format(dataSelecionada).toString();
       });
     }
   }
+  Future<void> cadastrarMembro() async{
+    print(_sexoController.text);
+    if(formKey.currentState!.validate()){
+      final nome = _nomeController.text;
+      final dataNasc = DateFormat('yyyy-MM-dd').format(DateFormat('dd/MM/yyyy').parse(_dataController.text));
+      final sexo = _sexoController.text;
 
+      final codigoResp = await ref.read(listaMembros.notifier).cadastrarMembro(nome: nome, dataNasc: dataNasc, sexo: sexo);
+      if(codigoResp == 201){
+        Navigator.pop(context);
+        mostrarMsg('Membro cadastrado com sucesso!', 0);
+      }else{
+        mostrarMsg('Erro ao realizar o cadastro',1);
+      }
+    }
+  }
+  mostrarMsg(String msg, int tipo){
+      return ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          duration: Duration(seconds: 2),
+          backgroundColor: tipo == 0? Colors.green: Colors.red,
+          content:Center(
+            child: Text(
+              msg,
+              style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 14
+              ),
+            ),
+          ) 
+        )
+      );
+  }
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -41,6 +77,7 @@ class _MembroCadastroState extends State<MembroCadastro> {
           child: Padding(
             padding: const EdgeInsets.only(top: 40, right: 20, left: 20),
             child: Form(
+              key: formKey,
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,6 +91,7 @@ class _MembroCadastroState extends State<MembroCadastro> {
                   ),
                   SizedBox(height: 15),
                   TextFormField(
+                    controller: _nomeController,
                     decoration: InputDecoration(
                       filled: true,
                       enabledBorder: OutlineInputBorder(
@@ -96,6 +134,12 @@ class _MembroCadastroState extends State<MembroCadastro> {
                         ),
                       ),
                     ),
+                    validator: (value){
+                      if(value == null || value.isEmpty){
+                        return 'O nome deve ter mais de 3 caracteres';
+                      }
+                      return null;
+                    },
                   ),
                   SizedBox(height: 30),
                   Text(
@@ -130,7 +174,7 @@ class _MembroCadastroState extends State<MembroCadastro> {
                       ),
                       floatingLabelBehavior: FloatingLabelBehavior.never,
                     ),
-                    controller: _dateController,
+                    controller: _dataController,
                     onTap: selecionarData,
                   ),
                   SizedBox(height: 30),
@@ -143,6 +187,7 @@ class _MembroCadastroState extends State<MembroCadastro> {
                   ),
                   SizedBox(height: 15),
                   DropdownMenu(
+                    controller: _sexoController,
                     width: 200,
                     textStyle: Theme.of(
                       context,
@@ -167,7 +212,6 @@ class _MembroCadastroState extends State<MembroCadastro> {
                         ),
                       ),
                     ),
-
                     initialSelection: 'masc',
                     enableSearch: false,
                     dropdownMenuEntries: [
@@ -185,7 +229,7 @@ class _MembroCadastroState extends State<MembroCadastro> {
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
           child: ElevatedButton.icon(
             icon: Icon(Icons.add_circle_outline, color: Colors.white),
-            onPressed: () {},
+            onPressed: cadastrarMembro,
             style: ElevatedButton.styleFrom(
               padding: EdgeInsets.symmetric(vertical: 13, horizontal: 100),
               backgroundColor: Color(0xFF1565C0),
