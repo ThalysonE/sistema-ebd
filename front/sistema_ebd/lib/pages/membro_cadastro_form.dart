@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sistema_ebd/Data/providers/membros_provider.dart';
-import 'package:sistema_ebd/utils/appbar.dart';
+import 'package:sistema_ebd/Widgets/appbar.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 class MembroCadastro extends ConsumerStatefulWidget {
@@ -46,7 +46,7 @@ class _MembroCadastroState extends ConsumerState<MembroCadastro> {
         Navigator.pop(context);
         mostrarMsg('Membro cadastrado com sucesso!', 0);
       }else{
-        mostrarMsg('Erro ao realizar o cadastro',1);
+        mostrarMsg('Erro ao realizar o cadastro', 1);
       }
     }
   }
@@ -218,7 +218,9 @@ class _MembroCadastroState extends ConsumerState<MembroCadastro> {
                       DropdownMenuEntry(value: 'masc', label: 'Masculino'),
                       DropdownMenuEntry(value: 'fem', label: 'Feminino'),
                     ],
-                    onSelected: (selecao) {},
+                    onSelected: (selecao) {
+                      
+                    },
                   ),
                 ],
               ),

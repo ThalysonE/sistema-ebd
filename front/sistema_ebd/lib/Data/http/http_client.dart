@@ -11,7 +11,10 @@ class HttpClient implements IHttpClient {
   final client = http.Client();
 
   Future get({required url, required token}) async {
-    return await client.get(url, headers: {'Authorization': 'Bearer ${token}'});
+    return await client.get(
+      url, 
+      headers: {'Authorization': 'Bearer ${token}'}
+    );
   }
 
   Future post({required url, required body, String? token}) async {
@@ -19,7 +22,6 @@ class HttpClient implements IHttpClient {
       'Content-Type': 'application/json',
       if (token != null) 'Authorization': 'Bearer ${token}',
     };
-    print(header);
     return await client.post(
       url, 
       body: jsonEncode(body), 

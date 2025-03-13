@@ -17,7 +17,6 @@ class AuthUsuario extends StateNotifier<UsuarioLogado>{
   final LoginRepository repository;
   AuthUsuario({required this.repository}): super(UsuarioLogado('', ''));
 
-  late String erro;
   Future login(String usuario, String senha) async{
     try{
       dynamic resposta = await repository.authLogin(login: usuario, senha: senha);
@@ -28,7 +27,7 @@ class AuthUsuario extends StateNotifier<UsuarioLogado>{
       await Future.delayed(Duration(milliseconds: 500));
       return resposta.statusCode; 
     }catch(e){
-      erro = e.toString();
+      print('Erro no provider Login: ${e.toString()}');
       return null;
     }
   }

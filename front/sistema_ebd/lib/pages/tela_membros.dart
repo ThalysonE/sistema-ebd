@@ -5,8 +5,7 @@ import 'package:sistema_ebd/Data/providers/membros_provider.dart';
 import 'package:sistema_ebd/Data/variaveisGlobais/variaveis_globais.dart';
 import 'package:sistema_ebd/models/membro.dart';
 import 'dart:async';
-import 'package:sistema_ebd/pages/membro_cadastro_form.dart';
-import 'package:sistema_ebd/utils/appbar.dart';
+import 'package:sistema_ebd/Widgets/appbar.dart';
 
 class TelaMembros extends ConsumerStatefulWidget {
   const TelaMembros({super.key});
@@ -285,9 +284,9 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: () {
-            Navigator.push(
+            Navigator.pushNamed(
               context,
-              MaterialPageRoute(builder: (context) => MembroCadastro()),
+              '/membro/cadastro',
             );
           },
         ),

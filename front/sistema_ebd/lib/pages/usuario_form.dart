@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sistema_ebd/Data/http/http_client.dart';
 import 'package:sistema_ebd/Data/providers/usuario_provider.dart';
-import 'package:sistema_ebd/Data/repositories/login_repositories.dart';
-import 'package:sistema_ebd/pages/tela_principal.dart';
 
 class UsuarioForm extends ConsumerStatefulWidget {
   const UsuarioForm({super.key});
@@ -29,10 +26,8 @@ class _UsuarioFormState extends ConsumerState<UsuarioForm> {
     final usuarioProvider = refUser.read(usuarioLogado.notifier);
     var statusCode = await usuarioProvider.login(_login, _senha);
     if (statusCode == 200) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => TelaPrincipal()),
-      );
+      Navigator.pushReplacementNamed(
+        context, '/home');
     } else if (statusCode == 401) {
       MostrarErro('Nome de usuário ou senha inválidos.');
     } else if (statusCode == null) {
@@ -111,10 +106,7 @@ class _UsuarioFormState extends ConsumerState<UsuarioForm> {
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                           width: 1.5,
-                          color:
-                              Theme.of(
-                                context,
-                              ).buttonTheme.colorScheme!.primary,
+                          color:Theme.of(context).buttonTheme.colorScheme!.primary,
                         ),
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -303,13 +295,11 @@ class _UsuarioFormState extends ConsumerState<UsuarioForm> {
                                 ),
                               )
                               : Text(
-                                'Login',
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.bodyMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                  fontSize: 15,
+                                  'Login',
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    fontSize: 15,
                                 ),
                               ),
                     ),

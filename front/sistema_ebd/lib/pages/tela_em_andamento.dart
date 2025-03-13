@@ -16,7 +16,6 @@ class TelaEmAndamento extends StatelessWidget {
                 fontSize: 15,
                 fontWeight: FontWeight.w500
               ),
-              
             ),
         ),
       ),

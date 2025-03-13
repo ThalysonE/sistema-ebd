@@ -1,12 +1,8 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sistema_ebd/Data/providers/usuario_provider.dart';
-import 'package:sistema_ebd/Data/repositories/membros_repositories.dart';
 import 'package:sistema_ebd/models/usuario.dart';
 import 'package:sistema_ebd/pages/tela_em_andamento.dart';
-import 'package:sistema_ebd/pages/tela_membros.dart';
 
 class TelaPrincipal extends ConsumerStatefulWidget {
   const TelaPrincipal({super.key});
@@ -197,11 +193,9 @@ class _TelaPrincipalState extends ConsumerState<TelaPrincipal> {
                           highlightColor: Color.fromARGB(108, 101, 149, 231),
                           splashColor: const Color.fromARGB(108, 101, 149, 231),
                           onTap: () {
-                            Navigator.push(
+                            Navigator.pushNamed(
                               context,
-                              MaterialPageRoute(
-                                builder: (context) => TelaMembros(),
-                              ),
+                              '/membros',
                             );
                           },
                           borderRadius: BorderRadius.circular(12),
