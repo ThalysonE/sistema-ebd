@@ -254,7 +254,7 @@ class _MembroFormState extends ConsumerState<MembroForm> {
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
           child: ElevatedButton.icon(
             icon: Icon(widget.membro ==null? Icons.add_circle_outline: Icons.edit, color: Colors.white),
-            onPressed: cadastrarMembro,
+            onPressed: widget.membro ==null? cadastrarMembro: null,
             style: ElevatedButton.styleFrom(
               padding: EdgeInsets.symmetric(vertical: 13, horizontal: 100),
               backgroundColor: Color(0xFF1565C0),
