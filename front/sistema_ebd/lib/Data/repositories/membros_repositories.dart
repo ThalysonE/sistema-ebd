@@ -32,7 +32,6 @@ class MembrosRepositories implements IMembrosRepository{
       if(resposta.statusCode == 200){
         if(numeroPage == 1){
           totalMembros = body['meta']['totalCount'];
-          print(totalMembros);
         }
         body['members'].map((item){
           final Membro membro = Membro.fromMap(item);
