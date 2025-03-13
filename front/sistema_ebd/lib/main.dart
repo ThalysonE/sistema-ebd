@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sistema_ebd/pages/membro_cadastro_form.dart';
+import 'package:sistema_ebd/pages/tela_membros.dart';
+import 'package:sistema_ebd/pages/tela_principal.dart';
 import 'package:sistema_ebd/pages/usuario_form.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sistema_ebd/utils/rotas.dart';
 
-void main(List<String> args) {
+void main() {
   runApp(ProviderScope(child: MyApp()));
 }
 
@@ -34,10 +37,15 @@ class _MyAppState extends State<MyApp> {
         ),
         scaffoldBackgroundColor: Color(0xFFfaf9fe)
       ),
-      routes: {AppRotas.login: (context) => UsuarioForm()},
+      routes: {
+        AppRotas.login: (context) => UsuarioForm(),
+        AppRotas.inicio: (context)=> TelaPrincipal(),
+        AppRotas.membros:(context)=> TelaMembros(),
+        AppRotas.cadastro_membros:(context)=> MembroCadastro()
+      },
       home: Scaffold(
         backgroundColor: Colors.white,
-        body:UsuarioForm()
+        body: UsuarioForm()
       ),
     );
   }
