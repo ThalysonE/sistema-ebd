@@ -237,6 +237,7 @@ class _UsuarioFormState extends ConsumerState<UsuarioForm> {
                     onSaved: (value) {
                       _senha = value!;
                     },
+                    textInputAction: TextInputAction.done,
                   ),
                   SizedBox(height: 15),
                   Row(

@@ -30,8 +30,7 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
   @override
   void initState() {
     super.initState();
-    final membroProvider = ref.read(listaMembros);
-    if (membroProvider.isEmpty) {
+    if (ref.read(listaMembros).isEmpty) {
       ref.read(listaMembros.notifier).loadMembros(page: paginaAtual).then((_) {
         setState(() {
           isLoading = false;
@@ -41,9 +40,11 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
       isLoading = false;
     }
     _controller.addListener(() {
+      final membroProvider = ref.read(listaMembros);
       if (_controller.position.maxScrollExtent == _controller.offset) {
         if (membroProvider.length < totalMembros) {
-          fetchMembros(++paginaAtual);
+          print('Membros Provider: ${membroProvider.length} < Total Membros${totalMembros}');
+          fetchMembros(++paginaAtual);  
         } else {
           setState(() {
             novosMembros = false;

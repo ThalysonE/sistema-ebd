@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sistema_ebd/pages/membro_cadastro_form.dart';
+import 'package:sistema_ebd/pages/membro_form.dart';
 import 'package:sistema_ebd/pages/tela_membros.dart';
 import 'package:sistema_ebd/pages/tela_principal.dart';
 import 'package:sistema_ebd/pages/usuario_form.dart';
@@ -41,7 +41,7 @@ class _MyAppState extends State<MyApp> {
         AppRotas.login: (context) => UsuarioForm(),
         AppRotas.inicio: (context)=> TelaPrincipal(),
         AppRotas.membros:(context)=> TelaMembros(),
-        AppRotas.cadastro_membros:(context)=> MembroCadastro()
+        AppRotas.cadastro_membros:(context)=> MembroForm()
       },
       home: Scaffold(
         backgroundColor: Colors.white,

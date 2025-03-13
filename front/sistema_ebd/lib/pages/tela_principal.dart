@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sistema_ebd/Data/providers/usuario_provider.dart';
+import 'package:sistema_ebd/models/membro.dart';
 import 'package:sistema_ebd/models/usuario.dart';
+import 'package:sistema_ebd/pages/membro_form.dart';
 import 'package:sistema_ebd/pages/tela_em_andamento.dart';
 
 class TelaPrincipal extends ConsumerStatefulWidget {
@@ -15,6 +17,7 @@ class _TelaPrincipalState extends ConsumerState<TelaPrincipal> {
   int itemMenu = 0;
   late UsuarioLogado usuario;
 
+  
   Widget ListaOpcoes() {
     return Column(
       children: [
@@ -91,7 +94,7 @@ class _TelaPrincipalState extends ConsumerState<TelaPrincipal> {
                           highlightColor: Color.fromARGB(108, 101, 149, 231),
                           splashColor: const Color.fromARGB(108, 101, 149, 231),
                           onTap: () {
-                            print('foi');
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>MembroForm(membro: Membro(nome: 'Thalyson Elione Alves De Freitas Santos', dataDeNascimento: '2002-10-02', sexo: 'MALE'))));
                           },
                           borderRadius: BorderRadius.circular(12),
                           child: Padding(
@@ -283,6 +286,8 @@ class _TelaPrincipalState extends ConsumerState<TelaPrincipal> {
   void initState() {
     super.initState();
   }
+
+  
 
   @override
   Widget build(BuildContext context) {

@@ -3,14 +3,16 @@ import 'package:sistema_ebd/Data/providers/membros_provider.dart';
 import 'package:sistema_ebd/Widgets/appbar.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-class MembroCadastro extends ConsumerStatefulWidget {
-  const MembroCadastro({super.key});
+import 'package:sistema_ebd/models/membro.dart';
 
+class MembroForm extends ConsumerStatefulWidget {
+  const MembroForm({super.key, this.membro});
+  final Membro? membro;
   @override
-  ConsumerState<MembroCadastro> createState() => _MembroCadastroState();
+  ConsumerState<MembroForm> createState() => _MembroFormState();
 }
 
-class _MembroCadastroState extends ConsumerState<MembroCadastro> {
+class _MembroFormState extends ConsumerState<MembroForm> {
   final formKey = GlobalKey<FormState>();
   TextEditingController _dataController = TextEditingController();
   TextEditingController _nomeController = TextEditingController();
@@ -18,12 +20,22 @@ class _MembroCadastroState extends ConsumerState<MembroCadastro> {
   @override
   void initState() {
     super.initState();
-    _dataController.text = DateFormat('dd/MM/yyy').format(DateTime.now());
+    _dataController.text =
+        widget.membro == null
+            ? DateFormat('dd/MM/yyy').format(DateTime.now())
+            : DateFormat('dd/MM/yyyy').format(
+              DateFormat('yyyy-MM-dd').parse(widget.membro!.dataDeNascimento),
+            );
+    _nomeController.text = widget.membro?.nome ?? '';
   }
 
   Future<void> selecionarData() async {
     final DateTime? dataSelecionada = await showDatePicker(
       context: context,
+      initialDate:
+          widget.membro == null
+              ? DateTime.now()
+              : DateFormat('yyyy-MM-dd').parse(widget.membro!.dataDeNascimento),
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
     );
@@ -34,45 +46,58 @@ class _MembroCadastroState extends ConsumerState<MembroCadastro> {
       });
     }
   }
-  Future<void> cadastrarMembro() async{
+
+  Future<void> cadastrarMembro() async {
     print(_sexoController.text);
-    if(formKey.currentState!.validate()){
+    if (formKey.currentState!.validate()) {
       final nome = _nomeController.text;
-      final dataNasc = DateFormat('yyyy-MM-dd').format(DateFormat('dd/MM/yyyy').parse(_dataController.text));
+      final dataNasc = DateFormat(
+        'yyyy-MM-dd',
+      ).format(DateFormat('dd/MM/yyyy').parse(_dataController.text));
       final sexo = _sexoController.text;
 
-      final codigoResp = await ref.read(listaMembros.notifier).cadastrarMembro(nome: nome, dataNasc: dataNasc, sexo: sexo);
-      if(codigoResp == 201){
+      final codigoResp = await ref
+          .read(listaMembros.notifier)
+          .cadastrarMembro(nome: nome, dataNasc: dataNasc, sexo: sexo);
+      if (codigoResp == 201) {
         Navigator.pop(context);
         mostrarMsg('Membro cadastrado com sucesso!', 0);
-      }else{
+      } else {
         mostrarMsg('Erro ao realizar o cadastro', 1);
       }
     }
   }
-  mostrarMsg(String msg, int tipo){
-      return ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          duration: Duration(seconds: 2),
-          backgroundColor: tipo == 0? Colors.green: Colors.red,
-          content:Center(
-            child: Text(
-              msg,
-              style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 14
-              ),
+
+  mostrarMsg(String msg, int tipo) {
+    return ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        duration: Duration(seconds: 2),
+        backgroundColor: tipo == 0 ? Colors.green : Colors.red,
+        content: Center(
+          child: Text(
+            msg,
+            style: Theme.of(context).textTheme.labelMedium!.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
             ),
-          ) 
-        )
-      );
+          ),
+        ),
+      ),
+    );
+  }
+  @override
+  void dispose() {
+    _dataController.dispose();
+    _sexoController.dispose();
+    _nomeController.dispose();   
+    super.dispose();
   }
   @override
   Widget build(BuildContext context) {
     return Material(
       child: Scaffold(
-        appBar: CriarAppBar(context, "Adicionar Membro"),
+        appBar: CriarAppBar(context, widget.membro == null? "Adicionar Membro": "Atualizar dados"),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.only(top: 40, right: 20, left: 20),
@@ -134,8 +159,8 @@ class _MembroCadastroState extends ConsumerState<MembroCadastro> {
                         ),
                       ),
                     ),
-                    validator: (value){
-                      if(value == null || value.isEmpty){
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
                         return 'O nome deve ter mais de 3 caracteres';
                       }
                       return null;
@@ -212,15 +237,15 @@ class _MembroCadastroState extends ConsumerState<MembroCadastro> {
                         ),
                       ),
                     ),
-                    initialSelection: 'masc',
+                    initialSelection:
+                        (widget.membro == null || widget.membro?.sexo == 'MALE')
+                            ? 'masc'
+                            : 'fem',
                     enableSearch: false,
                     dropdownMenuEntries: [
                       DropdownMenuEntry(value: 'masc', label: 'Masculino'),
                       DropdownMenuEntry(value: 'fem', label: 'Feminino'),
                     ],
-                    onSelected: (selecao) {
-                      
-                    },
                   ),
                 ],
               ),
@@ -230,7 +255,7 @@ class _MembroCadastroState extends ConsumerState<MembroCadastro> {
         bottomNavigationBar: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
           child: ElevatedButton.icon(
-            icon: Icon(Icons.add_circle_outline, color: Colors.white),
+            icon: Icon(widget.membro ==null? Icons.add_circle_outline: Icons.edit, color: Colors.white),
             onPressed: cadastrarMembro,
             style: ElevatedButton.styleFrom(
               padding: EdgeInsets.symmetric(vertical: 13, horizontal: 100),
@@ -241,10 +266,10 @@ class _MembroCadastroState extends ConsumerState<MembroCadastro> {
               ),
             ),
             label: Text(
-              'Cadastrar',
-              style: Theme.of(context,).textTheme.bodyMedium?.copyWith(
+              widget.membro == null? 'Cadastrar': 'Atualizar',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Colors.white,
-                fontSize: 15
+                fontSize: 15,
               ),
             ),
           ),
