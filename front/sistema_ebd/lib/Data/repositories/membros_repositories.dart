@@ -20,7 +20,7 @@ class MembrosRepositories implements IMembrosRepository{
 
   Future<List<Membro>?> getMembros({required int numeroPage, required String token})async{
     List<Membro> membros= [];
-    final url = Uri.parse('http://192.168.0.75:3333/member').replace(
+    final url = Uri.parse(apiUrl + '/member').replace(
       queryParameters: {
         "page": numeroPage.toString(),
         "perPage": "15"
@@ -41,13 +41,13 @@ class MembrosRepositories implements IMembrosRepository{
         return membros;
      }
     } catch(e){
-      print('Erro ao fazer a requisição:${e.toString()}');
+      print('Erro ao fazer a requisição: ${e.toString()}');
     }
     return null;
   }
   Future<List<Membro>?> searchMembro({required String nome, required String token}) async{
     List<Membro> resultMembros = [];
-    final url = Uri.parse('http://192.168.0.75:3333/member').replace(
+    final url = Uri.parse(apiUrl + '/member').replace(
       queryParameters: {
         "name": nome,
       }
@@ -70,7 +70,7 @@ class MembrosRepositories implements IMembrosRepository{
   }
 
   Future<int?> CadastrarMembro({required String nome, required String dataNasc, required String sexo, required String token}) async{
-    final url = Uri.parse('http://192.168.0.75:3333/member');
+    final url = Uri.parse(apiUrl + '/member');
     final body = {
       "name": nome,
       "birthDate": dataNasc,

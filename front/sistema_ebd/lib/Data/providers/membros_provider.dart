@@ -26,7 +26,7 @@ class MembroProvider extends StateNotifier<List<Membro>>{
         state = [...state, ...membros]..sort((a,b)=>a.nome.toLowerCase().compareTo(b.nome.toLowerCase()));
       }
     }catch(e){
-      print('Erro no provider: ${e.toString()}');
+      print('Erro no provider Membros: ${e.toString()}');
     } 
   }
   Future searchMembro({required String nome}) async{
@@ -35,11 +35,11 @@ class MembroProvider extends StateNotifier<List<Membro>>{
       final membros = await repository.searchMembro(nome: nome, token: usuario.token);
       return membros;
     }catch(e){
-      print('Erro no provider: ${e.toString()}');
+      print('Erro no provider Membros: ${e.toString()}');
       return null;
     }
   }
-  Future<int?> cadastrarMembro({required nome, required dataNasc, required sexo}) async{
+  Future<int?> cadastrarMembro({required String nome, required String dataNasc, required String sexo}) async{
     final repository = MembrosRepositories(client: HttpClient());
     try{
       final codigo = await repository.CadastrarMembro(nome: nome, dataNasc: dataNasc, sexo: sexo, token: usuario.token);
@@ -50,7 +50,7 @@ class MembroProvider extends StateNotifier<List<Membro>>{
       }
       return codigo;
     }catch(e){
-      print('Erro no provider: ${e.toString()}');
+      print('Erro no provider Membros: ${e.toString()}');
       return null;
     }
 
