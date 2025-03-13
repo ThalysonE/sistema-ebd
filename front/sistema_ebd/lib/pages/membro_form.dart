@@ -23,9 +23,7 @@ class _MembroFormState extends ConsumerState<MembroForm> {
     _dataController.text =
         widget.membro == null
             ? DateFormat('dd/MM/yyy').format(DateTime.now())
-            : DateFormat('dd/MM/yyyy').format(
-              DateFormat('yyyy-MM-dd').parse(widget.membro!.dataDeNascimento),
-            );
+            : widget.membro!.dataDeNascimento;
     _nomeController.text = widget.membro?.nome ?? '';
   }
 
@@ -35,7 +33,7 @@ class _MembroFormState extends ConsumerState<MembroForm> {
       initialDate:
           widget.membro == null
               ? DateTime.now()
-              : DateFormat('yyyy-MM-dd').parse(widget.membro!.dataDeNascimento),
+              : DateTime.parse(widget.membro!.dataDeNascimento),
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
     );

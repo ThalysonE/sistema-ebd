@@ -94,7 +94,6 @@ class _TelaPrincipalState extends ConsumerState<TelaPrincipal> {
                           highlightColor: Color.fromARGB(108, 101, 149, 231),
                           splashColor: const Color.fromARGB(108, 101, 149, 231),
                           onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>MembroForm(membro: Membro(nome: 'Thalyson Elione Alves De Freitas Santos', dataDeNascimento: '2002-10-02', sexo: 'MALE'))));
                           },
                           borderRadius: BorderRadius.circular(12),
                           child: Padding(
