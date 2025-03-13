@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class Membro {
   
   String nome;
@@ -14,7 +16,7 @@ class Membro {
   factory Membro.fromMap(Map<String, dynamic> map) {
     return Membro(
       nome: map["name"],
-      dataDeNascimento: map["birthDate"],
+      dataDeNascimento:DateFormat('dd/MM/yyyy').format(DateTime.parse(map["birthDate"])),
       sexo: map["sex"],
     );
   }
