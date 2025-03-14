@@ -44,7 +44,7 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
       final membroProvider = ref.read(listaMembros);
       if (_controller.position.maxScrollExtent == _controller.offset) {
         if (membroProvider.length < totalMembros) {
-          print('Membros Provider: ${membroProvider.length} < Total Membros${totalMembros}');
+          //print('Membros Provider: ${membroProvider.length} < Total Membros${totalMembros}');
           fetchMembros(++paginaAtual);  
         } else {
           setState(() {
@@ -57,12 +57,15 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
   void searchMembro(String query) async {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(Duration(milliseconds: 700), () async {
-      List<Membro> resultado = await ref
+      List<Membro>? resultado = await ref
           .read(listaMembros.notifier)
           .searchMembro(nome: query);
-      print('Chamou');
+      pesquisando = true;
+      if(resultado == null){
+        print('Erro na pesquisa/sem internet para pesquisar');
+        return;
+      }
       setState(() {
-        pesquisando = true;
         if (resultado.isNotEmpty) {
           resultadoPesquisa = resultado;
         }
