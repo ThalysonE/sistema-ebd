@@ -21,6 +21,7 @@ dependencies:
   flutter_native_splash: ^2.4.5
   flutter_launcher_icons: ^0.14.3
   intl: ^0.20.2
+  url_launcher: ^6.3.1
   
 flutter_native_splash:
   color: "#034279"  # Cor de fundo
@@ -45,6 +46,7 @@ flutter:
     - assets/images/icone_opcoes/gerenciar_classe_icon.png
     - assets/images/icone_opcoes/gerenciar_membros_icon.png
     - assets/images/icone_opcoes/registro_aula_icon.png
+    - assets/images/github.png
 
   uses-material-design: true
 
