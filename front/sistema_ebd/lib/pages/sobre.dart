@@ -29,6 +29,12 @@ class _SobreState extends State<Sobre> {
                     padding: EdgeInsets.only(top: 10, bottom: 80, left: 25),
                     width: double.infinity,
                     decoration: BoxDecoration(
+                      border: Border(
+                        top: BorderSide(
+                          width: 1.5,
+                          color: Color.fromARGB(218, 220, 219, 228)
+                        )
+                      ),
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(30),
                         topRight: Radius.circular(30),
