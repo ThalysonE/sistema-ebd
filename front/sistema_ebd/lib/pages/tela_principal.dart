@@ -278,6 +278,107 @@ class _TelaPrincipalState extends ConsumerState<TelaPrincipal> {
             ],
           ),
         ),
+        Container(
+          padding: EdgeInsets.only(top: 20, bottom: 20, left: 28, right: 28),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Coordenação',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 14),
+              Row(
+                children: [
+                  Expanded(
+                    child: SizedBox(
+                      height: 137,
+                      child: Card(
+                        child: InkWell(
+                          highlightColor: Color.fromARGB(108, 101, 149, 231),
+                          splashColor: const Color.fromARGB(108, 101, 149, 231),
+                          onTap: () {
+                          },
+                          borderRadius: BorderRadius.circular(12),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 10,
+                              horizontal: 10,
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  'assets/images/icone_opcoes/usuarios_icon.png',
+                                  width: 63,
+                                  height: 63,
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  'Controle Usuários',
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.labelMedium?.copyWith(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: SizedBox(
+                      height: 137,
+                      child: Card(
+                        child: InkWell(
+                          highlightColor: Color.fromARGB(108, 101, 149, 231),
+                          splashColor: const Color.fromARGB(108, 101, 149, 231),
+                          onTap: () {},
+                          borderRadius: BorderRadius.circular(12),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 10,
+                              horizontal: 10,
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  'assets/images/icone_opcoes/relatorio_icon.png',
+                                  width: 63,
+                                  height: 63,
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  'Relatórios',
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.labelMedium?.copyWith(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -294,7 +395,7 @@ class _TelaPrincipalState extends ConsumerState<TelaPrincipal> {
     usuario = ref.read(usuarioLogado);
     return Material(
       child: Scaffold(
-        body:  itemMenu == 0 ? ListaOpcoes() : (itemMenu ==1)? TelaEmAndamento(): PerfilUsuario(),
+        body:  itemMenu == 0 ? SingleChildScrollView(child: ListaOpcoes()) : (itemMenu ==1)? TelaEmAndamento(): PerfilUsuario(),
         bottomNavigationBar: BottomNavigationBar(
           showSelectedLabels: false,
           showUnselectedLabels: false,

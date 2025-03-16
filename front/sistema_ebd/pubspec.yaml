@@ -46,6 +46,8 @@ flutter:
     - assets/images/icone_opcoes/gerenciar_classe_icon.png
     - assets/images/icone_opcoes/gerenciar_membros_icon.png
     - assets/images/icone_opcoes/registro_aula_icon.png
+    - assets/images/icone_opcoes/relatorio_icon.png
+    - assets/images/icone_opcoes/usuarios_icon.png
     - assets/images/github.png
 
   uses-material-design: true
