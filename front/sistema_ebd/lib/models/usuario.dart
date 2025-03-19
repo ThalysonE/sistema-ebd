@@ -3,4 +3,4 @@ class UsuarioLogado{
   String token;
 
   UsuarioLogado(this.usuario,this.token);
-}
+} 
