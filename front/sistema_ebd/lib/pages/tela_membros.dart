@@ -216,6 +216,7 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
                                 vertical: 2.5,
                                 horizontal: 5,
                               ),
+                              //outra modificação necessaria
                               decoration: BoxDecoration(
                                 border: Border.all(
                                   color: Color.fromARGB(218, 231, 230, 237),
