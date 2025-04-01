@@ -6,7 +6,7 @@ import 'package:sistema_ebd/Data/variaveisGlobais/variaveis_globais.dart';
 import 'package:sistema_ebd/models/membro.dart';
 import 'dart:async';
 import 'package:sistema_ebd/Widgets/appbar.dart';
-import 'package:sistema_ebd/pages/membro_form.dart';
+import 'package:sistema_ebd/pages/forms/membro_form.dart';
 
 class TelaMembros extends ConsumerStatefulWidget {
   const TelaMembros({super.key});

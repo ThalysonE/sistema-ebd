@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sistema_ebd/pages/membro_form.dart';
+import 'package:sistema_ebd/pages/forms/membro_form.dart';
 import 'package:sistema_ebd/pages/tela_membros.dart';
 import 'package:sistema_ebd/pages/tela_principal.dart';
-import 'package:sistema_ebd/pages/usuario_form.dart';
+import 'package:sistema_ebd/pages/forms/usuario_form.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sistema_ebd/utils/rotas.dart';
 
