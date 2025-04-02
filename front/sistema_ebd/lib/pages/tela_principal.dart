@@ -4,7 +4,7 @@ import 'package:sistema_ebd/Data/providers/usuario_provider.dart';
 import 'package:sistema_ebd/models/membro.dart';
 import 'package:sistema_ebd/models/usuario.dart';
 import 'package:sistema_ebd/pages/forms/membro_form.dart';
-import 'package:sistema_ebd/pages/forms/trimestre_form.dart';
+import 'package:sistema_ebd/pages/forms/trimestre/trimestre_form.dart';
 import 'package:sistema_ebd/pages/perfil_usuario.dart';
 import 'package:sistema_ebd/pages/tela_em_andamento.dart';
 
