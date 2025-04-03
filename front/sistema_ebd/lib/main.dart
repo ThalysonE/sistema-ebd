@@ -43,11 +43,11 @@ class _MyAppState extends State<MyApp> {
         AppRotas.membros:(context)=> TelaMembros(),
         AppRotas.cadastro_membros:(context)=> MembroForm()
       },
-      
-      home: Scaffold(
-        backgroundColor: Colors.white,
-        body: UsuarioForm()
-      ),  
+      home: TelaPrincipal(),
+      // home: Scaffold(
+      //   backgroundColor: Colors.white,
+      //   body: UsuarioForm()
+      // ),  
     );
   }
 }

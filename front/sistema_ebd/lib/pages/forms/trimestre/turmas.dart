@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sistema_ebd/Widgets/appbar.dart';
+import 'package:sistema_ebd/pages/forms/trimestre/turmas_professor.dart';
 
 class AlocacaoTurmas extends StatefulWidget {
   const AlocacaoTurmas({super.key});
@@ -57,9 +58,7 @@ class _AlocacaoTurmasState extends State<AlocacaoTurmas> {
                     value: select,
                     activeColor: Color(0xFF008000),
                     onChanged: (value) {
-                      setState(() {
-                        select = value;
-                      });
+                      
                     },
                   ),
                 ),
@@ -81,7 +80,7 @@ class _AlocacaoTurmasState extends State<AlocacaoTurmas> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => AlocacaoTurmas()),
+                  MaterialPageRoute(builder: (context) => AlocacaoProfessores()),
                 );
               },
               style: ElevatedButton.styleFrom(
