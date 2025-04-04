@@ -9,22 +9,120 @@ class AlocacaoProfessores extends StatefulWidget {
 }
 
 class _AlocacaoProfessoresState extends State<AlocacaoProfessores> {
-  bool? select = false;
-  void professores() async{
+  void professores() async {
     return showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: Text('Professores'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(title: Text('Teste'),)
-            ],
-          ),
-          actions: [
-            IconButton(onPressed: (){}, icon: Icon(Icons.delete))
-          ],
+        bool? select = false;
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              titlePadding:EdgeInsets.all(0),
+              actionsPadding: EdgeInsets.all(0),
+              title: Container(
+                padding: EdgeInsets.only(top: 15, bottom: 6),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20)
+                  )
+                ),
+                child: Text(
+                  'Professores',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelMedium!.copyWith(fontSize: 18),
+                ),
+              ),
+              content: ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: 350),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: List.generate(10, (index) {
+                      return ListTile(
+                        contentPadding: EdgeInsets.only(
+                          top: 0,
+                          bottom: 0,
+                          right: 4,
+                          left: 10,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          side: BorderSide(
+                            color:
+                                select!
+                                    ? Color(0xFF008000)
+                                    : Color.fromARGB(250, 231, 230, 237),
+                            width: 1.6,
+                          ),
+                        ),
+                        tileColor: select! ? Color(0xFFCBEFCB) : Colors.white,
+                        title: Text(
+                          'Teste',
+                          style: Theme.of(
+                            context,
+                          ).textTheme.labelMedium!.copyWith(
+                            color: select! ? Color(0xFF008000) : Colors.black,
+                            fontSize: 15,
+                          ),
+                        ),
+                        trailing: Checkbox(
+                          value: select,
+                          activeColor: Color(0xFF008000),
+                          onChanged: (value) {
+                            setState(() {
+                              select = value;
+                            });
+                          },
+                        ),
+                      );
+                    }),
+                  ),
+                ),
+              ),
+              actions: [
+                Container(
+                  padding: EdgeInsets.only(bottom: 10, top: 0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(20),
+                      bottomRight: Radius.circular(20)
+                    )
+                  ),
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: ElevatedButton(
+                      child: Text(
+                        'Finalizar',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Colors.white,
+                          fontSize: 17,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 13,
+                          horizontal: 100,
+                        ),
+                        backgroundColor: Color(0xFF1565C0),
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
         );
       },
     );

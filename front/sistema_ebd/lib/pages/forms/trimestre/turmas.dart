@@ -58,7 +58,9 @@ class _AlocacaoTurmasState extends State<AlocacaoTurmas> {
                     value: select,
                     activeColor: Color(0xFF008000),
                     onChanged: (value) {
-                      
+                      setState(() {
+                        select = value;
+                      });
                     },
                   ),
                 ),
