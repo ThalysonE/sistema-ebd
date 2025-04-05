@@ -17,40 +17,43 @@ class _AlocacaoProfessoresState extends State<AlocacaoProfessores> {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              titlePadding:EdgeInsets.all(0),
+              contentPadding:EdgeInsets.symmetric(vertical: 2, horizontal: 5),
+              titlePadding: EdgeInsets.all(0),
               actionsPadding: EdgeInsets.all(0),
               title: Container(
-                padding: EdgeInsets.only(top: 15, bottom: 6),
+                padding: EdgeInsets.only(top: 18, bottom: 6),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20)
-                  )
+                    topRight: Radius.circular(20),
+                  ),
                 ),
                 child: Text(
                   'Professores',
                   textAlign: TextAlign.center,
                   style: Theme.of(
                     context,
-                  ).textTheme.labelMedium!.copyWith(fontSize: 18),
+                  ).textTheme.labelMedium!.copyWith(fontSize: 16, fontWeight: FontWeight.w600),
                 ),
               ),
               content: ConstrainedBox(
-                constraints: BoxConstraints(maxHeight: 350),
+                constraints: BoxConstraints(maxHeight: 450, minWidth: 1000),
                 child: SingleChildScrollView(
                   child: Column(
                     children: List.generate(10, (index) {
-                      return ListTile(
-                        contentPadding: EdgeInsets.only(
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 5),
+                        padding: EdgeInsets.only(
                           top: 0,
                           bottom: 0,
-                          right: 4,
                           left: 10,
+                          right: 6,
                         ),
-                        shape: RoundedRectangleBorder(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
-                          side: BorderSide(
+                          border: Border.all(
                             color:
                                 select!
                                     ? Color(0xFF008000)
@@ -58,26 +61,67 @@ class _AlocacaoProfessoresState extends State<AlocacaoProfessores> {
                             width: 1.6,
                           ),
                         ),
-                        tileColor: select! ? Color(0xFFCBEFCB) : Colors.white,
-                        title: Text(
-                          'Teste',
-                          style: Theme.of(
-                            context,
-                          ).textTheme.labelMedium!.copyWith(
-                            color: select! ? Color(0xFF008000) : Colors.black,
-                            fontSize: 15,
-                          ),
-                        ),
-                        trailing: Checkbox(
-                          value: select,
-                          activeColor: Color(0xFF008000),
-                          onChanged: (value) {
-                            setState(() {
-                              select = value;
-                            });
-                          },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Teste',
+                              style: Theme.of(
+                                context,
+                              ).textTheme.labelMedium!.copyWith(
+                                color:
+                                    select! ? Color(0xFF008000) : Colors.black,
+                                fontSize: 15,
+                              ),
+                            ),
+                            Checkbox(
+                              value: select,
+                              activeColor: Color(0xFF008000),
+                              onChanged: (value) {
+                                setState(() {
+                                  select = value;
+                                });
+                              },
+                            ),
+                          ],
                         ),
                       );
+                      // return SizedBox(
+                      //   height: 50,
+                      //   child: ListTile(
+
+                      //     shape: RoundedRectangleBorder(
+                      //       borderRadius: BorderRadius.circular(12),
+                      //       side: BorderSide(
+                      //         color:
+                      //             select!
+                      //                 ? Color(0xFF008000)
+                      //                 : Color.fromARGB(250, 231, 230, 237),
+                      //         width: 1.6,
+                      //       ),
+                      //     ),
+                      //     tileColor: select! ? Color(0xFFCBEFCB) : Colors.white,
+                      //     title: Text(
+                      //       'Teste',
+                      //       style: Theme.of(
+                      //         context,
+                      //       ).textTheme.labelMedium!.copyWith(
+                      //         color: select! ? Color(0xFF008000) : Colors.black,
+                      //         fontSize: 15,
+
+                      //       ),
+                      //     ),
+                      //     trailing: Checkbox(
+                      //       value: select,
+                      //       activeColor: Color(0xFF008000),
+                      //       onChanged: (value) {
+                      //         setState(() {
+                      //           select = value;
+                      //         });
+                      //       },
+                      //     ),
+                      //   ),
+                      // );
                     }),
                   ),
                 ),
@@ -89,8 +133,8 @@ class _AlocacaoProfessoresState extends State<AlocacaoProfessores> {
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(20),
-                      bottomRight: Radius.circular(20)
-                    )
+                      bottomRight: Radius.circular(20),
+                    ),
                   ),
                   child: Align(
                     alignment: Alignment.center,
@@ -137,9 +181,10 @@ class _AlocacaoProfessoresState extends State<AlocacaoProfessores> {
             alignment: Alignment.center,
             child: Text(
               'Selecione as turmas que irão compor o trimestre',
+              textAlign: TextAlign.center,
               style: Theme.of(
                 context,
-              ).textTheme.labelMedium!.copyWith(fontSize: 14),
+              ).textTheme.labelMedium!.copyWith(fontSize: 13),
             ),
           ),
           SizedBox(height: 40),

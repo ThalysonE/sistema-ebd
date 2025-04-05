@@ -20,8 +20,10 @@ class _AlocacaoTurmasState extends State<AlocacaoTurmas> {
             alignment: Alignment.center,
             child: Text(
               'Selecione as turmas que irão compor o trimestre',
+              textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                fontSize: 14,
+                fontSize: 13,
+                
               ),
             ),
           ),
