@@ -79,12 +79,12 @@ class MembrosRepositories implements IMembrosRepository{
       final resposta = await client.post(url: url, body: body, token: token);
       if(resposta.statusCode == 201){
         print('Cadastro realizado com sucesso');
-        return resposta.statusCode;
       }
       else{
         print('Erro ao realizar o cadastro');
-        return resposta.statusCode;
       }
+      return resposta.statusCode;
+      
     }catch(e){
       print("Um erro ocorreu na requisição: ${e.toString()}");
       return null;
