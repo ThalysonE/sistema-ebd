@@ -116,7 +116,7 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
                   controller: _controller,
                   itemCount: membros.length + 1,
                   itemBuilder: (context, index) {
-                    if (index < membros.length) {
+                    if (index < membros.length) { 
                       final item = membros[index];
                       return Container(
                         margin: EdgeInsets.symmetric(

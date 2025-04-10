@@ -32,6 +32,7 @@ class _AlocacaoTurmasState extends State<AlocacaoTurmas> {
             child: ListView(
               children: [
                 ListTile(
+
                   contentPadding: EdgeInsets.only(
                     top: 0,
                     bottom: 0,

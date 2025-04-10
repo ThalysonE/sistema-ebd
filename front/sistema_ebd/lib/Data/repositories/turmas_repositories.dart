@@ -25,12 +25,14 @@ class TurmasRepositories extends IturmasRepository {
     List<Turma> turmas = [];
     try {
       final resposta = await client.get(url: url, token: token);
+      print('Reposta Turmas: ${resposta.statusCode}');
       if (resposta.statusCode == 200) {
         final body = jsonDecode(resposta.body);
         body['rooms'].map((turmaMap) {
           final turma = Turma.fromMap(turmaMap);
           turmas.add(turma);
         }).toList();
+        print(turmas[0].name);
         return turmas;
       }
     } catch (e) {

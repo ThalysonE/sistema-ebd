@@ -7,6 +7,7 @@ import 'package:sistema_ebd/pages/forms/membro_form.dart';
 import 'package:sistema_ebd/pages/forms/trimestre/trimestre_form.dart';
 import 'package:sistema_ebd/pages/perfil_usuario.dart';
 import 'package:sistema_ebd/pages/tela_em_andamento.dart';
+import 'package:sistema_ebd/pages/turmas.dart';
 
 class TelaPrincipal extends ConsumerStatefulWidget {
   const TelaPrincipal({super.key});
@@ -395,7 +396,7 @@ class _TelaPrincipalState extends ConsumerState<TelaPrincipal> {
             itemMenu == 0
                 ? SingleChildScrollView(child: ListaOpcoes())
                 : (itemMenu == 1)
-                ? TelaEmAndamento()
+                ? Turmas()
                 : PerfilUsuario(),
         bottomNavigationBar: BottomNavigationBar(
           //showSelectedLabels: false,

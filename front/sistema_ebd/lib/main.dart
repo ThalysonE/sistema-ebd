@@ -5,6 +5,7 @@ import 'package:sistema_ebd/pages/tela_membros.dart';
 import 'package:sistema_ebd/pages/tela_principal.dart';
 import 'package:sistema_ebd/pages/forms/usuario_form.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sistema_ebd/pages/turmas.dart';
 import 'package:sistema_ebd/utils/rotas.dart';
 
 void main() {
@@ -41,13 +42,13 @@ class _MyAppState extends State<MyApp> {
         AppRotas.login: (context) => UsuarioForm(),
         AppRotas.inicio: (context)=> TelaPrincipal(),
         AppRotas.membros:(context)=> TelaMembros(),
-        AppRotas.cadastro_membros:(context)=> MembroForm()
+        AppRotas.cadastro_membros:(context)=> MembroForm(),
+        // AppRotas.turmas:(context)=> Turmas()
       },
-      home: TelaPrincipal(),
-      // home: Scaffold(
-      //   backgroundColor: Colors.white,
-      //   body: UsuarioForm()
-      // ),  
+      home: Scaffold(
+        backgroundColor: Colors.white,
+        body: UsuarioForm()
+      ),  
     );
   }
 }
