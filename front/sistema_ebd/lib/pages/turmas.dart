@@ -5,7 +5,6 @@ import 'package:sistema_ebd/Data/providers/usuario_provider.dart';
 import 'package:sistema_ebd/Data/repositories/turmas_repositories.dart';
 import 'package:sistema_ebd/Data/variaveisGlobais/variaveis_globais.dart';
 import 'package:sistema_ebd/models/turma.dart';
-import 'package:sistema_ebd/pages/forms/turmas_form.dart';
 
 class Turmas extends ConsumerStatefulWidget {
   const Turmas({super.key});
