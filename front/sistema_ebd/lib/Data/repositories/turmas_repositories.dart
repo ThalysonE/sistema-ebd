@@ -27,7 +27,11 @@ class TurmasRepositories extends IturmasRepository {
       final resposta = await client.get(url: url, token: token);
       print('Reposta Turmas: ${resposta.statusCode}');
       if (resposta.statusCode == 200) {
+        
         final body = jsonDecode(resposta.body);
+        if(numeroPagina == 1){
+          totalTurmas = body['meta']['totalCount'];
+        }
         body['rooms'].map((turmaMap) {
           final turma = Turma.fromMap(turmaMap);
           turmas.add(turma);

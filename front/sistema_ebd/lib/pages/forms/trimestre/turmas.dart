@@ -23,7 +23,6 @@ class _AlocacaoTurmasState extends State<AlocacaoTurmas> {
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.labelMedium!.copyWith(
                 fontSize: 13,
-                
               ),
             ),
           ),
@@ -32,7 +31,6 @@ class _AlocacaoTurmasState extends State<AlocacaoTurmas> {
             child: ListView(
               children: [
                 ListTile(
-
                   contentPadding: EdgeInsets.only(
                     top: 0,
                     bottom: 0,
