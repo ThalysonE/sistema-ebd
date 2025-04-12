@@ -17,9 +17,9 @@ final listaMembros = StateNotifierProvider<MembroProvider,List<Membro>>((ref){
 class MembroProvider extends StateNotifier<List<Membro>>{
   UsuarioLogado usuario;
   MembroProvider({required this.usuario}):super([]);
-
+  final repository = MembrosRepositories();
+  
   Future loadMembros({required int page}) async{
-    final repository = MembrosRepositories(client: HttpClient());
     try{
       List<Membro>? membros = await repository.getMembros(numeroPage: page, token: usuario.token);
       if(membros != null){
@@ -30,7 +30,6 @@ class MembroProvider extends StateNotifier<List<Membro>>{
     } 
   }
   Future searchMembro({required String nome}) async{
-    final repository = MembrosRepositories(client: HttpClient());
     try{
       final membros = await repository.searchMembro(nome: nome, token: usuario.token);
       return membros;
@@ -40,7 +39,6 @@ class MembroProvider extends StateNotifier<List<Membro>>{
     }
   }
   Future<int?> cadastrarMembro({required String nome, required String dataNasc, required String sexo}) async{
-    final repository = MembrosRepositories(client: HttpClient());
     try{
       final codigo = await repository.CadastrarMembro(nome: nome, dataNasc: dataNasc, sexo: sexo, token: usuario.token);
       if(codigo == 201){

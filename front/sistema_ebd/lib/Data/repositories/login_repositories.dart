@@ -6,9 +6,7 @@ abstract class ILoginRepository {
 }
 
 class LoginRepository implements ILoginRepository{
-  final IHttpClient client;
-
-  LoginRepository({required this.client});
+  final IHttpClient client = HttpClient();
 
   @override
   Future<dynamic> authLogin({required String login, required String senha}) async {
