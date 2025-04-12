@@ -254,44 +254,70 @@ class _TurmasState extends ConsumerState<Turmas> {
             if (index < turmas!.length) {
               Turma item = turmas![index];
               return Container(
-                margin: EdgeInsets.only(bottom: 8),
-                child: ListTile(
-                  onTap: () {},
-                  shape: RoundedRectangleBorder(
+                decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
-                    side: BorderSide(
-                      color: Color.fromARGB(218, 231, 230, 237),
+                    border: Border(
+                     top: BorderSide(
                       width: 1,
+                      color: Color.fromARGB(218, 231, 230, 237)
+                     ),
+                     bottom: BorderSide(
+                      width: 1,
+                      color: Color.fromARGB(218, 231, 230, 237)
+                     ),
+                     right: BorderSide(
+                      width: 1,
+                      color: Color.fromARGB(218, 231, 230, 237)
+                     )
+                    )
+                  ),
+                margin: EdgeInsets.only(bottom: 8),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(12),
+                  onTap: (){},
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border(
+                        left: BorderSide(
+                          width: 10,
+                          color: Colors.teal
+                        )
+                      )
+                    ),
+                    child: ListTile(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            item.name,
+                            style: Theme.of(
+                              context,
+                            ).textTheme.titleMedium!.copyWith(
+                              fontSize: 15,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            'Alunos: 0',
+                            style: Theme.of(
+                              context,
+                            ).textTheme.labelMedium!.copyWith(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                              color: const Color.fromARGB(185, 0, 0, 0),
+                            ),
+                          ),
+                        ],
+                      ),
+                      tileColor: Colors.white,
+                      trailing: Icon(Icons.chevron_right, size: 32),
                     ),
                   ),
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Container(height: double.maxFinite,width: 10, color: Colors.,),
-                      Text(
-                        item.name,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.titleMedium!.copyWith(
-                          fontSize: 15,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        'Alunos: 0',
-                        style: Theme.of(
-                          context,
-                        ).textTheme.labelMedium!.copyWith(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                          color: const Color.fromARGB(185, 0, 0, 0),
-                        ),
-                      ),
-                    ],
-                  ),
-                  tileColor: Colors.white,
-                  trailing: Icon(Icons.chevron_right, size: 32),
                 ),
               );
             } else {

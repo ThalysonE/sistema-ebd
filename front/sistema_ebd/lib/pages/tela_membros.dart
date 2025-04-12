@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sistema_ebd/Data/providers/membros_provider.dart';
@@ -16,11 +15,10 @@ class TelaMembros extends ConsumerStatefulWidget {
 }
 
 class _TelaMembrosState extends ConsumerState<TelaMembros> {
-  
   ScrollController _controller = ScrollController();
   Timer? _debounce;
   bool isLoading = true;
-  bool novosMembros = true;
+  bool novosMembros = false;
   bool pesquisando = false;
   List<Membro> resultadoPesquisa = [];
   void fetchMembros(int _page) async {
@@ -28,6 +26,7 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
       setState(() {});
     });
   }
+
   @override
   void initState() {
     super.initState();
@@ -44,8 +43,13 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
       final membroProvider = ref.read(listaMembros);
       if (_controller.position.maxScrollExtent == _controller.offset) {
         if (membroProvider.length < totalMembros) {
+          if (!novosMembros) {
+            setState(() {
+              novosMembros = true;
+            });
+          }
           //print('Membros Provider: ${membroProvider.length} < Total Membros${totalMembros}');
-          fetchMembros(++paginaAtual);  
+          fetchMembros(++paginaAtual);
         } else {
           setState(() {
             novosMembros = false;
@@ -54,6 +58,7 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
       }
     });
   }
+
   void searchMembro(String query) async {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(Duration(milliseconds: 700), () async {
@@ -61,7 +66,7 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
           .read(listaMembros.notifier)
           .searchMembro(nome: query);
       pesquisando = true;
-      if(resultado == null){
+      if (resultado == null) {
         print('Erro na pesquisa/sem internet para pesquisar');
         return;
       }
@@ -75,6 +80,7 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
       });
     });
   }
+
   @override
   void dispose() {
     super.dispose();
@@ -116,7 +122,7 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
                   controller: _controller,
                   itemCount: membros.length + 1,
                   itemBuilder: (context, index) {
-                    if (index < membros.length) { 
+                    if (index < membros.length) {
                       final item = membros[index];
                       return Container(
                         margin: EdgeInsets.symmetric(
@@ -155,8 +161,15 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
                             itemBuilder:
                                 (context) => [
                                   PopupMenuItem(
-                                    onTap: (){
-                                      Navigator.push(context, MaterialPageRoute(builder: (context)=> MembroForm(membro: item)));
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (context) =>
+                                                  MembroForm(membro: item),
+                                        ),
+                                      );
                                     },
                                     value: 'editar',
                                     child: Row(
@@ -293,10 +306,7 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: () {
-            Navigator.pushNamed(
-              context,
-              '/membro/cadastro',
-            );
+            Navigator.pushNamed(context, '/membro/cadastro');
           },
         ),
       ),

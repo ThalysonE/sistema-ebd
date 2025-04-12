@@ -1,25 +1,27 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:sistema_ebd/Widgets/appbar.dart';
-import 'package:sistema_ebd/pages/forms/trimestre/turmas_professor.dart';
-
-class AlocacaoTurmas extends StatefulWidget {
-  const AlocacaoTurmas({super.key});
+class Professores extends StatefulWidget {
+  final String turma;
+  Professores({super.key, required this.turma});
 
   @override
-  State<AlocacaoTurmas> createState() => _AlocacaoTurmasState();
+  State<Professores> createState() => _ProfessoresState();
 }
 
-class _AlocacaoTurmasState extends State<AlocacaoTurmas> {
+class _ProfessoresState extends State<Professores> {
+
   bool? select = false;
-  get conteudo {
-    return Padding(
+  @override
+  Widget build(BuildContext context) {
+    final conteudo = Padding(
       padding: EdgeInsets.only(top: 30, left: 18, right: 18),
       child: Column(
         children: [
           Align(
             alignment: Alignment.center,
             child: Text(
-              'Selecione as turmas que irão compor o trimestre',
+              'Selecione os professores para a classe ${widget.turma}',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.labelMedium!.copyWith(
                 fontSize: 13,
@@ -28,8 +30,11 @@ class _AlocacaoTurmasState extends State<AlocacaoTurmas> {
           ),
           SizedBox(height: 40),
           Expanded(
+            
             child: ListView(
-              children: [
+              children: 
+              
+              [
                 ListTile(
                   contentPadding: EdgeInsets.only(
                     top: 0,
@@ -74,7 +79,7 @@ class _AlocacaoTurmasState extends State<AlocacaoTurmas> {
             alignment: Alignment.center,
             child: ElevatedButton(
               child: Text(
-                'Continuar',
+                'Alocar Professores',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Colors.white,
                   fontSize: 17,
@@ -82,10 +87,7 @@ class _AlocacaoTurmasState extends State<AlocacaoTurmas> {
                 ),
               ),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => AlocacaoProfessores()),
-                );
+                Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: 13, horizontal: 100),
@@ -101,15 +103,12 @@ class _AlocacaoTurmasState extends State<AlocacaoTurmas> {
         ],
       ),
     );
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Material(
       child: Scaffold(
-        appBar: CriarAppBar(context, 'Alocar Turmas'),
+        appBar: CriarAppBar(context,widget.turma),
         body: conteudo,
       ),
     );
+    
   }
 }
