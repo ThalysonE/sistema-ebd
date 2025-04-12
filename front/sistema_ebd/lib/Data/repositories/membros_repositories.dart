@@ -1,8 +1,4 @@
-
-
 import 'dart:convert';
-
-import 'package:dio/dio.dart';
 import 'package:sistema_ebd/Data/http/http_client.dart';
 import 'package:sistema_ebd/Data/variaveisGlobais/variaveis_globais.dart';
 
@@ -15,8 +11,8 @@ abstract class IMembrosRepository{
 
 class MembrosRepositories implements IMembrosRepository{
   
-  final IHttpClient client;
-  MembrosRepositories({required this.client});
+  final IHttpClient client = HttpClient();
+
 
   Future<List<Membro>?> getMembros({required int numeroPage, required String token})async{
     List<Membro> membros= [];

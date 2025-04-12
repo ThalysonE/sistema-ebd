@@ -15,9 +15,7 @@ abstract class IturmasRepository {
 }
 
 class TurmasRepositories extends IturmasRepository {
-  final IHttpClient client;
-  TurmasRepositories(this.client);
-
+  final IHttpClient client = HttpClient();
   Future<List<Turma>?> getTurmas(int numeroPagina, String token) async {
     final url = Uri.parse(
       apiUrl + '/room',
