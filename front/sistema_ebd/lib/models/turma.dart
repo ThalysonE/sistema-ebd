@@ -4,7 +4,7 @@ class Turma {
   String name;
   int? minAge;
   int? maxAge;
-
+  bool? selectBox = false;
   Turma({required this.name, this.minAge, this.maxAge});
   
   factory Turma.fromMap(Map<String, dynamic> map){

@@ -393,7 +393,7 @@ class _TelaPrincipalState extends ConsumerState<TelaPrincipal> {
             itemMenu == 0
                 ? SingleChildScrollView(child: ListaOpcoes())
                 : (itemMenu == 1)
-                ? Turmas()
+                ? Turmas(temCadastro: true,)
                 : PerfilUsuario(),
         bottomNavigationBar: BottomNavigationBar(
           //showSelectedLabels: false,

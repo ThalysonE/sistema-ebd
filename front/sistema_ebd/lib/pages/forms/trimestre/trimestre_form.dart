@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sistema_ebd/Widgets/appbar.dart';
 import 'package:sistema_ebd/pages/forms/trimestre/turmas.dart';
+import 'package:sistema_ebd/pages/turmas.dart';
 
 class TrimestreForm extends StatefulWidget {
   const TrimestreForm({super.key});
@@ -162,7 +163,7 @@ class _TrimestreFormState extends State<TrimestreForm> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => AlocacaoTurmas()),
+                    MaterialPageRoute(builder: (context) => Turmas(temCadastro: false)),
                   );
                 },
                 style: ElevatedButton.styleFrom(

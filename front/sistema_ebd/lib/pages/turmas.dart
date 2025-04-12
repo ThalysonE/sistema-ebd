@@ -3,10 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sistema_ebd/Data/providers/usuario_provider.dart';
 import 'package:sistema_ebd/Data/repositories/turmas_repositories.dart';
 import 'package:sistema_ebd/Data/variaveisGlobais/variaveis_globais.dart';
+import 'package:sistema_ebd/Widgets/appbar.dart';
 import 'package:sistema_ebd/models/turma.dart';
+import 'package:sistema_ebd/pages/forms/trimestre/turmas_professor.dart';
 
 class Turmas extends ConsumerStatefulWidget {
-  const Turmas({super.key});
+  final bool temCadastro;
+  Turmas({super.key, required this.temCadastro});
 
   @override
   ConsumerState<Turmas> createState() => _TurmasState();
@@ -60,6 +63,7 @@ class _TurmasState extends ConsumerState<Turmas> {
     });
   }
 
+  //colocar em outra pagina
   cadastro() {
     showDialog(
       context: context,
@@ -246,116 +250,202 @@ class _TurmasState extends ConsumerState<Turmas> {
       conteudo = Center(child: Text('Nenhuma turma cadastrada.'));
     } else {
       conteudo = Padding(
-        padding: EdgeInsets.only(top: 50, right: 15, left: 15),
-        child: ListView.builder(
-          controller: _controllerScroll,
-          itemCount: turmas!.length + 1,
-          itemBuilder: (context, index) {
-            if (index < turmas!.length) {
-              Turma item = turmas![index];
-              return Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border(
-                     top: BorderSide(
-                      width: 1,
-                      color: Color.fromARGB(218, 231, 230, 237)
-                     ),
-                     bottom: BorderSide(
-                      width: 1,
-                      color: Color.fromARGB(218, 231, 230, 237)
-                     ),
-                     right: BorderSide(
-                      width: 1,
-                      color: Color.fromARGB(218, 231, 230, 237)
-                     )
-                    )
+        padding: EdgeInsets.only(
+          top: widget.temCadastro ? 10 : 50,
+          right: 15,
+          left: 15,
+        ),
+        child: Column(
+          children: [
+            !widget.temCadastro
+                ? Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    'Selecione as turmas que irão compor o trimestre',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.labelMedium!.copyWith(fontSize: 13),
                   ),
-                margin: EdgeInsets.only(bottom: 8),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(12),
-                  onTap: (){},
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border(
-                        left: BorderSide(
-                          width: 10,
-                          color: Colors.teal
-                        )
-                      )
-                    ),
-                    child: ListTile(
-                      shape: RoundedRectangleBorder(
+                )
+                : SizedBox.shrink(),
+            SizedBox(height: 40),
+            Expanded(
+              child: ListView.builder(
+                controller: _controllerScroll,
+                itemCount: turmas!.length + 1,
+                itemBuilder: (context, index) {
+                  if (index < turmas!.length) {
+                    Turma item = turmas![index];
+                    return Container(
+                      decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
+                        border: Border(
+                          top: BorderSide(
+                            width: !item.selectBox! ? 1 : 1.6,
+                            color:
+                                !item.selectBox!
+                                    ? Color.fromARGB(218, 231, 230, 237)
+                                    : Colors.green,
+                          ),
+                          bottom: BorderSide(
+                            width: !item.selectBox! ? 1 : 1.6,
+                            color:
+                                !item.selectBox!
+                                    ? Color.fromARGB(218, 231, 230, 237)
+                                    : Colors.green,
+                          ),
+                          right: BorderSide(
+                            width: !item.selectBox! ? 1 : 1.6,
+                            color:
+                                !item.selectBox!
+                                    ? Color.fromARGB(218, 231, 230, 237)
+                                    : Colors.green,
+                          ),
+                        ),
                       ),
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            item.name,
-                            style: Theme.of(
-                              context,
-                            ).textTheme.titleMedium!.copyWith(
-                              fontSize: 15,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
+                      margin: EdgeInsets.only(bottom: 8),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(12),
+                        onTap: () {},
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border(
+                              left: BorderSide(width: 10, color: Colors.teal),
                             ),
                           ),
-                          Text(
-                            'Alunos: 0',
-                            style: Theme.of(
-                              context,
-                            ).textTheme.labelMedium!.copyWith(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w700,
-                              color: const Color.fromARGB(185, 0, 0, 0),
+                          child: ListTile(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
                             ),
+                            title: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  item.name,
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.titleMedium!.copyWith(
+                                    fontSize: 15,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                widget.temCadastro
+                                    ? Text(
+                                      'Alunos: 0',
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.labelMedium!.copyWith(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w700,
+                                        color: const Color.fromARGB(
+                                          185,
+                                          0,
+                                          0,
+                                          0,
+                                        ),
+                                      ),
+                                    )
+                                    : SizedBox.shrink(),
+                              ],
+                            ),
+                            tileColor: Colors.white,
+                            trailing:
+                                widget.temCadastro
+                                    ? Icon(Icons.chevron_right, size: 32)
+                                    : Checkbox(
+                                      value: item.selectBox,
+                                      activeColor: Color(0xFF008000),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          item.selectBox = value;
+                                        });
+                                      },
+                                    ),
                           ),
-                        ],
+                        ),
                       ),
-                      tileColor: Colors.white,
-                      trailing: Icon(Icons.chevron_right, size: 32),
-                    ),
-                  ),
-                ),
-              );
-            } else {
-              return Padding(
-                padding: EdgeInsets.all(30),
-                child: Center(
-                  child:
-                      novasTurmas
-                          ? CircularProgressIndicator()
-                          : SizedBox(height: 25),
-                ),
-              );
-            }
-          },
+                    );
+                  } else {
+                    return Padding(
+                      padding: EdgeInsets.all(30),
+                      child: Center(
+                        child:
+                            novasTurmas
+                                ? CircularProgressIndicator()
+                                : SizedBox(height: 25),
+                      ),
+                    );
+                  }
+                },
+              ),
+            ),
+          ],
         ),
       );
     }
     return Material(
       child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-          centerTitle: true,
-          title: Text(
-            'Turmas',
-            style: Theme.of(context).textTheme.titleMedium!.copyWith(
-              fontSize: 19,
-              fontWeight: FontWeight.bold,
-              color: const Color.fromARGB(242, 255, 255, 255),
-            ),
-          ),
-          actions: [
-            IconButton(
-              onPressed: cadastro,
-              icon: Icon(Icons.add, color: Colors.white),
-            ),
-          ],
-        ),
+        appBar:
+            widget.temCadastro
+                ? AppBar(
+                  backgroundColor:
+                      Theme.of(context).appBarTheme.backgroundColor,
+                  centerTitle: true,
+                  title: Text(
+                    'Turmas',
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      fontSize: 19,
+                      fontWeight: FontWeight.bold,
+                      color: const Color.fromARGB(242, 255, 255, 255),
+                    ),
+                  ),
+                  actions: [
+                    IconButton(
+                      onPressed: cadastro,
+                      icon: Icon(Icons.add, color: Colors.white),
+                    ),
+                  ],
+                )
+                : CriarAppBar(context, 'Turmas'),
         body: conteudo,
+        bottomNavigationBar:
+            !widget.temCadastro
+                ? Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 50),
+                  child: ElevatedButton(
+                    child: Text(
+                      'Continuar',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Colors.white,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AlocacaoProfessores(),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(
+                        vertical: 13,
+                        horizontal: 100,
+                      ),
+                      backgroundColor: Color(0xFF1565C0),
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                  ),
+                )
+                : SizedBox.shrink(),
       ),
     );
   }
