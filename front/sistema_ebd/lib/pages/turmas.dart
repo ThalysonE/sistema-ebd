@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sistema_ebd/Data/http/http_client.dart';
 import 'package:sistema_ebd/Data/providers/usuario_provider.dart';
 import 'package:sistema_ebd/Data/repositories/turmas_repositories.dart';
 import 'package:sistema_ebd/Data/variaveisGlobais/variaveis_globais.dart';
@@ -21,7 +20,7 @@ class _TurmasState extends ConsumerState<Turmas> {
   var conteudo;
   bool isLoading = true;
   bool novasTurmas = false;
-  final requisicaoTurmas = TurmasRepositories(HttpClient());
+  final requisicaoTurmas = TurmasRepositories();
 
   final formKey = GlobalKey<FormState>();
   TextEditingController _nomeController = TextEditingController();
@@ -31,7 +30,9 @@ class _TurmasState extends ConsumerState<Turmas> {
       usuarioLogadoUser.token,
     );
     setState(() {
-      isLoading = false;
+      if (isLoading) {
+        isLoading = false;
+      }
     });
   }
 
@@ -44,9 +45,16 @@ class _TurmasState extends ConsumerState<Turmas> {
       if (_controllerScroll.position.maxScrollExtent ==
           _controllerScroll.offset) {
         if (turmas!.length < totalTurmas) {
+          if (!novasTurmas) {
+            setState(() {
+              novasTurmas = true;
+            });
+          }
           fetchTurmas(numeroPaginaTurmas++);
         } else {
-          novasTurmas = false;
+          setState(() {
+            novasTurmas = false;
+          });
         }
       }
     });
@@ -71,13 +79,13 @@ class _TurmasState extends ConsumerState<Turmas> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 12,),
+                SizedBox(height: 12),
                 Text(
                   'Nome da turma: ',
                   style: Theme.of(context).textTheme.labelMedium!.copyWith(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: const Color.fromARGB(181, 0, 0, 0)
+                    color: const Color.fromARGB(181, 0, 0, 0),
                   ),
                 ),
                 SizedBox(height: 15),
@@ -128,6 +136,63 @@ class _TurmasState extends ConsumerState<Turmas> {
                     return null;
                   },
                 ),
+                SizedBox(height: 12),
+                Text(
+                  'Idade Mínima ',
+                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: const Color.fromARGB(181, 0, 0, 0),
+                  ),
+                ),
+                SizedBox(height: 15),
+                TextFormField(
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    filled: true,
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        width: 1.5,
+                        color: Color(0xFFD0D5DD),
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        width: 1.5,
+                        color:
+                            Theme.of(context).buttonTheme.colorScheme!.primary,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderSide: BorderSide(width: 1.5, color: Colors.red),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        width: 1.5,
+                        color:
+                            Theme.of(context).buttonTheme.colorScheme!.primary,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    label: Text(
+                      'Idade minima',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Colors.black54,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Idade Inválida';
+                    }
+                    return null;
+                  },
+                ),
               ],
             ),
           ),
@@ -152,7 +217,7 @@ class _TurmasState extends ConsumerState<Turmas> {
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Colors.white,
                     fontSize: 15,
-                    fontWeight: FontWeight.bold
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
@@ -161,6 +226,12 @@ class _TurmasState extends ConsumerState<Turmas> {
         );
       },
     );
+  }
+
+  @override
+  void dispose() {
+    _controllerScroll.dispose();
+    super.dispose();
   }
 
   @override
@@ -190,12 +261,13 @@ class _TurmasState extends ConsumerState<Turmas> {
                     borderRadius: BorderRadius.circular(12),
                     side: BorderSide(
                       color: Color.fromARGB(218, 231, 230, 237),
-                      width: 1.2,
+                      width: 1,
                     ),
                   ),
                   title: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      // Container(height: double.maxFinite,width: 10, color: Colors.,),
                       Text(
                         item.name,
                         style: Theme.of(
