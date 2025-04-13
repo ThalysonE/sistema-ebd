@@ -18,6 +18,7 @@ class Turmas extends ConsumerStatefulWidget {
 class _TurmasState extends ConsumerState<Turmas> {
   ScrollController _controllerScroll = ScrollController();
   List<Turma>? turmas = [];
+  List<Turma> listaTurmasSelecionadas = [];
   int numeroPaginaTurmas = 1;
   var usuarioLogadoUser;
   var conteudo;
@@ -232,6 +233,18 @@ class _TurmasState extends ConsumerState<Turmas> {
     );
   }
 
+  bool get temTurmaSelecionada {
+    if (turmas == null || turmas!.isEmpty) {
+      return false;
+    }
+    for (Turma turma in turmas!) {
+      if (turma.selectBox!) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   @override
   void dispose() {
     _controllerScroll.dispose();
@@ -282,21 +295,21 @@ class _TurmasState extends ConsumerState<Turmas> {
                         borderRadius: BorderRadius.circular(12),
                         border: Border(
                           top: BorderSide(
-                            width: !item.selectBox! ? 1 : 1.6,
+                            width: !item.selectBox! ? 1 : 1.5,
                             color:
                                 !item.selectBox!
                                     ? Color.fromARGB(218, 231, 230, 237)
                                     : Colors.green,
                           ),
                           bottom: BorderSide(
-                            width: !item.selectBox! ? 1 : 1.6,
+                            width: !item.selectBox! ? 1 : 1.5,
                             color:
                                 !item.selectBox!
                                     ? Color.fromARGB(218, 231, 230, 237)
                                     : Colors.green,
                           ),
                           right: BorderSide(
-                            width: !item.selectBox! ? 1 : 1.6,
+                            width: !item.selectBox! ? 1 : 1.5,
                             color:
                                 !item.selectBox!
                                     ? Color.fromARGB(218, 231, 230, 237)
@@ -307,7 +320,13 @@ class _TurmasState extends ConsumerState<Turmas> {
                       margin: EdgeInsets.only(bottom: 8),
                       child: InkWell(
                         borderRadius: BorderRadius.circular(12),
-                        onTap: () {},
+                        onTap: () {
+                          if (!widget.temCadastro) {
+                            setState(() {
+                              item.selectBox = !item.selectBox!;
+                            });
+                          }
+                        },
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
@@ -424,14 +443,30 @@ class _TurmasState extends ConsumerState<Turmas> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AlocacaoProfessores(),
-                        ),
-                      );
-                    },
+                    onPressed:
+                        temTurmaSelecionada
+                            ? () {
+                              for (Turma turma in turmas!) {
+                                if (turma.selectBox! &&
+                                    !listaTurmasSelecionadas.contains(turma)) {
+                                  listaTurmasSelecionadas.add(turma);
+                                } else if (!turma.selectBox! &&
+                                    listaTurmasSelecionadas.contains(turma)) {
+                                  listaTurmasSelecionadas.remove(turma);
+                                }
+                              }
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => AlocacaoProfessores(
+                                        turmasSelecionadas:
+                                            listaTurmasSelecionadas,
+                                      ),
+                                ),
+                              );
+                            }
+                            : null,
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.symmetric(
                         vertical: 13,

@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:sistema_ebd/Widgets/appbar.dart';
+import 'package:sistema_ebd/models/turma.dart';
 import 'package:sistema_ebd/pages/forms/trimestre/lista_professores.dart';
 
 class AlocacaoProfessores extends StatefulWidget {
-  const AlocacaoProfessores({super.key});
+  final List<Turma> turmasSelecionadas;
+  AlocacaoProfessores({super.key, required this.turmasSelecionadas});
 
   @override
   State<AlocacaoProfessores> createState() => _AlocacaoProfessoresState();
 }
 
 class _AlocacaoProfessoresState extends State<AlocacaoProfessores> {
-  void professores() async {
-    
-  }
+
 
   get conteudo {
     return Padding(
@@ -31,54 +31,82 @@ class _AlocacaoProfessoresState extends State<AlocacaoProfessores> {
           ),
           SizedBox(height: 40),
           Expanded(
-            child: ListView(
-              children: [
-                ListTile(
-                  onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>Professores(turma: 'Abraão')));
-                  },
-                  shape: RoundedRectangleBorder(
+            child: ListView.builder(
+              itemCount: widget.turmasSelecionadas.length,
+              itemBuilder: (context, index) {
+                Turma item = widget.turmasSelecionadas[index];
+                return Container(
+                  decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
-                    side: BorderSide(
-                      color: Color.fromARGB(250, 231, 230, 237),
-                      width: 1.6,
+                    border: Border(
+                      top: BorderSide(
+                        width: 1,
+                        color: Color.fromARGB(218, 231, 230, 237),
+                      ),
+                      bottom: BorderSide(
+                        width: 1,
+                        color: Color.fromARGB(218, 231, 230, 237),
+                      ),
+                      right: BorderSide(
+                        width: 1,
+                        color: Color.fromARGB(218, 231, 230, 237),
+                      ),
                     ),
                   ),
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Abraão',
-                        style: Theme.of(
-                          context,
-                        ).textTheme.titleMedium!.copyWith(
-                          fontSize: 15,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold
+                  margin: EdgeInsets.only(bottom: 8),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(12),
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>Professores(turma: item.name) ));
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border(
+                          left: BorderSide(width: 10, color: Colors.deepOrangeAccent),
                         ),
                       ),
-                      Text(
-                        'Professores: 0',
-                        style: Theme.of(
-                          context,
-                        ).textTheme.labelMedium!.copyWith(
-                          fontSize: 12,
-                          color: Colors.red,
-                          fontWeight: FontWeight.w600,
+                      child: ListTile(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
                         ),
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              item.name,
+                              style: Theme.of(
+                                context,
+                              ).textTheme.titleMedium!.copyWith(
+                                fontSize: 15,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              'Professores: 0',
+                              style: Theme.of(
+                                context,
+                              ).textTheme.labelMedium!.copyWith(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.red,
+                              ),
+                            ),
+                          ],
+                        ),
+                        tileColor: Colors.white,
+                        trailing: Icon(Icons.chevron_right, size: 32),
                       ),
-                    ],
+                    ),
                   ),
-                  tileColor: Colors.white,
-
-                  trailing: Icon(Icons.chevron_right),
-                ),
-              ],
+                );
+              },
             ),
           ),
           Align(
             alignment: Alignment.center,
-            child:  ElevatedButton(
+            child: ElevatedButton(
               child: Text(
                 'Continuar',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(

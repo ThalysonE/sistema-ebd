@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sistema_ebd/Widgets/appbar.dart';
-import 'package:sistema_ebd/pages/forms/trimestre/turmas.dart';
 import 'package:sistema_ebd/pages/turmas.dart';
 
 class TrimestreForm extends StatefulWidget {
@@ -20,6 +19,7 @@ class _TrimestreFormState extends State<TrimestreForm> {
   void initState() {
     super.initState();
     dataControllerInicio.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
+    dataControllerPrecisao.text = DateFormat('dd/MM/yyyy').format(DateTime.now().add(Duration(days: 7 * 12)));
   }
 
   Widget conteudo(context) {
@@ -163,7 +163,9 @@ class _TrimestreFormState extends State<TrimestreForm> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Turmas(temCadastro: false)),
+                    MaterialPageRoute(
+                      builder: (context) => Turmas(temCadastro: false),
+                    ),
                   );
                 },
                 style: ElevatedButton.styleFrom(
