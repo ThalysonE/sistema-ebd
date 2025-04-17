@@ -9,8 +9,8 @@ abstract class IturmasRepository {
   Future<int?> postTurmas({
     required String name,
     required String token,
-    int? minAge = null,
-    int? maxAge = null,
+    int? minAge,
+    int? maxAge,
   });
 }
 
@@ -19,7 +19,11 @@ class TurmasRepositories extends IturmasRepository {
   Future<List<Turma>?> getTurmas(int numeroPagina, String token) async {
     final url = Uri.parse(
       apiUrl + '/room',
-    ).replace(queryParameters: {'page': numeroPagina.toString()});
+    ).replace(queryParameters: {
+      'page': numeroPagina.toString(),
+      'perPage': '15'
+      }
+    );
     List<Turma> turmas = [];
     try {
       final resposta = await client.get(url: url, token: token);
@@ -46,17 +50,20 @@ class TurmasRepositories extends IturmasRepository {
   Future<int?> postTurmas({
     required String name,
     required String token,
-    int? minAge = null,
-    int? maxAge = null,
+    int? minAge,
+    int? maxAge,
   }) async {
-    final url = apiUrl + 'room';
-    final body = {'name': name, 'minAge': minAge, 'maxAge': maxAge};
+    
+
+    final url = Uri.parse(apiUrl + '/room');
+    final body = {"name": name, "minAge": minAge, "maxAge": maxAge};
+    print(body);
     try {
       final resposta = await client.post(url: url, body: body, token: token);
-      if (resposta.statusCode == 200) {
+      if (resposta.statusCode == 201) {
         print('Cadastro realizado com sucesso!');
       } else {
-        print('Erro no cadastro');
+        print('Erro no cadastro: ${resposta.statusCode}');
       }
       return resposta.statusCode;
     } catch (e) {

@@ -27,12 +27,22 @@ class _TurmasState extends ConsumerState<Turmas> {
   final requisicaoTurmas = TurmasRepositories();
 
   final formKey = GlobalKey<FormState>();
+
   TextEditingController _nomeController = TextEditingController();
+  TextEditingController _idadeMinController = TextEditingController();
+  TextEditingController _idadeMaxController = TextEditingController();
   Future<void> fetchTurmas(int numeroPag) async {
-    turmas = await requisicaoTurmas.getTurmas(
+    final fetchTurmas = await requisicaoTurmas.getTurmas(
       numeroPag,
       usuarioLogadoUser.token,
     );
+    if (fetchTurmas == null) {
+      turmas = null;
+    } else if (turmas == null) {
+      turmas = fetchTurmas;
+    } else {
+      turmas!.addAll(fetchTurmas);
+    }
     setState(() {
       if (isLoading) {
         isLoading = false;
@@ -62,6 +72,46 @@ class _TurmasState extends ConsumerState<Turmas> {
         }
       }
     });
+  }
+
+  mostrarMsg(int tipoMsg) {
+    return ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          tipoMsg == 0
+              ? 'Erro ao cadastrar a turma, tente novamente'
+              : 'Turma cadastrada com sucesso!',
+          style: TextStyle(color: tipoMsg == 0 ? Colors.red : Colors.green),
+        ),
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void postTurma() async {
+    if (formKey.currentState!.validate()) {
+      final resposta = await requisicaoTurmas.postTurmas(
+        name: _nomeController.text,
+        token: usuarioLogadoUser.token,
+        minAge:
+            _idadeMinController.text.isEmpty
+                ? null
+                : int.parse(_idadeMinController.text),
+        maxAge:
+            _idadeMaxController.text.isEmpty
+                ? null
+                : int.parse(_idadeMaxController.text),
+      );
+      if (resposta == 201) {
+        numeroPaginaTurmas = 1;
+        turmas = [];
+        fetchTurmas(numeroPaginaTurmas++);
+        mostrarMsg(1);
+      } else {
+        mostrarMsg(0);
+      }
+      Navigator.pop(context);
+    }
   }
 
   //colocar em outra pagina
@@ -152,6 +202,7 @@ class _TurmasState extends ConsumerState<Turmas> {
                 ),
                 SizedBox(height: 15),
                 TextFormField(
+                  controller: _idadeMinController,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     filled: true,
@@ -198,6 +249,64 @@ class _TurmasState extends ConsumerState<Turmas> {
                     return null;
                   },
                 ),
+                SizedBox(height: 12),
+                Text(
+                  'Idade Mínima ',
+                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: const Color.fromARGB(181, 0, 0, 0),
+                  ),
+                ),
+                SizedBox(height: 15),
+                TextFormField(
+                  controller: _idadeMaxController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    filled: true,
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        width: 1.5,
+                        color: Color(0xFFD0D5DD),
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        width: 1.5,
+                        color:
+                            Theme.of(context).buttonTheme.colorScheme!.primary,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderSide: BorderSide(width: 1.5, color: Colors.red),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        width: 1.5,
+                        color:
+                            Theme.of(context).buttonTheme.colorScheme!.primary,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    label: Text(
+                      'Idade Máxima',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Colors.black54,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Idade Inválida';
+                    }
+                    return null;
+                  },
+                ),
               ],
             ),
           ),
@@ -207,7 +316,7 @@ class _TurmasState extends ConsumerState<Turmas> {
               child: ElevatedButton.icon(
                 icon: Icon(Icons.add_circle_outline, color: Colors.white),
                 onPressed: () {
-                  Navigator.pop(context);
+                  postTurma();
                 },
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(vertical: 12, horizontal: 90),
@@ -263,145 +372,147 @@ class _TurmasState extends ConsumerState<Turmas> {
       conteudo = Center(child: Text('Nenhuma turma cadastrada.'));
     } else {
       conteudo = Padding(
-        padding: EdgeInsets.only(
-          top: widget.temCadastro ? 10 : 50,
-          right: 15,
-          left: 15,
-        ),
-        child: Column(
-          children: [
-            !widget.temCadastro
-                ? Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    'Selecione as turmas que irão compor o trimestre',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.labelMedium!.copyWith(fontSize: 13),
+        padding: EdgeInsets.only(right: 15, left: 15),
+        child: ListView.builder(
+          controller: _controllerScroll,
+          itemCount: turmas!.length + 1,
+          itemBuilder: (context, index) {
+            if (index < turmas!.length) {
+              Turma item = turmas![index];
+              if (index == 0) {
+                return Column(
+                  children: [
+                    SizedBox(height: 30),
+                    !widget.temCadastro
+                        ? Column(
+                          children: [
+                            Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                'Selecione as turmas que irão compor o trimestre',
+                                textAlign: TextAlign.center,
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.labelMedium!.copyWith(fontSize: 13),
+                              ),
+                            ),
+                            SizedBox(height: 30),
+                          ],
+                        )
+                        : SizedBox.shrink(),
+                  ],
+                );
+              } else {
+                return Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border(
+                      top: BorderSide(
+                        width: !item.selectBox! ? 1 : 1.5,
+                        color:
+                            !item.selectBox!
+                                ? Color.fromARGB(218, 231, 230, 237)
+                                : Colors.green,
+                      ),
+                      bottom: BorderSide(
+                        width: !item.selectBox! ? 1 : 1.5,
+                        color:
+                            !item.selectBox!
+                                ? Color.fromARGB(218, 231, 230, 237)
+                                : Colors.green,
+                      ),
+                      right: BorderSide(
+                        width: !item.selectBox! ? 1 : 1.5,
+                        color:
+                            !item.selectBox!
+                                ? Color.fromARGB(218, 231, 230, 237)
+                                : Colors.green,
+                      ),
+                    ),
                   ),
-                )
-                : SizedBox.shrink(),
-            SizedBox(height: 40),
-            Expanded(
-              child: ListView.builder(
-                controller: _controllerScroll,
-                itemCount: turmas!.length + 1,
-                itemBuilder: (context, index) {
-                  if (index < turmas!.length) {
-                    Turma item = turmas![index];
-                    return Container(
+                  margin: EdgeInsets.only(bottom: 8),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(12),
+                    onTap: () {
+                      if (!widget.temCadastro) {
+                        setState(() {
+                          item.selectBox = !item.selectBox!;
+                        });
+                      }
+                    },
+                    child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
                         border: Border(
-                          top: BorderSide(
-                            width: !item.selectBox! ? 1 : 1.5,
-                            color:
-                                !item.selectBox!
-                                    ? Color.fromARGB(218, 231, 230, 237)
-                                    : Colors.green,
-                          ),
-                          bottom: BorderSide(
-                            width: !item.selectBox! ? 1 : 1.5,
-                            color:
-                                !item.selectBox!
-                                    ? Color.fromARGB(218, 231, 230, 237)
-                                    : Colors.green,
-                          ),
-                          right: BorderSide(
-                            width: !item.selectBox! ? 1 : 1.5,
-                            color:
-                                !item.selectBox!
-                                    ? Color.fromARGB(218, 231, 230, 237)
-                                    : Colors.green,
-                          ),
+                          left: BorderSide(width: 10, color: Colors.teal),
                         ),
                       ),
-                      margin: EdgeInsets.only(bottom: 8),
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(12),
-                        onTap: () {
-                          if (!widget.temCadastro) {
-                            setState(() {
-                              item.selectBox = !item.selectBox!;
-                            });
-                          }
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border(
-                              left: BorderSide(width: 10, color: Colors.teal),
+                      child: ListTile(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        title: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                item.name,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.titleMedium!.copyWith(
+                                  fontSize: 15,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
-                          ),
-                          child: ListTile(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            title: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  item.name,
+                            SizedBox(width: 8),
+                            widget.temCadastro
+                                ? Text(
+                                  'Alunos: 0',
                                   style: Theme.of(
                                     context,
-                                  ).textTheme.titleMedium!.copyWith(
-                                    fontSize: 15,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
+                                  ).textTheme.labelMedium!.copyWith(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                    color: const Color.fromARGB(185, 0, 0, 0),
                                   ),
-                                ),
-                                widget.temCadastro
-                                    ? Text(
-                                      'Alunos: 0',
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.labelMedium!.copyWith(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w700,
-                                        color: const Color.fromARGB(
-                                          185,
-                                          0,
-                                          0,
-                                          0,
-                                        ),
-                                      ),
-                                    )
-                                    : SizedBox.shrink(),
-                              ],
-                            ),
-                            tileColor: Colors.white,
-                            trailing:
-                                widget.temCadastro
-                                    ? Icon(Icons.chevron_right, size: 32)
-                                    : Checkbox(
-                                      value: item.selectBox,
-                                      activeColor: Color(0xFF008000),
-                                      onChanged: (value) {
-                                        setState(() {
-                                          item.selectBox = value;
-                                        });
-                                      },
-                                    ),
-                          ),
+                                )
+                                : SizedBox.shrink(),
+                          ],
                         ),
+                        tileColor: Colors.white,
+                        trailing:
+                            widget.temCadastro
+                                ? Icon(Icons.chevron_right, size: 32)
+                                : Checkbox(
+                                  value: item.selectBox,
+                                  activeColor: Color(0xFF008000),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      item.selectBox = value;
+                                    });
+                                  },
+                                ),
                       ),
-                    );
-                  } else {
-                    return Padding(
-                      padding: EdgeInsets.all(30),
-                      child: Center(
-                        child:
-                            novasTurmas
-                                ? CircularProgressIndicator()
-                                : SizedBox(height: 25),
-                      ),
-                    );
-                  }
-                },
-              ),
-            ),
-          ],
+                    ),
+                  ),
+                );
+              }
+            } else {
+              return Padding(
+                padding: EdgeInsets.all(30),
+                child: Center(
+                  child:
+                      novasTurmas
+                          ? CircularProgressIndicator()
+                          : SizedBox(height: 25),
+                ),
+              );
+            }
+          },
         ),
       );
     }
@@ -432,50 +543,55 @@ class _TurmasState extends ConsumerState<Turmas> {
         body: conteudo,
         bottomNavigationBar:
             !widget.temCadastro
-                ? Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 50),
-                  child: ElevatedButton(
-                    child: Text(
-                      'Continuar',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.white,
-                        fontSize: 17,
-                        fontWeight: FontWeight.w600,
+                ? Container(
+                  color: Color(0xFFfaf9fe),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 50),
+                    child: ElevatedButton(
+                      child: Text(
+                        'Continuar',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Colors.white,
+                          fontSize: 17,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
-                    onPressed:
-                        temTurmaSelecionada
-                            ? () {
-                              for (Turma turma in turmas!) {
-                                if (turma.selectBox! &&
-                                    !listaTurmasSelecionadas.contains(turma)) {
-                                  listaTurmasSelecionadas.add(turma);
-                                } else if (!turma.selectBox! &&
-                                    listaTurmasSelecionadas.contains(turma)) {
-                                  listaTurmasSelecionadas.remove(turma);
+                      onPressed:
+                          temTurmaSelecionada
+                              ? () {
+                                for (Turma turma in turmas!) {
+                                  if (turma.selectBox! &&
+                                      !listaTurmasSelecionadas.contains(
+                                        turma,
+                                      )) {
+                                    listaTurmasSelecionadas.add(turma);
+                                  } else if (!turma.selectBox! &&
+                                      listaTurmasSelecionadas.contains(turma)) {
+                                    listaTurmasSelecionadas.remove(turma);
+                                  }
                                 }
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => AlocacaoProfessores(
+                                          turmasSelecionadas:
+                                              listaTurmasSelecionadas,
+                                        ),
+                                  ),
+                                );
                               }
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder:
-                                      (context) => AlocacaoProfessores(
-                                        turmasSelecionadas:
-                                            listaTurmasSelecionadas,
-                                      ),
-                                ),
-                              );
-                            }
-                            : null,
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 13,
-                        horizontal: 100,
-                      ),
-                      backgroundColor: Color(0xFF1565C0),
-                      elevation: 2,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
+                              : null,
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 13,
+                          horizontal: 100,
+                        ),
+                        backgroundColor: Color(0xFF1565C0),
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
                       ),
                     ),
                   ),

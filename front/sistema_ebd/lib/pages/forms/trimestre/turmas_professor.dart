@@ -12,8 +12,6 @@ class AlocacaoProfessores extends StatefulWidget {
 }
 
 class _AlocacaoProfessoresState extends State<AlocacaoProfessores> {
-
-
   get conteudo {
     return Padding(
       padding: EdgeInsets.only(top: 30, left: 18, right: 18),
@@ -57,13 +55,21 @@ class _AlocacaoProfessoresState extends State<AlocacaoProfessores> {
                   child: InkWell(
                     borderRadius: BorderRadius.circular(12),
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>Professores(turma: item.name) ));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Professores(turma: item.name),
+                        ),
+                      );
                     },
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
                         border: Border(
-                          left: BorderSide(width: 10, color: Colors.deepOrangeAccent),
+                          left: BorderSide(
+                            width: 10,
+                            color: Colors.deepOrangeAccent,
+                          ),
                         ),
                       ),
                       child: ListTile(
@@ -73,16 +79,20 @@ class _AlocacaoProfessoresState extends State<AlocacaoProfessores> {
                         title: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              item.name,
-                              style: Theme.of(
-                                context,
-                              ).textTheme.titleMedium!.copyWith(
-                                fontSize: 15,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
+                            Expanded(
+                              child: Text(
+                                item.name,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.titleMedium!.copyWith(
+                                  fontSize: 15,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
+                            SizedBox(width: 8),
                             Text(
                               'Professores: 0',
                               style: Theme.of(
@@ -104,8 +114,21 @@ class _AlocacaoProfessoresState extends State<AlocacaoProfessores> {
               },
             ),
           ),
-          Align(
-            alignment: Alignment.center,
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      child: Scaffold(
+        appBar: CriarAppBar(context, 'Alocar Professores'),
+        body: conteudo,
+        bottomNavigationBar: Container(
+          color: Color(0xFFfaf9fe),
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 50),
             child: ElevatedButton(
               child: Text(
                 'Continuar',
@@ -126,18 +149,7 @@ class _AlocacaoProfessoresState extends State<AlocacaoProfessores> {
               ),
             ),
           ),
-          SizedBox(height: 20),
-        ],
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      child: Scaffold(
-        appBar: CriarAppBar(context, 'Alocar Professores'),
-        body: conteudo,
+        ),
       ),
     );
   }

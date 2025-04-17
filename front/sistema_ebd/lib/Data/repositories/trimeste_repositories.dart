@@ -23,7 +23,7 @@ class TrimesteRepositories implements ITrimestreRepository {
     String dataFim,
     String tokenUser,
   ) async {
-    final url = Uri.parse(apiUrl + 'Trimester');
+    final url = Uri.parse(apiUrl + '/trimester');
     final body = {
       "title": nome,
       "year": ano,
@@ -37,7 +37,7 @@ class TrimesteRepositories implements ITrimestreRepository {
         body: body,
         token: tokenUser,
       );
-      if (resposta.statusCode == 200) {
+      if (resposta.statusCode == 201) {
         print('Cadastro de trimestre realizado com sucesso!');
       }
       return resposta.statusCode;
