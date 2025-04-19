@@ -4,6 +4,7 @@ import 'package:sistema_ebd/Data/providers/usuario_provider.dart';
 import 'package:sistema_ebd/Data/repositories/turmas_repositories.dart';
 import 'package:sistema_ebd/Data/variaveisGlobais/variaveis_globais.dart';
 import 'package:sistema_ebd/Widgets/appbar.dart';
+import 'package:sistema_ebd/Widgets/listWhell.dart';
 import 'package:sistema_ebd/models/turma.dart';
 import 'package:sistema_ebd/pages/forms/trimestre/turmas_professor.dart';
 
@@ -27,7 +28,8 @@ class _TurmasState extends ConsumerState<Turmas> {
   final requisicaoTurmas = TurmasRepositories();
 
   GlobalKey<FormState>? _formKey;
-  
+
+
   TextEditingController? _nomeController;
   TextEditingController? _idadeMinController;
   TextEditingController? _idadeMaxController;
@@ -55,12 +57,11 @@ class _TurmasState extends ConsumerState<Turmas> {
     super.initState();
     usuarioLogadoUser = ref.read(usuarioLogado);
     fetchTurmas(numeroPaginaTurmas++);
-    if(widget.temCadastro){
+    if (widget.temCadastro) {
       _formKey = GlobalKey<FormState>();
-      _nomeController= TextEditingController();
+      _nomeController = TextEditingController();
       _idadeMaxController = TextEditingController();
-      _idadeMinController= TextEditingController();
-
+      _idadeMinController = TextEditingController();
     }
     _controllerScroll.addListener(() {
       if (_controllerScroll.position.maxScrollExtent ==
@@ -121,12 +122,62 @@ class _TurmasState extends ConsumerState<Turmas> {
     }
   }
 
+  selecionarIdade(int idadeMin, TextEditingController controller) {
+    return showModalBottomSheet(
+      isDismissible: false,
+      backgroundColor: Color(0xFFececec),
+      context: context,
+      builder: (context) {
+        return Container(
+          height: 450,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Expanded(child: ListaIdade(idadeMin: idadeMin, idadeController: controller,)),
+              Align(
+                alignment: Alignment.center,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 13,
+                      horizontal: 100,
+                    ),
+                    backgroundColor: Color(0xFF1565C0),
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                  child: Text(
+                    'Escolher',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Colors.white,
+                      fontSize: 17,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 8),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   //colocar em outra pagina
   cadastro() {
     showDialog(
+      
       context: context,
+  
       builder: (context) {
         return AlertDialog(
+          
           title: Text(
             'Cadastro Turma',
             style: Theme.of(context).textTheme.titleMedium!.copyWith(
@@ -209,6 +260,13 @@ class _TurmasState extends ConsumerState<Turmas> {
                 ),
                 SizedBox(height: 15),
                 TextFormField(
+                  readOnly: true,
+                  onTap: (){
+                    if(_idadeMinController!.text.isEmpty){
+                      _idadeMinController!.text = '0';
+                    }
+                    selecionarIdade(0, _idadeMinController!);
+                  },
                   controller: _idadeMinController,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
@@ -258,7 +316,7 @@ class _TurmasState extends ConsumerState<Turmas> {
                 ),
                 SizedBox(height: 12),
                 Text(
-                  'Idade Mínima ',
+                  'Idade Maxima ',
                   style: Theme.of(context).textTheme.labelMedium!.copyWith(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
@@ -267,6 +325,13 @@ class _TurmasState extends ConsumerState<Turmas> {
                 ),
                 SizedBox(height: 15),
                 TextFormField(
+                  readOnly: true,
+                  onTap: (){
+                    if(_idadeMaxController!.text.isEmpty){
+                      _idadeMaxController!.text = '0';
+                    }
+                    selecionarIdade(int.parse(_idadeMinController!.text)+1, _idadeMaxController!);
+                  },
                   controller: _idadeMaxController,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
@@ -364,10 +429,10 @@ class _TurmasState extends ConsumerState<Turmas> {
   @override
   void dispose() {
     _controllerScroll.dispose();
-    
+
     _nomeController?.dispose();
     _idadeMaxController?.dispose();
-    _idadeMinController?.dispose();      
+    _idadeMinController?.dispose();
     super.dispose();
   }
 

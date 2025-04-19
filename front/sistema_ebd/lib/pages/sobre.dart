@@ -24,7 +24,8 @@ class _SobreState extends State<Sobre> {
           children: [
             ListTile(
               onTap: () {
-                keyScafold.currentState!.showBottomSheet((context) {
+                keyScafold.currentState!.showBottomSheet(
+                  (context) {
                   return Container(
                     padding: EdgeInsets.only(top: 10, bottom: 80, left: 25),
                     width: double.infinity,
