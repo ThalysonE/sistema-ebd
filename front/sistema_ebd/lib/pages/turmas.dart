@@ -9,14 +9,14 @@ import 'package:sistema_ebd/pages/forms/trimestre/turmas_professor.dart';
 
 class Turmas extends ConsumerStatefulWidget {
   final bool temCadastro;
-  Turmas({super.key, required this.temCadastro});
+  const Turmas({super.key, required this.temCadastro});
 
   @override
   ConsumerState<Turmas> createState() => _TurmasState();
 }
 
 class _TurmasState extends ConsumerState<Turmas> {
-  ScrollController _controllerScroll = ScrollController();
+  final ScrollController _controllerScroll = ScrollController();
   List<Turma>? turmas = [];
   List<Turma> listaTurmasSelecionadas = [];
   int numeroPaginaTurmas = 1;
@@ -26,11 +26,11 @@ class _TurmasState extends ConsumerState<Turmas> {
   bool novasTurmas = false;
   final requisicaoTurmas = TurmasRepositories();
 
-  final formKey = GlobalKey<FormState>();
-
-  TextEditingController _nomeController = TextEditingController();
-  TextEditingController _idadeMinController = TextEditingController();
-  TextEditingController _idadeMaxController = TextEditingController();
+  GlobalKey<FormState>? _formKey;
+  
+  TextEditingController? _nomeController;
+  TextEditingController? _idadeMinController;
+  TextEditingController? _idadeMaxController;
   Future<void> fetchTurmas(int numeroPag) async {
     final fetchTurmas = await requisicaoTurmas.getTurmas(
       numeroPag,
@@ -55,6 +55,13 @@ class _TurmasState extends ConsumerState<Turmas> {
     super.initState();
     usuarioLogadoUser = ref.read(usuarioLogado);
     fetchTurmas(numeroPaginaTurmas++);
+    if(widget.temCadastro){
+      _formKey = GlobalKey<FormState>();
+      _nomeController= TextEditingController();
+      _idadeMaxController = TextEditingController();
+      _idadeMinController= TextEditingController();
+
+    }
     _controllerScroll.addListener(() {
       if (_controllerScroll.position.maxScrollExtent ==
           _controllerScroll.offset) {
@@ -89,18 +96,18 @@ class _TurmasState extends ConsumerState<Turmas> {
   }
 
   void postTurma() async {
-    if (formKey.currentState!.validate()) {
+    if (_formKey!.currentState!.validate()) {
       final resposta = await requisicaoTurmas.postTurmas(
-        name: _nomeController.text,
+        name: _nomeController!.text,
         token: usuarioLogadoUser.token,
         minAge:
-            _idadeMinController.text.isEmpty
+            _idadeMinController!.text.isEmpty
                 ? null
-                : int.parse(_idadeMinController.text),
+                : int.parse(_idadeMinController!.text),
         maxAge:
-            _idadeMaxController.text.isEmpty
+            _idadeMaxController!.text.isEmpty
                 ? null
-                : int.parse(_idadeMaxController.text),
+                : int.parse(_idadeMaxController!.text),
       );
       if (resposta == 201) {
         numeroPaginaTurmas = 1;
@@ -129,7 +136,7 @@ class _TurmasState extends ConsumerState<Turmas> {
             textAlign: TextAlign.center,
           ),
           content: Form(
-            key: formKey,
+            key: _formKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -357,6 +364,10 @@ class _TurmasState extends ConsumerState<Turmas> {
   @override
   void dispose() {
     _controllerScroll.dispose();
+    
+    _nomeController?.dispose();
+    _idadeMaxController?.dispose();
+    _idadeMinController?.dispose();      
     super.dispose();
   }
 
@@ -548,14 +559,6 @@ class _TurmasState extends ConsumerState<Turmas> {
                   child: Padding(
                     padding: EdgeInsets.symmetric(vertical: 10, horizontal: 50),
                     child: ElevatedButton(
-                      child: Text(
-                        'Continuar',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.white,
-                          fontSize: 17,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
                       onPressed:
                           temTurmaSelecionada
                               ? () {
@@ -591,6 +594,14 @@ class _TurmasState extends ConsumerState<Turmas> {
                         elevation: 2,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
+                        ),
+                      ),
+                      child: Text(
+                        'Continuar',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Colors.white,
+                          fontSize: 17,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),

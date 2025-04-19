@@ -3,7 +3,7 @@ import 'package:sistema_ebd/Widgets/appbar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Sobre extends StatefulWidget {
-  Sobre({super.key});
+  const Sobre({super.key});
 
   @override
   State<Sobre> createState() => _SobreState();

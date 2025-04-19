@@ -152,14 +152,6 @@ class _TrimestreFormState extends State<TrimestreForm> {
             Align(
               alignment: Alignment.center,
               child: ElevatedButton(
-                child: Text(
-                  'Continuar',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.white,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -174,6 +166,14 @@ class _TrimestreFormState extends State<TrimestreForm> {
                   elevation: 2,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+                child: Text(
+                  'Continuar',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.white,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),

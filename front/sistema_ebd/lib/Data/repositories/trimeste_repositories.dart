@@ -23,7 +23,7 @@ class TrimesteRepositories implements ITrimestreRepository {
     String dataFim,
     String tokenUser,
   ) async {
-    final url = Uri.parse(apiUrl + '/trimester');
+    final url = Uri.parse('$apiUrl/trimester');
     final body = {
       "title": nome,
       "year": ano,

@@ -5,7 +5,7 @@ import 'package:sistema_ebd/pages/forms/trimestre/lista_professores.dart';
 
 class AlocacaoProfessores extends StatefulWidget {
   final List<Turma> turmasSelecionadas;
-  AlocacaoProfessores({super.key, required this.turmasSelecionadas});
+  const AlocacaoProfessores({super.key, required this.turmasSelecionadas});
 
   @override
   State<AlocacaoProfessores> createState() => _AlocacaoProfessoresState();
@@ -130,14 +130,6 @@ class _AlocacaoProfessoresState extends State<AlocacaoProfessores> {
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 50),
             child: ElevatedButton(
-              child: Text(
-                'Continuar',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.white,
-                  fontSize: 17,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
               onPressed: () {},
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: 13, horizontal: 100),
@@ -145,6 +137,14 @@ class _AlocacaoProfessoresState extends State<AlocacaoProfessores> {
                 elevation: 2,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
+                ),
+              ),
+              child: Text(
+                'Continuar',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Colors.white,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),

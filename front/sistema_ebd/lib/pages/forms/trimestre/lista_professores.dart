@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sistema_ebd/Widgets/appbar.dart';
 class Professores extends StatefulWidget {
   final String turma;
-  Professores({super.key, required this.turma});
+  const Professores({super.key, required this.turma});
 
   @override
   State<Professores> createState() => _ProfessoresState();
@@ -78,14 +78,6 @@ class _ProfessoresState extends State<Professores> {
           Align(
             alignment: Alignment.center,
             child: ElevatedButton(
-              child: Text(
-                'Alocar Professores',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.white,
-                  fontSize: 17,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
               onPressed: () {
                 Navigator.pop(context);
               },
@@ -95,6 +87,14 @@ class _ProfessoresState extends State<Professores> {
                 elevation: 2,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
+                ),
+              ),
+              child: Text(
+                'Alocar Professores',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Colors.white,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),

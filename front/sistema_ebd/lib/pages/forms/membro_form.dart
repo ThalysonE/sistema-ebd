@@ -14,9 +14,9 @@ class MembroForm extends ConsumerStatefulWidget {
 
 class _MembroFormState extends ConsumerState<MembroForm> {
   final formKey = GlobalKey<FormState>();
-  TextEditingController _dataController = TextEditingController();
-  TextEditingController _nomeController = TextEditingController();
-  TextEditingController _sexoController = TextEditingController();
+  final TextEditingController _dataController = TextEditingController();
+  final TextEditingController _nomeController = TextEditingController();
+  final TextEditingController _sexoController = TextEditingController();
   @override
   void initState() {
     super.initState();

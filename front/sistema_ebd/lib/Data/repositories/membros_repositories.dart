@@ -14,9 +14,10 @@ class MembrosRepositories implements IMembrosRepository{
   final IHttpClient client = HttpClient();
 
 
+  @override
   Future<List<Membro>?> getMembros({required int numeroPage, required String token})async{
     List<Membro> membros= [];
-    final url = Uri.parse(apiUrl + '/member').replace(
+    final url = Uri.parse('$apiUrl/member').replace(
       queryParameters: {
         "page": numeroPage.toString(),
         "perPage": "15"
@@ -42,7 +43,7 @@ class MembrosRepositories implements IMembrosRepository{
   }
   Future<List<Membro>?> searchMembro({required String nome, required String token}) async{
     List<Membro> resultMembros = [];
-    final url = Uri.parse(apiUrl + '/member').replace(
+    final url = Uri.parse('$apiUrl/member').replace(
       queryParameters: {
         "name": nome,
       }
@@ -65,7 +66,7 @@ class MembrosRepositories implements IMembrosRepository{
   }
 
   Future<int?> CadastrarMembro({required String nome, required String dataNasc, required String sexo, required String token}) async{
-    final url = Uri.parse(apiUrl + '/member');
+    final url = Uri.parse('$apiUrl/member');
     final body = {
       "name": nome,
       "birthDate": dataNasc,

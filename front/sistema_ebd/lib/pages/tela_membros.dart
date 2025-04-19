@@ -15,14 +15,14 @@ class TelaMembros extends ConsumerStatefulWidget {
 }
 
 class _TelaMembrosState extends ConsumerState<TelaMembros> {
-  ScrollController _controller = ScrollController();
+  final ScrollController _controller = ScrollController();
   Timer? _debounce;
   bool isLoading = true;
   bool novosMembros = false;
   bool pesquisando = false;
   List<Membro> resultadoPesquisa = [];
-  void fetchMembros(int _page) async {
-    await ref.read(listaMembros.notifier).loadMembros(page: _page).then((_) {
+  void fetchMembros(int page) async {
+    await ref.read(listaMembros.notifier).loadMembros(page: page).then((_) {
       setState(() {});
     });
   }
@@ -99,14 +99,14 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
           Container(
             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
             child: SearchBar(
-              elevation: MaterialStateProperty.all(2.3),
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              elevation: WidgetStateProperty.all(2.3),
+              shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
               onChanged: searchMembro,
               leading: Icon(Icons.search),
               hintText: 'Procurar',
-              hintStyle: MaterialStateProperty.all(
+              hintStyle: WidgetStateProperty.all(
                 Theme.of(context).textTheme.titleMedium!.copyWith(
                   fontSize: 15,
                   fontWeight: FontWeight.w500,

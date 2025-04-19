@@ -11,7 +11,7 @@ class LoginRepository implements ILoginRepository{
   @override
   Future<dynamic> authLogin({required String login, required String senha}) async {
     var dados = {'username':login.toLowerCase(),'password':senha};
-    final url = Uri.parse(apiUrl + '/auth/login');
+    final url = Uri.parse('$apiUrl/auth/login');
     try{
       final resposta = await client.post(
       url: url,
@@ -19,7 +19,7 @@ class LoginRepository implements ILoginRepository{
     );
       return resposta;
     } catch(e){
-      print('Erro ao processar a resposta: ${e}');
+      print('Erro ao processar a resposta: $e');
       return null;
     }
   }
