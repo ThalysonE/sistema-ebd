@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class ListaIdade extends StatefulWidget {
   final int idadeMin;
-  final idadeController;
-  const ListaIdade({super.key, required this.idadeMin, required this.idadeController});
+  final ValueNotifier<int> idadeAtual;
+  ListaIdade({super.key, required this.idadeMin, required this.idadeAtual});
 
   @override
   State<ListaIdade> createState() => _ListaIdadeState();
@@ -15,7 +15,7 @@ class _ListaIdadeState extends State<ListaIdade> {
   @override
   void initState() {
     super.initState();
-    _controller = FixedExtentScrollController(initialItem: widget.idadeMin == 0?int.parse(widget.idadeController.text):int.parse(widget.idadeController.text)-widget.idadeMin,);
+    _controller = FixedExtentScrollController(initialItem: widget.idadeMin == 0?widget.idadeAtual.value:widget.idadeAtual.value-widget.idadeMin,);
   }
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,9 @@ class _ListaIdadeState extends State<ListaIdade> {
             if(widget.idadeMin != 0){
               value += widget.idadeMin;
             }
-            widget.idadeController.text = value.toString();
+
+            widget.idadeAtual.value = value;
+            print(widget.idadeAtual.value);
           },
           children: [
             for (int x = widget.idadeMin; x < 100; x++)

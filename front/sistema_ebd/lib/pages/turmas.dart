@@ -29,6 +29,9 @@ class _TurmasState extends ConsumerState<Turmas> {
 
   GlobalKey<FormState>? _formKey;
 
+  //variaveis para gerenciar a idade escolhida no form 
+  ValueNotifier<int>? idadeMaxEscolhida;
+  ValueNotifier<int>? idadeMinEscolhida;
 
   TextEditingController? _nomeController;
   TextEditingController? _idadeMinController;
@@ -58,10 +61,15 @@ class _TurmasState extends ConsumerState<Turmas> {
     usuarioLogadoUser = ref.read(usuarioLogado);
     fetchTurmas(numeroPaginaTurmas++);
     if (widget.temCadastro) {
+      //controllers do form
       _formKey = GlobalKey<FormState>();
       _nomeController = TextEditingController();
       _idadeMaxController = TextEditingController();
       _idadeMinController = TextEditingController();
+
+      //variaveis da idade
+      idadeMaxEscolhida = ValueNotifier<int>(0);
+      idadeMinEscolhida = ValueNotifier<int>(0);
     }
     _controllerScroll.addListener(() {
       if (_controllerScroll.position.maxScrollExtent ==
@@ -81,7 +89,11 @@ class _TurmasState extends ConsumerState<Turmas> {
       }
     });
   }
-
+  recarregarTurmas(){
+    numeroPaginaTurmas = 1;
+    turmas = [];
+    fetchTurmas(numeroPaginaTurmas++);
+  }
   mostrarMsg(int tipoMsg) {
     return ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -122,22 +134,28 @@ class _TurmasState extends ConsumerState<Turmas> {
     }
   }
 
-  selecionarIdade(int idadeMin, TextEditingController controller) {
+  selecionarIdade(int idadeMin, int tipo) {
     return showModalBottomSheet(
-      isDismissible: false,
+      // isDismissible: false,
+      enableDrag: false,
       backgroundColor: Color(0xFFececec),
       context: context,
       builder: (context) {
         return Container(
-          height: 450,
+          height: 390,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Expanded(child: ListaIdade(idadeMin: idadeMin, idadeController: controller,)),
+              Expanded(child: ListaIdade(idadeMin: idadeMin, idadeAtual: tipo==0? idadeMinEscolhida!:idadeMaxEscolhida!,)),
               Align(
                 alignment: Alignment.center,
                 child: ElevatedButton(
                   onPressed: () {
+                    if(tipo==0){
+                      _idadeMinController!.text = idadeMinEscolhida!.value.toString();
+                    }else{
+                      _idadeMaxController!.text = idadeMaxEscolhida!.value.toString();
+                    }
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
@@ -172,12 +190,9 @@ class _TurmasState extends ConsumerState<Turmas> {
   //colocar em outra pagina
   cadastro() {
     showDialog(
-      
       context: context,
-  
       builder: (context) {
         return AlertDialog(
-          
           title: Text(
             'Cadastro Turma',
             style: Theme.of(context).textTheme.titleMedium!.copyWith(
@@ -186,200 +201,196 @@ class _TurmasState extends ConsumerState<Turmas> {
             ),
             textAlign: TextAlign.center,
           ),
-          content: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 12),
-                Text(
-                  'Nome da turma: ',
-                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: const Color.fromARGB(181, 0, 0, 0),
-                  ),
-                ),
-                SizedBox(height: 15),
-                TextFormField(
-                  controller: _nomeController,
-                  decoration: InputDecoration(
-                    filled: true,
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        width: 1.5,
-                        color: Color(0xFFD0D5DD),
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        width: 1.5,
-                        color:
-                            Theme.of(context).buttonTheme.colorScheme!.primary,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderSide: BorderSide(width: 1.5, color: Colors.red),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        width: 1.5,
-                        color:
-                            Theme.of(context).buttonTheme.colorScheme!.primary,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
-                    label: Text(
-                      'Nome da Turma',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.black54,
-                        fontWeight: FontWeight.w700,
-                      ),
+          content: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 12),
+                  Text(
+                    'Nome da turma: ',
+                    style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: const Color.fromARGB(181, 0, 0, 0),
                     ),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'O nome deve ter mais de 3 caracteres';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 12),
-                Text(
-                  'Idade Mínima ',
-                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: const Color.fromARGB(181, 0, 0, 0),
+                  SizedBox(height: 15),
+                  TextFormField(
+                    controller: _nomeController,
+                    decoration: InputDecoration(
+                      filled: true,
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 1.5,
+                          color: Color(0xFFD0D5DD),
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 1.5,
+                          color:
+                              Theme.of(context).buttonTheme.colorScheme!.primary,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(width: 1.5, color: Colors.red),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 1.5,
+                          color:
+                              Theme.of(context).buttonTheme.colorScheme!.primary,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      label: Text(
+                        'Nome da Turma',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Colors.black54,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'O nome deve ter mais de 3 caracteres';
+                      }
+                      return null;
+                    },
                   ),
-                ),
-                SizedBox(height: 15),
-                TextFormField(
-                  readOnly: true,
-                  onTap: (){
-                    if(_idadeMinController!.text.isEmpty){
-                      _idadeMinController!.text = '0';
-                    }
-                    selecionarIdade(0, _idadeMinController!);
-                  },
-                  controller: _idadeMinController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    filled: true,
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        width: 1.5,
-                        color: Color(0xFFD0D5DD),
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        width: 1.5,
-                        color:
-                            Theme.of(context).buttonTheme.colorScheme!.primary,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderSide: BorderSide(width: 1.5, color: Colors.red),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        width: 1.5,
-                        color:
-                            Theme.of(context).buttonTheme.colorScheme!.primary,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
-                    label: Text(
-                      'Idade minima',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.black54,
-                        fontWeight: FontWeight.w700,
-                      ),
+                  SizedBox(height: 12),
+                  Text(
+                    'Idade Mínima ',
+                    style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: const Color.fromARGB(181, 0, 0, 0),
                     ),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Idade Inválida';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 12),
-                Text(
-                  'Idade Maxima ',
-                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: const Color.fromARGB(181, 0, 0, 0),
+                  SizedBox(height: 15),
+                  TextFormField(
+                    readOnly: true,
+                    onTap: (){
+                      selecionarIdade(0,0);
+                    },
+                    controller: _idadeMinController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      filled: true,
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 1.5,
+                          color: Color(0xFFD0D5DD),
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 1.5,
+                          color:
+                              Theme.of(context).buttonTheme.colorScheme!.primary,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(width: 1.5, color: Colors.red),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 1.5,
+                          color:
+                              Theme.of(context).buttonTheme.colorScheme!.primary,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      label: Text(
+                        'Idade minima',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Colors.black54,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Idade Inválida';
+                      }
+                      return null;
+                    },
                   ),
-                ),
-                SizedBox(height: 15),
-                TextFormField(
-                  readOnly: true,
-                  onTap: (){
-                    if(_idadeMaxController!.text.isEmpty){
-                      _idadeMaxController!.text = '0';
-                    }
-                    selecionarIdade(int.parse(_idadeMinController!.text)+1, _idadeMaxController!);
-                  },
-                  controller: _idadeMaxController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    filled: true,
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        width: 1.5,
-                        color: Color(0xFFD0D5DD),
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        width: 1.5,
-                        color:
-                            Theme.of(context).buttonTheme.colorScheme!.primary,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderSide: BorderSide(width: 1.5, color: Colors.red),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        width: 1.5,
-                        color:
-                            Theme.of(context).buttonTheme.colorScheme!.primary,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
-                    label: Text(
-                      'Idade Máxima',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.black54,
-                        fontWeight: FontWeight.w700,
-                      ),
+                  SizedBox(height: 12),
+                  Text(
+                    'Idade Maxima ',
+                    style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: const Color.fromARGB(181, 0, 0, 0),
                     ),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Idade Inválida';
-                    }
-                    return null;
-                  },
-                ),
-              ],
+                  SizedBox(height: 15),
+                  TextFormField(
+                    readOnly: true,
+                    onTap: (){
+                      selecionarIdade(int.parse(_idadeMinController!.text)+1, 1);
+                    },
+                    controller: _idadeMaxController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      filled: true,
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 1.5,
+                          color: Color(0xFFD0D5DD),
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 1.5,
+                          color:
+                              Theme.of(context).buttonTheme.colorScheme!.primary,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(width: 1.5, color: Colors.red),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 1.5,
+                          color:
+                              Theme.of(context).buttonTheme.colorScheme!.primary,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      label: Text(
+                        'Idade Máxima',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Colors.black54,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Idade Inválida';
+                      }
+                      return null;
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
           actions: [
@@ -391,7 +402,7 @@ class _TurmasState extends ConsumerState<Turmas> {
                   postTurma();
                 },
                 style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 90),
+                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 80),
                   backgroundColor: Color(0xFF1565C0),
                   elevation: 2,
                   shape: RoundedRectangleBorder(
