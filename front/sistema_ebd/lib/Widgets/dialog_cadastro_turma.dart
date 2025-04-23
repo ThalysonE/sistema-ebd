@@ -45,7 +45,7 @@ class _CadastroDialogState extends State<CadastroDialog> {
                 : int.parse(_idadeMaxController!.text),
       );
       if (resposta == 201) {
-        widget.recarregarTurmas;
+        widget.recarregarTurmas();
         widget.mostrarMsg(1);
       } else {
         widget.mostrarMsg(0);
@@ -80,10 +80,12 @@ class _CadastroDialogState extends State<CadastroDialog> {
                     if (tipo == 0) {
                       _idadeMinController!.text =
                           idadeMinEscolhida!.value.toString();
+                      setState(() {});
                     } else {
                       _idadeMaxController!.text =
                           idadeMaxEscolhida!.value.toString();
                     }
+
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
@@ -228,8 +230,17 @@ class _CadastroDialogState extends State<CadastroDialog> {
                   selecionarIdade(0, 0);
                 },
                 controller: _idadeMinController,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: const Color.fromARGB(171, 0, 0, 0),
+                  fontWeight: FontWeight.w700,
+                  fontSize: 17,
+                ),
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
+                  hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.black54,
+                    fontWeight: FontWeight.w700,
+                  ),
                   filled: true,
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
@@ -257,17 +268,15 @@ class _CadastroDialogState extends State<CadastroDialog> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   floatingLabelBehavior: FloatingLabelBehavior.never,
-                  label: Text(
-                    'Idade minima',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.black54,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
+                  hintText: 'Idade Mínima',
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Idade Inválida';
+                  if (_idadeMinController!.text.isNotEmpty &&
+                      _idadeMaxController!.text.isNotEmpty) {
+                    if (int.parse(_idadeMaxController!.text) <
+                        int.parse(_idadeMinController!.text)) {
+                      return 'Idade mínima maior que idade máxima';
+                    }
                   }
                   return null;
                 },
@@ -285,11 +294,25 @@ class _CadastroDialogState extends State<CadastroDialog> {
               TextFormField(
                 readOnly: true,
                 onTap: () {
-                  selecionarIdade(int.parse(_idadeMinController!.text) + 1, 1);
+                  selecionarIdade(
+                    _idadeMinController!.text.isNotEmpty
+                        ? int.parse(_idadeMinController!.text) + 1
+                        : 0,
+                    1,
+                  );
                 },
                 controller: _idadeMaxController,
                 keyboardType: TextInputType.number,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: const Color.fromARGB(171, 0, 0, 0),
+                  fontWeight: FontWeight.w700,
+                  fontSize: 17,
+                ),
                 decoration: InputDecoration(
+                  hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.black54,
+                    fontWeight: FontWeight.w700,
+                  ),
                   filled: true,
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
@@ -317,17 +340,15 @@ class _CadastroDialogState extends State<CadastroDialog> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   floatingLabelBehavior: FloatingLabelBehavior.never,
-                  label: Text(
-                    'Idade Máxima',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.black54,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
+                  hintText: 'Idade Máxima',
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Idade Inválida';
+                  if (_idadeMinController!.text.isNotEmpty &&
+                      _idadeMaxController!.text.isNotEmpty) {
+                    if (int.parse(_idadeMinController!.text) >
+                        int.parse(_idadeMaxController!.text)) {
+                      return 'Idade máxima menor que idade mínima';
+                    }
                   }
                   return null;
                 },
