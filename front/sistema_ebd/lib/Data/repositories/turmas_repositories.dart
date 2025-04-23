@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/widgets.dart';
 import 'package:sistema_ebd/Data/http/http_client.dart';
 import 'package:sistema_ebd/Data/variaveisGlobais/variaveis_globais.dart';
 import 'package:sistema_ebd/models/turma.dart';
@@ -51,8 +52,28 @@ class TurmasRepositories extends IturmasRepository {
     int? maxAge,
   }) async {
     final url = Uri.parse('$apiUrl/room');
-    final body = {"name": name, "minAge": minAge, "maxAge": maxAge};
-    print(body);
+    var body;
+    if(minAge!=null && maxAge!=null){
+      body = {
+        "name": name,
+        "minAge": minAge,
+        "maxAge": maxAge
+      };
+    }else if(minAge!=null){
+      body={
+        "name": name,
+        "minAge": minAge
+      };
+    }else if(maxAge!=null){
+      body={
+        "name": name,
+        "maxAge": minAge
+      };
+    }else{
+      body ={
+        "name":name
+      };
+    }
     try {
       final resposta = await client.post(url: url, body: body, token: token);
       if (resposta.statusCode == 201) {

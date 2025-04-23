@@ -40,7 +40,6 @@ class _MyAppState extends State<MyApp> {
       routes: {
         AppRotas.login: (context) => UsuarioForm(),
         AppRotas.inicio: (context)=> TelaPrincipal(),
-        AppRotas.membros:(context)=> TelaMembros(),
         AppRotas.cadastro_membros:(context)=> MembroForm(),
         // AppRotas.turmas:(context)=> Turmas()
       },

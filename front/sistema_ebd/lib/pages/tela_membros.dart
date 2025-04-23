@@ -8,7 +8,8 @@ import 'package:sistema_ebd/Widgets/appbar.dart';
 import 'package:sistema_ebd/pages/forms/membro_form.dart';
 
 class TelaMembros extends ConsumerStatefulWidget {
-  const TelaMembros({super.key});
+  final bool temSelecao;
+  TelaMembros({super.key, required this.temSelecao});
 
   @override
   ConsumerState<TelaMembros> createState() => _TelaMembrosState();
@@ -59,6 +60,64 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
     });
   }
 
+  Widget retornaMembroItem(Membro item) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 2.5, horizontal: 5),
+      decoration: BoxDecoration(
+        border: Border.all(color: Color.fromARGB(218, 231, 230, 237), width: 1),
+        borderRadius: BorderRadius.circular(8),
+        color: Colors.white,
+      ),
+      child: ListTile(
+        contentPadding: EdgeInsets.only(left: 16, top: 4, bottom: 4, right: 10),
+        leading: Image.asset('assets/images/icon_perfil.png', width: 36),
+        title: Text(
+          item.nome,
+          style: Theme.of(context).textTheme.displayMedium?.copyWith(
+            fontWeight: FontWeight.w600,
+            fontSize: 15,
+          ),
+        ),
+        trailing:
+            widget.temSelecao == false
+                ? PopupMenuButton(
+                  itemBuilder:
+                      (context) => [
+                        PopupMenuItem(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MembroForm(membro: item),
+                              ),
+                            );
+                          },
+                          value: 'editar',
+                          child: Row(
+                            children: [
+                              Icon(Icons.edit, color: Colors.amber, size: 20),
+                              SizedBox(width: 10),
+                              Text('Editar'),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'excluir',
+                          child: Row(
+                            children: [
+                              Icon(Icons.delete, color: Colors.red, size: 20),
+                              SizedBox(width: 10),
+                              Text('Excluir'),
+                            ],
+                          ),
+                        ),
+                      ],
+                )
+                : Checkbox(value: true, onChanged: (value) {}),
+      ),
+    );
+  }
+
   void searchMembro(String query) async {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(Duration(milliseconds: 700), () async {
@@ -89,7 +148,7 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
 
   @override
   Widget build(BuildContext context) {
-    List<Membro> membros = ref.watch(listaMembros);
+    List<Membro> membros = ref.watch(listaMembros);             
     Widget conteudo;
     if (isLoading) {
       conteudo = Center(child: CircularProgressIndicator());
@@ -124,84 +183,7 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
                   itemBuilder: (context, index) {
                     if (index < membros.length) {
                       final item = membros[index];
-                      return Container(
-                        margin: EdgeInsets.symmetric(
-                          vertical: 2.5,
-                          horizontal: 5,
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Color.fromARGB(218, 231, 230, 237),
-                            width: 1,
-                          ),
-                          borderRadius: BorderRadius.circular(8),
-                          color: Colors.white,
-                        ),
-                        child: ListTile(
-                          contentPadding: EdgeInsets.only(
-                            left: 16,
-                            top: 4,
-                            bottom: 4,
-                            right: 10,
-                          ),
-                          leading: Image.asset(
-                            'assets/images/icon_perfil.png',
-                            width: 36,
-                          ),
-                          title: Text(
-                            item.nome,
-                            style: Theme.of(
-                              context,
-                            ).textTheme.displayMedium?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 15,
-                            ),
-                          ),
-                          trailing: PopupMenuButton(
-                            itemBuilder:
-                                (context) => [
-                                  PopupMenuItem(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder:
-                                              (context) =>
-                                                  MembroForm(membro: item),
-                                        ),
-                                      );
-                                    },
-                                    value: 'editar',
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.edit,
-                                          color: Colors.amber,
-                                          size: 20,
-                                        ),
-                                        SizedBox(width: 10),
-                                        Text('Editar'),
-                                      ],
-                                    ),
-                                  ),
-                                  PopupMenuItem(
-                                    value: 'excluir',
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.delete,
-                                          color: Colors.red,
-                                          size: 20,
-                                        ),
-                                        SizedBox(width: 10),
-                                        Text('Excluir'),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                          ),
-                        ),
-                      );
+                      return retornaMembroItem(item);
                     } else {
                       return Padding(
                         padding: EdgeInsets.all(30),
@@ -224,75 +206,7 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
                           itemCount: resultadoPesquisa.length,
                           itemBuilder: (context, index) {
                             final item = resultadoPesquisa[index];
-                            return Container(
-                              margin: EdgeInsets.symmetric(
-                                vertical: 2.5,
-                                horizontal: 5,
-                              ),
-                              //outra modificação necessaria
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Color.fromARGB(218, 231, 230, 237),
-                                  width: 1,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                                color: Colors.white,
-                              ),
-                              child: ListTile(
-                                contentPadding: EdgeInsets.only(
-                                  left: 16,
-                                  top: 4,
-                                  bottom: 4,
-                                  right: 10,
-                                ),
-                                leading: Image.asset(
-                                  'assets/images/icon_perfil.png',
-                                  width: 36,
-                                ),
-                                title: Text(
-                                  item.nome,
-                                  style: Theme.of(
-                                    context,
-                                  ).textTheme.displayMedium?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 15,
-                                  ),
-                                ),
-                                trailing: PopupMenuButton(
-                                  itemBuilder:
-                                      (context) => [
-                                        PopupMenuItem(
-                                          value: 'editar',
-                                          child: Row(
-                                            children: [
-                                              Icon(
-                                                Icons.edit,
-                                                color: Colors.amber,
-                                                size: 20,
-                                              ),
-                                              SizedBox(width: 10),
-                                              Text('Editar'),
-                                            ],
-                                          ),
-                                        ),
-                                        PopupMenuItem(
-                                          value: 'excluir',
-                                          child: Row(
-                                            children: [
-                                              Icon(
-                                                Icons.delete,
-                                                color: Colors.red,
-                                                size: 20,
-                                              ),
-                                              SizedBox(width: 10),
-                                              Text('Excluir'),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                ),
-                              ),
-                            );
+                            return retornaMembroItem(item);
                           },
                         ),
               ),
@@ -303,12 +217,15 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
       child: Scaffold(
         appBar: CriarAppBar(context, "Controle de Membros"),
         body: conteudo,
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          onPressed: () {
-            Navigator.pushNamed(context, '/membro/cadastro');
-          },
-        ),
+        floatingActionButton:
+            widget.temSelecao == false
+                ? FloatingActionButton(
+                  child: Icon(Icons.add),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/membro/cadastro');
+                  },
+                )
+                : null,
       ),
     );
   }
