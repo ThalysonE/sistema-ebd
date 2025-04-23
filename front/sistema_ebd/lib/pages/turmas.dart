@@ -39,6 +39,7 @@ class _TurmasState extends ConsumerState<Turmas> {
     } else {
       turmas!.addAll(fetchTurmas);
     }
+    print('teste turmas: ${turmas}');
     setState(() {
       if (isLoading) {
         isLoading = false;
@@ -69,35 +70,46 @@ class _TurmasState extends ConsumerState<Turmas> {
       }
     });
   }
-  recarregarTurmas(){
+
+  recarregarTurmas() {
     numeroPaginaTurmas = 1;
     turmas = [];
     fetchTurmas(numeroPaginaTurmas++);
+    //pq nao é necessario esse setState?
+    setState(() {});
   }
+
   mostrarMsg(int tipoMsg) {
     return ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          tipoMsg == 0
-              ? 'Erro ao cadastrar a turma, tente novamente'
-              : 'Turma cadastrada com sucesso!',
-          style: TextStyle(color: tipoMsg == 0 ? Colors.red : Colors.green),
+        content: Center(
+          child: Text(
+            tipoMsg == 0
+                ? 'Erro ao cadastrar a turma, tente novamente'
+                : 'Turma cadastrada com sucesso!',
+            style: Theme.of(context).textTheme.labelMedium!.copyWith(
+              color: Colors.white,
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
         duration: Duration(seconds: 2),
+        backgroundColor: tipoMsg == 0 ? Colors.red : Colors.green,
       ),
     );
   }
-
-  
-
-  
 
   //colocar em outra pagina
   cadastro() {
     showDialog(
       context: context,
       builder: (context) {
-        return CadastroDialog(usuarioToken: usuarioLogadoUser.token, recarregarTurmas: recarregarTurmas, mostrarMsg: mostrarMsg);
+        return CadastroDialog(
+          usuarioToken: usuarioLogadoUser.token,
+          recarregarTurmas: recarregarTurmas,
+          mostrarMsg: mostrarMsg,
+        );
       },
     );
   }
@@ -160,6 +172,108 @@ class _TurmasState extends ConsumerState<Turmas> {
                           ],
                         )
                         : SizedBox.shrink(),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border(
+                          top: BorderSide(
+                            width: !item.selectBox! ? 1 : 1.5,
+                            color:
+                                !item.selectBox!
+                                    ? Color.fromARGB(218, 231, 230, 237)
+                                    : Colors.green,
+                          ),
+                          bottom: BorderSide(
+                            width: !item.selectBox! ? 1 : 1.5,
+                            color:
+                                !item.selectBox!
+                                    ? Color.fromARGB(218, 231, 230, 237)
+                                    : Colors.green,
+                          ),
+                          right: BorderSide(
+                            width: !item.selectBox! ? 1 : 1.5,
+                            color:
+                                !item.selectBox!
+                                    ? Color.fromARGB(218, 231, 230, 237)
+                                    : Colors.green,
+                          ),
+                        ),
+                      ),
+                      margin: EdgeInsets.only(bottom: 8),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(12),
+                        onTap: () {
+                          if (!widget.temCadastro) {
+                            setState(() {
+                              item.selectBox = !item.selectBox!;
+                            });
+                          }
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border(
+                              left: BorderSide(width: 10, color: Colors.teal),
+                            ),
+                          ),
+                          child: ListTile(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            title: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    item.name,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.titleMedium!.copyWith(
+                                      fontSize: 15,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 8),
+                                widget.temCadastro
+                                    ? Text(
+                                      'Alunos: 0',
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.labelMedium!.copyWith(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w700,
+                                        color: const Color.fromARGB(
+                                          185,
+                                          0,
+                                          0,
+                                          0,
+                                        ),
+                                      ),
+                                    )
+                                    : SizedBox.shrink(),
+                              ],
+                            ),
+                            tileColor: Colors.white,
+                            trailing:
+                                widget.temCadastro
+                                    ? Icon(Icons.chevron_right, size: 32)
+                                    : Checkbox(
+                                      value: item.selectBox,
+                                      activeColor: Color(0xFF008000),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          item.selectBox = value;
+                                        });
+                                      },
+                                    ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 );
               } else {

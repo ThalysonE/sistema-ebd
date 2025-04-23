@@ -15,11 +15,10 @@ class _ListaIdadeState extends State<ListaIdade> {
   @override
   void initState() {
     super.initState();
-    _controller = FixedExtentScrollController(initialItem: widget.idadeMin == 0?widget.idadeAtual.value:widget.idadeAtual.value-widget.idadeMin,);
+    _controller = FixedExtentScrollController(initialItem: widget.idadeMin == 0? widget.idadeAtual.value:widget.idadeAtual.value-widget.idadeMin,);
   }
   @override
   Widget build(BuildContext context) {
-    print(widget.idadeMin);
     return Stack(
       children: [
         ListWheelScrollView(
