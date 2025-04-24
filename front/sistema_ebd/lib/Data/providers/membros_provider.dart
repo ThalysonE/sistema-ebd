@@ -41,6 +41,7 @@ class MembroProvider extends StateNotifier<List<Membro>>{
     try{
       final codigo = await repository.CadastrarMembro(nome: nome, dataNasc: dataNasc, sexo: sexo, token: usuario.token);
       if(codigo == 201){
+      //caso cadastre e logo dps for selecionar esse aluno no trimestre vai da erro pq n tem o id
         final novoMembro = Membro(nome: nome, dataDeNascimento: dataNasc, sexo: sexo == 'Masculino'? 'MALE': 'FEMALE');
         state = [...state, novoMembro]..sort((a,b)=>a.nome.toLowerCase().compareTo(b.nome.toLowerCase()));
         totalMembros++;

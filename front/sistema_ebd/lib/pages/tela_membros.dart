@@ -22,6 +22,7 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
   bool novosMembros = false;
   bool pesquisando = false;
   List<Membro> resultadoPesquisa = [];
+  Set<String> listaIdMembrosSelecionados = {};
   void fetchMembros(int page) async {
     await ref.read(listaMembros.notifier).loadMembros(page: page).then((_) {
       setState(() {});
@@ -113,7 +114,21 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
                         ),
                       ],
                 )
-                : Checkbox(value: true, onChanged: (value) {}),
+                : Checkbox(
+                  value: listaIdMembrosSelecionados.contains(item.id),
+                  onChanged: (value) {
+                    if (value! == true) {
+                      setState(() {
+                      listaIdMembrosSelecionados.add(item.id);
+                      });
+                    } else if (value == false) {
+                      setState(() {
+                        listaIdMembrosSelecionados.remove(item.id);
+                      });
+                    }
+                    print(listaIdMembrosSelecionados);
+                  },
+                ),
       ),
     );
   }
@@ -148,7 +163,7 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
 
   @override
   Widget build(BuildContext context) {
-    List<Membro> membros = ref.watch(listaMembros);             
+    List<Membro> membros = ref.watch(listaMembros);
     Widget conteudo;
     if (isLoading) {
       conteudo = Center(child: CircularProgressIndicator());
