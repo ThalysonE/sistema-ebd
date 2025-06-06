@@ -157,8 +157,8 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
 
   @override
   void dispose() {
-    super.dispose();
     _controller.dispose();
+    super.dispose();
   }
 
   @override

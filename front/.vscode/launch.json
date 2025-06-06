@@ -1,0 +1,28 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "sistema_ebd",
+            "cwd": "sistema_ebd",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "sistema_ebd (profile mode)",
+            "cwd": "sistema_ebd",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "sistema_ebd (release mode)",
+            "cwd": "sistema_ebd",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}
