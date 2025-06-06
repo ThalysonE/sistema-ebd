@@ -50,9 +50,8 @@ class _ProfessoresState extends ConsumerState<Professores> {
   Future<void> fetchProfessores(int page) async{
     try{
       final resposta = await requisicaoUsuario.getUsuariosRole(numeroPage: page, token: usuarioLog.token, cargo: 'TEACHER');
-      professores.addAll(resposta);
       setState(() {
-        
+        professores.addAll(resposta);
       });
     }catch(e){
       showError(e.toString());
@@ -151,6 +150,12 @@ class _ProfessoresState extends ConsumerState<Professores> {
             alignment: Alignment.center,
             child: ElevatedButton(
               onPressed: () {
+                List<String> listaIdProfessores = [];
+                for(Usuario professor in professores){
+                  if(professor.selectBox){
+                    listaIdProfessores.add(professor.memberId);
+                  }
+                }
                 Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(
