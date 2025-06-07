@@ -9,7 +9,9 @@ import 'package:sistema_ebd/models/usuarioLogado.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 class Professores extends ConsumerStatefulWidget {
   final String turma;
-  const Professores({super.key, required this.turma});
+  final List<dynamic> professoresRemover; // professores que já foram selecionados em outras turmas
+  final List<dynamic> listaProfessoresSelecionados; // professores que já foram selecionados para a turma atual
+  const Professores({super.key, required this.turma, required this.professoresRemover, required this.listaProfessoresSelecionados});
 
   @override
   ConsumerState<Professores> createState() => _ProfessoresState();
@@ -49,10 +51,18 @@ class _ProfessoresState extends ConsumerState<Professores> {
   }
   Future<void> fetchProfessores(int page) async{
     try{
-      final resposta = await requisicaoUsuario.getUsuariosRole(numeroPage: page, token: usuarioLog.token, cargo: 'TEACHER');
-      setState(() {
-        professores.addAll(resposta);
-      });
+      List<Usuario> resposta = await requisicaoUsuario.getUsuariosRole(numeroPage: page, token: usuarioLog.token, cargo: 'TEACHER');
+      if(!resposta.isEmpty){
+        resposta.removeWhere((item)=> widget.professoresRemover.contains(item.memberId));
+        for(final item in resposta){
+          if(widget.listaProfessoresSelecionados.contains(item.memberId)){
+            item.selectBox = true;
+          }
+        }
+        setState(() {
+          professores.addAll(resposta);
+        });
+      }
     }catch(e){
       showError(e.toString());
     }
@@ -94,42 +104,47 @@ class _ProfessoresState extends ConsumerState<Professores> {
               itemBuilder: (context,index){
                 if(index< professores.length){
                   Usuario usuario = professores[index];
-                  return ListTile(
-                  contentPadding: EdgeInsets.only(
-                    top: 0,
-                    bottom: 0,
-                    right: 4,
-                    left: 10,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    side: BorderSide(
-                      color:
-                          usuario.selectBox
-                              ? Color(0xFF008000)
-                              : Color.fromARGB(250, 231, 230, 237),
-                      width: 1.6,
+                  return Container(
+                    margin: EdgeInsets.only(bottom: 4),
+                    child: ListTile(
+                    contentPadding: EdgeInsets.only(
+                      top: 0,
+                      bottom: 0,
+                      right: 4,
+                      left: 10,
                     ),
-                  ),
-                  tileColor: usuario.selectBox ? Color(0xFFCBEFCB) : Colors.white,
-                  title: Text(
-                    usuario.userName,
-                    style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                      color: usuario.selectBox ? Color(0xFF008000) : Colors.black,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold
+                    shape: RoundedRectangleBorder(
+                      
+                      borderRadius: BorderRadius.circular(12),
+                      side: BorderSide(
+                        color:
+                            usuario.selectBox
+                                ? Color(0xFF008000)
+                                : Color.fromARGB(250, 231, 230, 237),
+                        width: 1.6,
+                      ),
+                      
                     ),
-                  ),
-                  trailing: Checkbox(
-                    value: usuario.selectBox,
-                    activeColor: Color(0xFF008000),
-                    onChanged: (value) {
-                      setState(() {
-                        usuario.selectBox = value!;
-                      });
-                    },
-                  ),
-                );
+                    tileColor: usuario.selectBox ? Color(0xFFCBEFCB) : Colors.white,
+                    title: Text(
+                      usuario.userName,
+                      style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                        color: usuario.selectBox ? Color(0xFF008000) : Colors.black,
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold
+                      ),
+                    ),
+                    trailing: Checkbox(
+                      value: usuario.selectBox,
+                      activeColor: Color(0xFF008000),
+                      onChanged: (value) {
+                        setState(() {
+                          usuario.selectBox = value!;
+                        });
+                      },
+                    ),
+                                    ),
+                  );
                 }else{
                   return Padding(
                     padding: EdgeInsets.all(30),
@@ -156,7 +171,7 @@ class _ProfessoresState extends ConsumerState<Professores> {
                     listaIdProfessores.add(professor.memberId);
                   }
                 }
-                Navigator.pop(context);
+                Navigator.pop(context, listaIdProfessores);
               },
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: 13, horizontal: 100),
@@ -180,10 +195,13 @@ class _ProfessoresState extends ConsumerState<Professores> {
         ],
       ),
     );
+    final msgVazio = Center(
+      child: Text('Nenhum professor encontrado')
+    );
     return Material(
       child: Scaffold(
         appBar: CriarAppBar(context,widget.turma),
-        body: loadingPage? Center(child: CircularProgressIndicator()): conteudo
+        body: loadingPage? Center(child: CircularProgressIndicator()): professores.isEmpty? msgVazio: conteudo
       ),
     );
     

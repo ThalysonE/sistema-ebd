@@ -12,6 +12,39 @@ class AlocacaoProfessores extends StatefulWidget {
 }
 
 class _AlocacaoProfessoresState extends State<AlocacaoProfessores> {
+
+  List<Map<String,dynamic>> listaDeProfessoresAlocar = [];
+  direcionaPaginaProfessores(int index, item) async{
+    List<dynamic> idsProfSelecionadosEmOutraTurma = [];
+    List<dynamic> idsProfSelecionados  = listaDeProfessoresAlocar[index]["idsProfessoresSelecionados"];
+    for(Map<String,dynamic> x in listaDeProfessoresAlocar){
+      if(!x['idsProfessoresSelecionados'].isEmpty && x!= listaDeProfessoresAlocar[index]){
+        idsProfSelecionadosEmOutraTurma.addAll(x['idsProfessoresSelecionados']);
+      }
+    }
+    final retornoIdsProfessores = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Professores(turma: item.name, listaProfessoresSelecionados: idsProfSelecionados, professoresRemover: idsProfSelecionadosEmOutraTurma,),
+      ),
+    );
+    if(retornoIdsProfessores!= null){
+      if(retornoIdsProfessores.length > idsProfSelecionados.length){
+        for(final id in retornoIdsProfessores){
+          if(!idsProfSelecionados.contains(id)){
+            idsProfSelecionados.add(id);
+          }
+        }
+      }else if(retornoIdsProfessores.length < idsProfSelecionados.length){
+        for(final id in List.from(idsProfSelecionados)){
+          if(!retornoIdsProfessores.contains(id)){
+            idsProfSelecionados.remove(id);
+          }
+        }
+      }
+      listaDeProfessoresAlocar[index]['idsProfessoresSelecionados'] = idsProfSelecionados;
+    }
+  }
   get conteudo {
     return Padding(
       padding: EdgeInsets.only(top: 30, left: 18, right: 18),
@@ -33,6 +66,14 @@ class _AlocacaoProfessoresState extends State<AlocacaoProfessores> {
               itemCount: widget.turmasSelecionadas.length,
               itemBuilder: (context, index) {
                 Turma item = widget.turmasSelecionadas[index];
+                if(listaDeProfessoresAlocar.length < widget.turmasSelecionadas.length){
+                  listaDeProfessoresAlocar.add(
+                    {
+                      "idTrimesterRoom": item.name, //mudar pro id da turma
+                      "idsProfessoresSelecionados": []
+                    }
+                  );
+                }
                 return Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
@@ -54,13 +95,8 @@ class _AlocacaoProfessoresState extends State<AlocacaoProfessores> {
                   margin: EdgeInsets.only(bottom: 8),
                   child: InkWell(
                     borderRadius: BorderRadius.circular(12),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Professores(turma: item.name),
-                        ),
-                      );
+                    onTap: (){
+                      direcionaPaginaProfessores(index,item);
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -130,7 +166,9 @@ class _AlocacaoProfessoresState extends State<AlocacaoProfessores> {
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 50),
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                print(listaDeProfessoresAlocar);
+              },
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: 13, horizontal: 100),
                 backgroundColor: Color(0xFF1565C0),

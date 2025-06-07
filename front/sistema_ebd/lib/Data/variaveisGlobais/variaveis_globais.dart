@@ -7,4 +7,4 @@ int totalUsuarios = 0;
 //utilizado na tela de turmas
 int totalTurmas = 0;
 //link da api
-String apiUrl = 'http://192.168.0.3:3333';
+String apiUrl = 'http://localhost:3333';

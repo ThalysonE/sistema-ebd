@@ -29,7 +29,6 @@ class UsuariosRepository implements IUsuariosRepository{
       }
     }
     final body = jsonDecode(resposta.body);
-    print(body);
     if(numeroPage == 1){
       totalUsuarios = body['meta']['totalCount'];
     }
