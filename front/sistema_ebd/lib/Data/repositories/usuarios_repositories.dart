@@ -23,6 +23,7 @@ class UsuariosRepository implements IUsuariosRepository{
     );
     final resposta = await client.get(url: url, token: token);
     final statusCode = resposta.statusCode;
+    print('Estado UUU: ${statusCode}');
     if(statusCode !=200){
       if(statusCode == 500){
         throw Exception('Erro interno no servidor, tente novamente mais tarde');

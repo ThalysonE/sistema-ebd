@@ -6,6 +6,8 @@ int paginaAtual = 1; // guarda até qual pagina foi a requisição de membros
 int totalUsuarios = 0;
 //Usado no get de trimestre
 int totalTrimestres = 0;
+//usado para get turmas trimestre
+int totalTurmasTrimestre = 0;
 //utilizado na tela de turmas
 int totalTurmas = 0;
 //link da api

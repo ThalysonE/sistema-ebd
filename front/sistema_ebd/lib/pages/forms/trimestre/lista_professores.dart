@@ -30,7 +30,9 @@ class _ProfessoresState extends ConsumerState<Professores> {
     super.initState();
     usuarioLog = ref.read(usuarioLogado);
     fetchProfessores(numeroPage++).then((_){
-      loadingPage = false;
+      setState(() {
+        loadingPage = false;
+      });
     });
     _controller.addListener(() {
       if (_controller.position.maxScrollExtent == _controller.offset) {
@@ -168,7 +170,7 @@ class _ProfessoresState extends ConsumerState<Professores> {
                 List<String> listaIdProfessores = [];
                 for(Usuario professor in professores){
                   if(professor.selectBox){
-                    listaIdProfessores.add(professor.memberId);
+                    listaIdProfessores.add(professor.id);
                   }
                 }
                 Navigator.pop(context, listaIdProfessores);

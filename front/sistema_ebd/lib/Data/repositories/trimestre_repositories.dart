@@ -3,10 +3,11 @@ import 'dart:convert';
 import 'package:sistema_ebd/Data/http/http_client.dart';
 import 'package:sistema_ebd/Data/variaveisGlobais/variaveis_globais.dart';
 import 'package:sistema_ebd/models/trimestre/trismestre.dart';
+import 'package:sistema_ebd/models/trimestre/turma_trimestre.dart';
 
 abstract class ITrimestreRepository {
   Future<List<Trimestre>> getTrimestre({required int numeroPage, required String token, String numTrimestre, String ano});
-  void postTrimestre({required String token, required String titulo, required int ano, required int numTrimestre, required String dataInicio, required String dataFim});
+  Future<String> postTrimestre({required String token, required String titulo, required int ano, required int numTrimestre, required String dataInicio, required String dataFim});
 }
 
 class TrimestreRepository implements ITrimestreRepository{
@@ -50,28 +51,30 @@ class TrimestreRepository implements ITrimestreRepository{
     }).toList();
     return trimestres;
   }
-  void postTrimestre({required String token, required String titulo, required int ano, required int numTrimestre, required String dataInicio, required String dataFim}) async{
+  Future<String> postTrimestre({required String token, required String titulo, required int ano, required int numTrimestre, required String dataInicio, required String dataFim}) async{
     final url = Uri.parse('$apiUrl/trimester');
     final body = {
       "title": titulo,
-      "year": ano.toString(),
-      "quarter": numTrimestre.toString(),
+      "year": ano,
+      "quarter": numTrimestre,
       "startDate": dataInicio,
       "endDate": dataFim
     };
-
     final resposta = await client.post(url: url, body: body, token: token); 
     final status = resposta.statusCode;
+    print('Status: ${status}');
     if(status != 201){
       if(status == 500){
         throw Exception('Erro no servidor, não foi possivel realizar o cadastro do trimestre');
       }else if(status == 400){
-        throw Exception('Já foi criado um trimestre nesse período');
+        throw Exception('Já existe um trimestre cadastrado nesse período');
       }
     }
-    //retorna o id do trimestre aqui
+    final bodyResposta = jsonDecode(resposta.body);
+    final idTrimestre = bodyResposta['trimester']['_id']['value'];
+    return idTrimestre;
   }
-  void alocarTurmasTrimestre({required String token, required String idTrimestre, required List<String> turmasId}) async{
+  Future<void> alocarTurmasTrimestre({required String token, required String idTrimestre, required List<String> turmasId}) async{
     final url = Uri.parse('$apiUrl/trimester-room');
     final body = {
       "trimesterId": idTrimestre,
@@ -87,8 +90,9 @@ class TrimestreRepository implements ITrimestreRepository{
         throw Exception('Algum erro na requisição');
       }
     }
+    print('Codigo: ${status} deuuu certo');
   }
-  void alocarProfessoresTrimestre({required String token, required String idTurmaTrimestre, required List<String> professoresId}) async{
+  Future<void> alocarProfessoresTrimestre({required String token, required String idTurmaTrimestre, required List<dynamic> professoresId}) async{
     final url = Uri.parse('$apiUrl/trimester-room/allocate/teacher');
     final body = {
       "teachersIds": professoresId,
@@ -97,14 +101,45 @@ class TrimestreRepository implements ITrimestreRepository{
 
     final resposta = await client.post(url: url, body: body, token: token); 
     final status = resposta.statusCode;
+    print('Alocu professor: ${status}');
     if(status != 201){
       if(status == 500){
         throw Exception('Erro no servidor, não foi possivel realizar o cadastro do trimestre');
       }else if(status == 400){
         throw Exception('Algum erro na requisição');
+      }else if(status == 404){
+        throw Exception('Professor não encontrado no banco de dados');
       }
     }
 
   }
-
+  Future<List<TurmaTrimestre>> getTurmasTrimestre({required int numeroPage, required String token, required String idTrimestre}) async {
+    List<TurmaTrimestre> turmasTrimestre= [];
+    final url = Uri.parse('$apiUrl/trimester-room').replace(
+      queryParameters: {
+        "page": numeroPage.toString(),
+        "perPage": "15",
+        "trimesterId": idTrimestre
+      }
+    );
+    
+    final resposta = await client.get(url: url, token: token);
+    final statusCode = resposta.statusCode;
+    print('Status Turmas Trimestre : ${statusCode}');
+    print(resposta.body);
+    if(statusCode !=200){
+      if(statusCode == 500){
+        throw Exception('Erro interno no servidor, tente novamente mais tarde');
+      }
+    }
+    final body = jsonDecode(resposta.body);
+    if(numeroPage == 1){
+      totalTurmasTrimestre = body['meta']['totalCount'];
+    }
+    body['trimestersRooms'].map((item){
+      final TurmaTrimestre turmaTrimestre = TurmaTrimestre.fromMap(item);
+      turmasTrimestre.add(turmaTrimestre);
+    }).toList();
+    return turmasTrimestre;
+  }
 }

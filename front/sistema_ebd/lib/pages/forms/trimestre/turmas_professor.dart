@@ -1,19 +1,66 @@
 import 'package:flutter/material.dart';
+import 'package:sistema_ebd/Data/providers/usuario_provider.dart';
+import 'package:sistema_ebd/Data/repositories/trimestre_repositories.dart';
 import 'package:sistema_ebd/Widgets/appbar.dart';
-import 'package:sistema_ebd/models/turma.dart';
+import 'package:sistema_ebd/models/trimestre/turma_trimestre.dart';
+import 'package:sistema_ebd/models/usuarioLogado.dart';
 import 'package:sistema_ebd/pages/forms/trimestre/lista_professores.dart';
-
-class AlocacaoProfessores extends StatefulWidget {
-  final List<Turma> turmasSelecionadas;
-  const AlocacaoProfessores({super.key, required this.turmasSelecionadas});
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+class AlocacaoProfessores extends ConsumerStatefulWidget {
+  final String idTrimestre;
+  const AlocacaoProfessores({super.key, required this.idTrimestre});
 
   @override
-  State<AlocacaoProfessores> createState() => _AlocacaoProfessoresState();
+  ConsumerState<AlocacaoProfessores> createState() => _AlocacaoProfessoresState();
 }
 
-class _AlocacaoProfessoresState extends State<AlocacaoProfessores> {
+class _AlocacaoProfessoresState extends ConsumerState<AlocacaoProfessores> {
+
+  List<TurmaTrimestre> turmastrimestre = [];
+  int numeroPage = 1;
+  late UsuarioLogado usuarioLog;
+  final trimestreTurmaRequisicao = TrimestreRepository();
+  @override
+  void initState() {
+    super.initState();
+    usuarioLog = ref.read(usuarioLogado);
+    getTurmasTrimestre(numeroPage);
+  }
 
   List<Map<String,dynamic>> listaDeProfessoresAlocar = [];
+
+  showError(String msg){
+    return ScaffoldMessenger.of(context).showSnackBar(
+       SnackBar(
+        backgroundColor: Colors.red[400],
+        duration: Duration(seconds: 2),
+        content: Center(
+          child: Text(msg)
+        )
+      )
+    );
+  }
+  Future<void> alocarProfessores()async{
+    try{
+      for(final item in listaDeProfessoresAlocar){
+        await trimestreTurmaRequisicao.alocarProfessoresTrimestre(token: usuarioLog.token, idTurmaTrimestre: item['idTrimesterRoom'], professoresId: item['idsProfessoresSelecionados']);
+      }
+    }catch(e){
+      showError(e.toString());
+    }
+  }
+  Future<void> getTurmasTrimestre(int page)async{
+    try{
+      final resposta = await trimestreTurmaRequisicao.getTurmasTrimestre(numeroPage: numeroPage, token: usuarioLog.token, idTrimestre: widget.idTrimestre);
+      turmastrimestre.addAll(resposta);
+      setState(() {
+        
+      });
+    }catch(e){
+      showError(e.toString());
+    }
+  }
+
   direcionaPaginaProfessores(int index, item) async{
     List<dynamic> idsProfSelecionadosEmOutraTurma = [];
     List<dynamic> idsProfSelecionados  = listaDeProfessoresAlocar[index]["idsProfessoresSelecionados"];
@@ -25,7 +72,7 @@ class _AlocacaoProfessoresState extends State<AlocacaoProfessores> {
     final retornoIdsProfessores = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => Professores(turma: item.name, listaProfessoresSelecionados: idsProfSelecionados, professoresRemover: idsProfSelecionadosEmOutraTurma,),
+        builder: (context) => Professores(turma: item.nome, listaProfessoresSelecionados: idsProfSelecionados, professoresRemover: idsProfSelecionadosEmOutraTurma,),
       ),
     );
     if(retornoIdsProfessores!= null){
@@ -45,6 +92,7 @@ class _AlocacaoProfessoresState extends State<AlocacaoProfessores> {
       listaDeProfessoresAlocar[index]['idsProfessoresSelecionados'] = idsProfSelecionados;
     }
   }
+  
   get conteudo {
     return Padding(
       padding: EdgeInsets.only(top: 30, left: 18, right: 18),
@@ -63,13 +111,13 @@ class _AlocacaoProfessoresState extends State<AlocacaoProfessores> {
           SizedBox(height: 40),
           Expanded(
             child: ListView.builder(
-              itemCount: widget.turmasSelecionadas.length,
+              itemCount: turmastrimestre.length,
               itemBuilder: (context, index) {
-                Turma item = widget.turmasSelecionadas[index];
-                if(listaDeProfessoresAlocar.length < widget.turmasSelecionadas.length){
+                TurmaTrimestre item = turmastrimestre[index];
+                if(listaDeProfessoresAlocar.length < turmastrimestre.length){
                   listaDeProfessoresAlocar.add(
                     {
-                      "idTrimesterRoom": item.name, //mudar pro id da turma
+                      "idTrimesterRoom": item.id, 
                       "idsProfessoresSelecionados": []
                     }
                   );
@@ -117,7 +165,7 @@ class _AlocacaoProfessoresState extends State<AlocacaoProfessores> {
                           children: [
                             Expanded(
                               child: Text(
-                                item.name,
+                                item.nome,
                                 overflow: TextOverflow.ellipsis,
                                 style: Theme.of(
                                   context,
@@ -130,7 +178,7 @@ class _AlocacaoProfessoresState extends State<AlocacaoProfessores> {
                             ),
                             SizedBox(width: 8),
                             Text(
-                              'Professores: 0',
+                              item.qtdProfessores.toString(),
                               style: Theme.of(
                                 context,
                               ).textTheme.labelMedium!.copyWith(
@@ -167,7 +215,9 @@ class _AlocacaoProfessoresState extends State<AlocacaoProfessores> {
             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 50),
             child: ElevatedButton(
               onPressed: () {
-                print(listaDeProfessoresAlocar);
+                if(listaDeProfessoresAlocar.isNotEmpty){
+                  alocarProfessores();
+                }
               },
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: 13, horizontal: 100),
