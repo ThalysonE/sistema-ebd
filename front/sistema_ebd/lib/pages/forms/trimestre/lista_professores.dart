@@ -1,9 +1,9 @@
-import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:sistema_ebd/Data/providers/usuario_provider.dart';
 import 'package:sistema_ebd/Data/repositories/usuarios_repositories.dart';
 import 'package:sistema_ebd/Data/variaveisGlobais/variaveis_globais.dart';
 import 'package:sistema_ebd/Widgets/appbar.dart';
+import 'package:sistema_ebd/models/membro.dart';
 import 'package:sistema_ebd/models/usuario.dart';
 import 'package:sistema_ebd/models/usuarioLogado.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,7 +20,7 @@ class _ProfessoresState extends ConsumerState<Professores> {
   final ScrollController _controller = ScrollController();
   bool? select = false;
   late UsuarioLogado usuarioLog;
-  List<Usuario> professores = [];
+  List<Membro> professores = [];
   final requisicaoUsuario = UsuariosRepository(); 
   bool fetchMaisProfessores = false;
   int numeroPage = 1;
@@ -53,11 +53,11 @@ class _ProfessoresState extends ConsumerState<Professores> {
   }
   Future<void> fetchProfessores(int page) async{
     try{
-      List<Usuario> resposta = await requisicaoUsuario.getUsuariosRole(numeroPage: page, token: usuarioLog.token, cargo: 'TEACHER');
+      List<Membro> resposta = await requisicaoUsuario.fetchUsuariosParaProfessores(numeroPage: page, token: usuarioLog.token);
       if(!resposta.isEmpty){
-        resposta.removeWhere((item)=> widget.professoresRemover.contains(item.memberId));
+        resposta.removeWhere((item)=> widget.professoresRemover.contains(item.id));
         for(final item in resposta){
-          if(widget.listaProfessoresSelecionados.contains(item.memberId)){
+          if(widget.listaProfessoresSelecionados.contains(item.id)){
             item.selectBox = true;
           }
         }
@@ -105,7 +105,7 @@ class _ProfessoresState extends ConsumerState<Professores> {
               itemCount: professores.length + 1,
               itemBuilder: (context,index){
                 if(index< professores.length){
-                  Usuario usuario = professores[index];
+                  Membro usuario = professores[index];
                   return Container(
                     margin: EdgeInsets.only(bottom: 4),
                     child: ListTile(
@@ -129,7 +129,7 @@ class _ProfessoresState extends ConsumerState<Professores> {
                     ),
                     tileColor: usuario.selectBox ? Color(0xFFCBEFCB) : Colors.white,
                     title: Text(
-                      usuario.userName,
+                      usuario.nome,
                       style: Theme.of(context).textTheme.labelMedium!.copyWith(
                         color: usuario.selectBox ? Color(0xFF008000) : Colors.black,
                         fontSize: 15,
@@ -168,9 +168,9 @@ class _ProfessoresState extends ConsumerState<Professores> {
             child: ElevatedButton(
               onPressed: () {
                 List<String> listaIdProfessores = [];
-                for(Usuario professor in professores){
+                for(Membro professor in professores){
                   if(professor.selectBox){
-                    listaIdProfessores.add(professor.id);
+                    listaIdProfessores.add(professor.idUsuario);
                   }
                 }
                 Navigator.pop(context, listaIdProfessores);

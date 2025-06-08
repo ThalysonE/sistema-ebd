@@ -6,7 +6,8 @@ class Membro {
   String nome;
   String dataDeNascimento;
   String sexo;
-
+  String idUsuario = ""; //to usando pra guardar o id do usuario desse membro pra quando precisar
+  bool selectBox = false;
   Membro({
     this.id ='',
     required this.nome,
