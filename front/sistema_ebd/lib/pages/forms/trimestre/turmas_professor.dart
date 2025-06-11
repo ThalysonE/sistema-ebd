@@ -23,7 +23,7 @@ class _AlocacaoProfessoresState extends ConsumerState<AlocacaoProfessores> {
   bool fetchMaisTurmas = false; // loading do infinity scroll
   bool cadastrandoProfessores = false; //loading do cadastrar professores(quano clica em continuar)
 
-  int numeroPage = 1; // numero pagina pra carregar turmas do trimestre
+  int numeroPage = 0; // numero pagina pra carregar turmas do trimestre(por algum motivo a requisiçaõ ta adicionadno mais 1 nessa variavel da pagina) 
   List<TurmaTrimestre> turmastrimestre = [];
 
   final trimestreTurmaRequisicao = TrimestreRepository();
@@ -83,6 +83,7 @@ class _AlocacaoProfessoresState extends ConsumerState<AlocacaoProfessores> {
     }
   }
   Future<void> getTurmasTrimestre(int page)async{
+    print('numero da pagina : ${page}');
     try{
       final resposta = await trimestreTurmaRequisicao.getTurmasTrimestre(numeroPage: numeroPage, token: usuarioLog.token, idTrimestre: widget.idTrimestre);
       setState(() {
@@ -151,8 +152,10 @@ class _AlocacaoProfessoresState extends ConsumerState<AlocacaoProfessores> {
               itemCount: turmastrimestre.length+1,
               controller: _controller,
               itemBuilder: (context, index) {
-                TurmaTrimestre item = turmastrimestre[index];
-                if(listaDeProfessoresAlocar.length < turmastrimestre.length){
+                
+                if(index < turmastrimestre.length){
+                  TurmaTrimestre item = turmastrimestre[index];
+                  if(listaDeProfessoresAlocar.length < turmastrimestre.length){
                   listaDeProfessoresAlocar.add(
                     {
                       "idTrimesterRoom": item.id, 
@@ -160,7 +163,6 @@ class _AlocacaoProfessoresState extends ConsumerState<AlocacaoProfessores> {
                     }
                   );
                 }
-                if(index < turmastrimestre.length){
                   return Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),

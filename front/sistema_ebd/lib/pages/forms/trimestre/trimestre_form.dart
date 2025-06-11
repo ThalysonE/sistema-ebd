@@ -155,7 +155,7 @@ class _TrimestreFormState extends ConsumerState<TrimestreForm> {
                 final dataSelecionada = await showDatePicker(
                   context: context,
                   firstDate: DateTime(2025),
-                  lastDate: DateTime.now().add(Duration(days: 300)),
+                  lastDate: DateTime.now().add(Duration(days: 1900)),
                 );
                 if (dataSelecionada != null) {
                   dataControllerInicio.text = DateFormat(
@@ -206,7 +206,7 @@ class _TrimestreFormState extends ConsumerState<TrimestreForm> {
                 final dataSelecionada = await showDatePicker(
                   context: context,
                   firstDate: DateTime(2025),
-                  lastDate: DateTime.now().add(Duration(days: 300)),
+                  lastDate: DateTime.now().add(Duration(days: 1900)),
                 );
                 if (dataSelecionada != null) {
                   dataControllerPrecisao.text = DateFormat(

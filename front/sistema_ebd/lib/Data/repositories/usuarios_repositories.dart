@@ -40,8 +40,8 @@ class UsuariosRepository implements IUsuariosRepository{
     }).toList();
     return usuarios;
   }
-  Future<dynamic> fetchUsuariosParaProfessores({required int numeroPage, required String token}) async {
-    List<Membro> professores = [];
+  Future<List<Membro>> fetchUsuariosParaProfessores({required int numeroPage, required String token}) async {
+
     final url = Uri.parse('$apiUrl/user').replace(
       queryParameters: {
         "page": numeroPage.toString(),
@@ -60,12 +60,15 @@ class UsuariosRepository implements IUsuariosRepository{
     if(numeroPage == 1){
       totalUsuarios = body['meta']['totalCount'];
     }
-    body['users'].map((item) async{
+
+    final futures = body['users'].map<Future<Membro>>((item) async{
       final Usuario usuario = Usuario.fromMap(item);
       final Membro professorMembro = await membroRequisicao.fetchMembroPorId(idMembro: usuario.memberId, token: token);
       professorMembro.idUsuario = usuario.id;
-      professores.add(professorMembro);
+      return professorMembro;
+    
     }).toList();
+    List<Membro> professores = await Future.wait(futures);
     return professores;
   }
 }

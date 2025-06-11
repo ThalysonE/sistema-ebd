@@ -88,11 +88,7 @@ class MembrosRepositories implements IMembrosRepository{
     }
   }
   Future<Membro> fetchMembroPorId({required String idMembro, required String token}) async {
-    final url = Uri.parse('$apiUrl/user').replace(
-      queryParameters: {
-        "id": idMembro
-      }
-    );
+    final url = Uri.parse('$apiUrl/member/${idMembro}');
     final resposta = await client.get(url: url, token: token);
     final statusCode = resposta.statusCode;
     if(statusCode != 200){
@@ -100,7 +96,9 @@ class MembrosRepositories implements IMembrosRepository{
         throw Exception('Erro interno no servidor, tente novamente mais tarde');
       }
     }
+    
     final body = jsonDecode(resposta.body);
+    print('Resposta ${body}');
     Membro professorMembro = Membro.fromMap(body['member']);
     return professorMembro;
   }

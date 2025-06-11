@@ -55,9 +55,9 @@ class _ProfessoresState extends ConsumerState<Professores> {
     try{
       List<Membro> resposta = await requisicaoUsuario.fetchUsuariosParaProfessores(numeroPage: page, token: usuarioLog.token);
       if(!resposta.isEmpty){
-        resposta.removeWhere((item)=> widget.professoresRemover.contains(item.id));
+        resposta.removeWhere((item)=> widget.professoresRemover.contains(item.idUsuario));
         for(final item in resposta){
-          if(widget.listaProfessoresSelecionados.contains(item.id)){
+          if(widget.listaProfessoresSelecionados.contains(item.idUsuario)){
             item.selectBox = true;
           }
         }
@@ -198,7 +198,7 @@ class _ProfessoresState extends ConsumerState<Professores> {
       ),
     );
     final msgVazio = Center(
-      child: Text('Nenhum professor encontrado')
+      child: Text('Nenhum professor disponível')
     );
     return Material(
       child: Scaffold(
