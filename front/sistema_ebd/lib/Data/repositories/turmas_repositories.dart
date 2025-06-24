@@ -25,7 +25,7 @@ class TurmasRepositories extends IturmasRepository {
     List<Turma> turmas = [];
     try {
       final resposta = await client.get(url: url, token: token);
-      print('Reposta Turmas: ${resposta.statusCode}');
+      print('Status:${resposta.statusCode}');
       if (resposta.statusCode == 200) {
         final body = jsonDecode(resposta.body);
         if (numeroPagina == 1) {

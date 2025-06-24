@@ -277,7 +277,18 @@ class _AlocacaoProfessoresState extends ConsumerState<AlocacaoProfessores> {
                 ? null
                 : () {
                     if(listaDeProfessoresAlocar.isNotEmpty){
-                      alocarProfessores();
+                      bool todasAsTurmasTemProfessor = true;
+                      for(final x in turmastrimestre){
+                        if(x.qtdProfessores==0){
+                          todasAsTurmasTemProfessor = false;
+                          break;
+                        }
+                      }
+                      if(todasAsTurmasTemProfessor){
+                        alocarProfessores();
+                      }else{
+                        showError('Todas as turmas precisam ter professores', 1);
+                      }
                     }else{
                       showError('Nenhum professor selecionado', 2);
                     }

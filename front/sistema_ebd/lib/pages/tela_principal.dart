@@ -194,7 +194,7 @@ class _TelaPrincipalState extends ConsumerState<TelaPrincipal> {
                           highlightColor: Color.fromARGB(108, 101, 149, 231),
                           splashColor: const Color.fromARGB(108, 101, 149, 231),
                           onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=> TelaMembros(temSelecao: true)));
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=> TelaMembros(temSelecao: false)));
                           },
                           borderRadius: BorderRadius.circular(12),
                           child: Padding(
