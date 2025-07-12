@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sistema_ebd/Data/providers/membros_provider.dart';
+import 'package:sistema_ebd/Data/providers/usuario_provider.dart';
+import 'package:sistema_ebd/Data/repositories/membros_repositories.dart';
 import 'package:sistema_ebd/Data/variaveisGlobais/variaveis_globais.dart';
 import 'package:sistema_ebd/models/membro.dart';
 import 'dart:async';
 import 'package:sistema_ebd/Widgets/appbar.dart';
+import 'package:sistema_ebd/models/usuarioLogado.dart';
 import 'package:sistema_ebd/pages/forms/membro_form.dart';
 
 class TelaMembros extends ConsumerStatefulWidget {
@@ -23,35 +25,56 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
   bool pesquisando = false;
   List<Membro> resultadoPesquisa = [];
   Set<String> listaIdMembrosSelecionados = {};
-  void fetchMembros(int page) async {
-    await ref.read(listaMembros.notifier).loadMembros(page: page).then((_) {
-      setState(() {});
-    });
+
+  late UsuarioLogado userLog;
+  int numeroPage = 1;
+  MembrosRepositories membrosRequisicao = MembrosRepositories();
+  List<Membro> membros = [];
+
+  showError(String msg, int cor){
+    return ScaffoldMessenger.of(context).showSnackBar(
+       SnackBar(
+        backgroundColor: cor == 1? Colors.red[400]: Colors.orange[400],
+        duration: Duration(seconds: 2),
+        content: Center(
+          child: Text(msg)
+        )
+      )
+    );
+  }
+  Future<void> fetchMembros(int page) async {
+    try{
+      final resposta = await membrosRequisicao.getMembros(numeroPage: page, token: userLog.token);
+      membros.addAll(resposta);
+      setState(() {
+        membros;
+      });
+    }catch(e){
+      showError(e.toString(), 1);
+    }
   }
 
   @override
   void initState() {
     super.initState();
-    if (ref.read(listaMembros).isEmpty) {
-      ref.read(listaMembros.notifier).loadMembros(page: paginaAtual).then((_) {
-        setState(() {
-          isLoading = false;
-        });
+    userLog = ref.read(usuarioLogado);
+    
+    fetchMembros(numeroPage++).then((_){
+      setState(() {
+        isLoading = false;
       });
-    } else {
-      isLoading = false;
-    }
+    });
+
+
     _controller.addListener(() {
-      final membroProvider = ref.read(listaMembros);
       if (_controller.position.maxScrollExtent == _controller.offset) {
-        if (membroProvider.length < totalMembros) {
+        if (membros.length < totalMembros) {
           if (!novosMembros) {
             setState(() {
               novosMembros = true;
             });
           }
-          //print('Membros Provider: ${membroProvider.length} < Total Membros${totalMembros}');
-          fetchMembros(++paginaAtual);
+          fetchMembros(numeroPage++);
         } else {
           setState(() {
             novosMembros = false;
@@ -136,9 +159,7 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
   void searchMembro(String query) async {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(Duration(milliseconds: 700), () async {
-      List<Membro>? resultado = await ref
-          .read(listaMembros.notifier)
-          .searchMembro(nome: query);
+      List<Membro>? resultado = await membrosRequisicao.searchMembro(nome: query, token: userLog.token);
       pesquisando = true;
       if (resultado == null) {
         print('Erro na pesquisa/sem internet para pesquisar');
@@ -157,13 +178,12 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
 
   @override
   void dispose() {
-    super.dispose();
     _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    List<Membro> membros = ref.watch(listaMembros);
     Widget conteudo;
     if (isLoading) {
       conteudo = Center(child: CircularProgressIndicator());

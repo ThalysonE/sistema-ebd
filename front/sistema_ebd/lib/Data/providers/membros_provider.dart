@@ -1,12 +1,9 @@
-
-
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sistema_ebd/Data/providers/usuario_provider.dart';
 import 'package:sistema_ebd/Data/repositories/membros_repositories.dart';
 import 'package:sistema_ebd/Data/variaveisGlobais/variaveis_globais.dart';
 import 'package:sistema_ebd/models/membro.dart';
-import 'package:sistema_ebd/models/usuario.dart';
+import 'package:sistema_ebd/models/usuarioLogado.dart';
 
 final listaMembros = StateNotifierProvider<MembroProvider,List<Membro>>((ref){
   final usuarioAuth = ref.read(usuarioLogado);

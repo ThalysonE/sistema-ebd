@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:sistema_ebd/Data/repositories/login_repositories.dart';
-import 'package:sistema_ebd/models/usuario.dart';
+import 'package:sistema_ebd/models/usuarioLogado.dart';
 import'package:flutter_riverpod/flutter_riverpod.dart';
 
 

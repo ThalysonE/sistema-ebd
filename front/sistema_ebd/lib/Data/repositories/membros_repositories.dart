@@ -6,7 +6,7 @@ import 'package:sistema_ebd/models/membro.dart';
 
 abstract class IMembrosRepository{
   
-  Future<List<Membro>?> getMembros({required int numeroPage, required String token});
+  Future<List<Membro>> getMembros({required int numeroPage, required String token});
 }
 
 class MembrosRepositories implements IMembrosRepository{
@@ -15,7 +15,7 @@ class MembrosRepositories implements IMembrosRepository{
 
 
   @override
-  Future<List<Membro>?> getMembros({required int numeroPage, required String token})async{
+  Future<List<Membro>> getMembros({required int numeroPage, required String token})async{
     List<Membro> membros= [];
     final url = Uri.parse('$apiUrl/member').replace(
       queryParameters: {
@@ -23,23 +23,25 @@ class MembrosRepositories implements IMembrosRepository{
         "perPage": "15"
       }
     );
-    try{
-      final resposta = await client.get(url: url, token: token);
-      final body = jsonDecode(resposta.body);
-      if(resposta.statusCode == 200){
-        if(numeroPage == 1){
-          totalMembros = body['meta']['totalCount'];
-        }
-        body['members'].map((item){
-          final Membro membro = Membro.fromMap(item);
-          membros.add(membro);
-        }).toList();
-        return membros;
-     }
-    } catch(e){
-      print('Erro ao fazer a requisição: ${e.toString()}');
+    
+    final resposta = await client.get(url: url, token: token);
+    final body = jsonDecode(resposta.body);
+
+    final status = resposta.statusCode;
+    if(status!=200){
+      if(status == 400){
+        throw Exception('Erro no servidor');
+      }
     }
-    return null;
+    
+    if(numeroPage == 1){
+      totalMembros = body['meta']['totalCount'];
+    }
+    body['members'].map((item){
+      final Membro membro = Membro.fromMap(item);
+      membros.add(membro);
+    }).toList();
+    return membros;
   }
   Future<List<Membro>?> searchMembro({required String nome, required String token}) async{
     List<Membro> resultMembros = [];
@@ -86,5 +88,20 @@ class MembrosRepositories implements IMembrosRepository{
       print("Um erro ocorreu na requisição: ${e.toString()}");
       return null;
     }
+  }
+  Future<Membro> fetchMembroPorId({required String idMembro, required String token}) async {
+    final url = Uri.parse('$apiUrl/member/${idMembro}');
+    final resposta = await client.get(url: url, token: token);
+    final statusCode = resposta.statusCode;
+    if(statusCode != 200){
+      if(statusCode == 500){
+        throw Exception('Erro interno no servidor, tente novamente mais tarde');
+      }
+    }
+    
+    final body = jsonDecode(resposta.body);
+    print('Resposta ${body}');
+    Membro professorMembro = Membro.fromMap(body['member']);
+    return professorMembro;
   }
 }

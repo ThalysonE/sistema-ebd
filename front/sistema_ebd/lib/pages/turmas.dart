@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sistema_ebd/Data/providers/usuario_provider.dart';
+import 'package:sistema_ebd/Data/repositories/trimestre_repositories.dart';
 import 'package:sistema_ebd/Data/repositories/turmas_repositories.dart';
 import 'package:sistema_ebd/Data/variaveisGlobais/variaveis_globais.dart';
 import 'package:sistema_ebd/Widgets/appbar.dart';
@@ -10,7 +11,8 @@ import 'package:sistema_ebd/pages/forms/trimestre/turmas_professor.dart';
 
 class Turmas extends ConsumerStatefulWidget {
   final bool temCadastro;
-  const Turmas({super.key, required this.temCadastro});
+  final String idTrimestre; 
+  const Turmas({super.key, required this.temCadastro, this.idTrimestre = ""});
 
   @override
   ConsumerState<Turmas> createState() => _TurmasState();
@@ -25,8 +27,45 @@ class _TurmasState extends ConsumerState<Turmas> {
   var conteudo;
   bool isLoading = true;
   bool novasTurmas = false;
+  
   final requisicaoTurmas = TurmasRepositories();
 
+  //variaveis trimestre
+  final requisicaoTrimestre = TrimestreRepository();
+  bool loadingCadastrandoTurmas = false;
+  showError(String msg){
+    return ScaffoldMessenger.of(context).showSnackBar(
+       SnackBar(
+        backgroundColor: Colors.red[400],
+        duration: Duration(seconds: 2),
+        content: Center(
+          child: Text(msg)
+        )
+      )
+    );
+  }
+  Future<void> cadastroTurmasTrimestre(List<String> idsTurmas) async{
+    setState(() {
+      loadingCadastrandoTurmas = true;
+    });
+    try{
+      await requisicaoTrimestre.alocarTurmasTrimestre(token: usuarioLogadoUser.token, idTrimestre: widget.idTrimestre, turmasId: idsTurmas);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder:
+              (context) => AlocacaoProfessores(
+                idTrimestre: widget.idTrimestre,
+              ),
+        ),
+      );
+    }catch(e){
+      showError(e.toString());
+    }
+    setState(() {
+      loadingCadastrandoTurmas = false;
+    });
+  }
   Future<void> fetchTurmas(int numeroPag) async {
     final fetchTurmas = await requisicaoTurmas.getTurmas(
       numeroPag,
@@ -422,8 +461,9 @@ class _TurmasState extends ConsumerState<Turmas> {
                   child: Padding(
                     padding: EdgeInsets.symmetric(vertical: 10, horizontal: 50),
                     child: ElevatedButton(
-                      onPressed:
-                          temTurmaSelecionada
+                      onPressed: loadingCadastrandoTurmas
+                        ? null
+                        :temTurmaSelecionada
                               ? () {
                                 for (Turma turma in turmas!) {
                                   if (turma.selectBox! &&
@@ -436,16 +476,14 @@ class _TurmasState extends ConsumerState<Turmas> {
                                     listaTurmasSelecionadas.remove(turma);
                                   }
                                 }
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder:
-                                        (context) => AlocacaoProfessores(
-                                          turmasSelecionadas:
-                                              listaTurmasSelecionadas,
-                                        ),
-                                  ),
-                                );
+                                if(listaTurmasSelecionadas.isNotEmpty){
+                                  List<String> idsTurmas = [];
+                                  for(final turma in listaTurmasSelecionadas){
+                                    idsTurmas.add(turma.id);
+                                  }
+                                  cadastroTurmasTrimestre(idsTurmas);
+                                }
+                                
                               }
                               : null,
                       style: ElevatedButton.styleFrom(
@@ -459,7 +497,15 @@ class _TurmasState extends ConsumerState<Turmas> {
                           borderRadius: BorderRadius.circular(15),
                         ),
                       ),
-                      child: Text(
+                      child: loadingCadastrandoTurmas
+                      ? SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            color: Color(0xFF1565C0)
+                          ),
+                        )
+                      : Text(
                         'Continuar',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Colors.white,
