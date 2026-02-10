@@ -4,4 +4,5 @@ class AppRotas{
   static const membros = '/membros';
   static const cadastro_membros = '/membro/cadastro';
   static const turmas = '/turmas';
+  static const detalheRegistroAula = '/detalhe-registro-aula';
 }

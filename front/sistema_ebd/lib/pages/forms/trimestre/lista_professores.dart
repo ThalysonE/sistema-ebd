@@ -53,7 +53,7 @@ class _ProfessoresState extends ConsumerState<Professores> {
   }
   Future<void> fetchProfessores(int page) async{
     try{
-      List<Membro> resposta = await requisicaoUsuario.fetchUsuariosParaProfessores(numeroPage: page, token: usuarioLog.token);
+      List<Membro> resposta = await requisicaoUsuario.fetchUsuariosParaMembro(numeroPage: page, token: usuarioLog.token, cargo: 'TEACHER');
       if(!resposta.isEmpty){
         resposta.removeWhere((item)=> widget.professoresRemover.contains(item.idUsuario));
         for(final item in resposta){

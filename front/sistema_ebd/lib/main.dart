@@ -4,6 +4,7 @@ import 'package:sistema_ebd/pages/forms/membro_form.dart';
 import 'package:sistema_ebd/pages/tela_membros.dart';
 import 'package:sistema_ebd/pages/tela_principal.dart';
 import 'package:sistema_ebd/pages/forms/usuario_form.dart';
+import 'package:sistema_ebd/pages/detalhe_registro_aula.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sistema_ebd/utils/rotas.dart';
 
@@ -38,14 +39,15 @@ class _MyAppState extends State<MyApp> {
         scaffoldBackgroundColor: Color(0xFFfaf9fe)
       ),
       routes: {
-        AppRotas.login: (context) => UsuarioForm(),
+        // AppRotas.login: (context) => UsuarioForm(),
         AppRotas.inicio: (context)=> TelaPrincipal(),
         AppRotas.cadastro_membros:(context)=> MembroForm(),
+        AppRotas.detalheRegistroAula: (context) => const DetalheRegistroAula(),
         // AppRotas.turmas:(context)=> Turmas()
       },
       home: Scaffold(
         backgroundColor: Colors.white,
-        body: UsuarioForm()
+        body: TelaPrincipal()
       ),  
     );
   }

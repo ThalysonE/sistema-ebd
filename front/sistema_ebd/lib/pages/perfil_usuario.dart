@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sistema_ebd/pages/sobre.dart';
+import 'package:sistema_ebd/pages/tela_usuarios.dart';
 
 class PerfilUsuario extends StatefulWidget {
   const PerfilUsuario({super.key});
@@ -85,6 +86,45 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
                     ),
                     title: Text(
                       'Meus Dados',
+                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    trailing: Icon(
+                      Icons.chevron_right,
+                      color: Color(0xFF1565C0),
+                      size: 35,
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 2.5, horizontal: 5),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Color.fromARGB(218, 231, 230, 237),
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.white,
+                  ),
+                  child: ListTile(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=> TelaUsuarios(temSelecao: false)));
+                    },
+                    subtitle: Text(
+                      'Adicione ou edite os dados dos usuários',
+                      style: Theme.of(
+                        context,
+                      ).textTheme.labelMedium?.copyWith(fontSize: 12),
+                    ),
+                    leading: Icon(
+                      Icons.people,
+                      color: Color(0xFF1565C0),
+                      size: 28,
+                    ),
+                    title: Text(
+                      'Gerenciar Usuários',
                       style: Theme.of(context).textTheme.labelMedium?.copyWith(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,

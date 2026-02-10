@@ -48,7 +48,10 @@ flutter:
     - assets/images/icone_opcoes/registro_aula_icon.png
     - assets/images/icone_opcoes/relatorio_icon.png
     - assets/images/icone_opcoes/usuarios_icon.png
+    - assets/images/icone_opcoes/chamada_icon.png
     - assets/images/github.png
+    - assets/images/pin.png
+    - assets/images/relatorio/
 
   uses-material-design: true
 

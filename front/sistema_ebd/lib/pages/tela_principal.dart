@@ -5,6 +5,7 @@ import 'package:sistema_ebd/models/usuarioLogado.dart';
 import 'package:sistema_ebd/pages/forms/trimestre/trimestre_form.dart';
 import 'package:sistema_ebd/pages/perfil_usuario.dart';
 import 'package:sistema_ebd/pages/tela_membros.dart';
+import 'package:sistema_ebd/pages/tela_registro_aula.dart';
 import 'package:sistema_ebd/pages/turmas.dart';
 
 class TelaPrincipal extends ConsumerStatefulWidget {
@@ -93,7 +94,9 @@ class _TelaPrincipalState extends ConsumerState<TelaPrincipal> {
                         child: InkWell(
                           highlightColor: Color.fromARGB(108, 101, 149, 231),
                           splashColor: const Color.fromARGB(108, 101, 149, 231),
-                          onTap: () {},
+                          onTap: () {
+                             Navigator.push(context, MaterialPageRoute(builder: (context)=> TelaRegistroAula()));
+                          },
                           borderRadius: BorderRadius.circular(12),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(

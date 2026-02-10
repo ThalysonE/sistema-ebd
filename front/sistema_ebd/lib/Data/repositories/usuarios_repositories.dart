@@ -40,17 +40,20 @@ class UsuariosRepository implements IUsuariosRepository{
     }).toList();
     return usuarios;
   }
-  Future<List<Membro>> fetchUsuariosParaProfessores({required int numeroPage, required String token}) async {
+  Future<List<Membro>> fetchUsuariosParaMembro({required int numeroPage, required String token, required cargo}) async {
+
 
     final url = Uri.parse('$apiUrl/user').replace(
       queryParameters: {
         "page": numeroPage.toString(),
         "perPage": "15",
-        "role": "TEACHER"
+        "role": cargo
       }
     );
+
     final resposta = await client.get(url: url, token: token);
     final statusCode = resposta.statusCode;
+    print(statusCode);
     if(statusCode !=200){
       if(statusCode == 500){
         throw Exception('Erro interno no servidor, tente novamente mais tarde');
@@ -60,15 +63,16 @@ class UsuariosRepository implements IUsuariosRepository{
     if(numeroPage == 1){
       totalUsuarios = body['meta']['totalCount'];
     }
-
     final futures = body['users'].map<Future<Membro>>((item) async{
       final Usuario usuario = Usuario.fromMap(item);
-      final Membro professorMembro = await membroRequisicao.fetchMembroPorId(idMembro: usuario.memberId, token: token);
-      professorMembro.idUsuario = usuario.id;
-      return professorMembro;
-    
+      if(usuario.isMember == true){
+        final Membro usuarioParaMembro = await membroRequisicao.fetchMembroPorId(idMembro: usuario.memberId, token: token);
+        usuarioParaMembro.idUsuario = usuario.id;
+        return usuarioParaMembro;
+      }
     }).toList();
-    List<Membro> professores = await Future.wait(futures);
-    return professores;
+    List<Membro> membro = await Future.wait(futures);
+    print(membro);
+    return membro;
   }
 }
