@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sistema_ebd/pages/forms/cadastro_usuario_form.dart';
 import 'package:sistema_ebd/pages/sobre.dart';
+import 'package:sistema_ebd/pages/tela_gerenciar_turmas.dart';
 import 'package:sistema_ebd/pages/tela_membros.dart';
 import 'package:sistema_ebd/pages/tela_usuarios.dart';
 
@@ -176,6 +177,50 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
                     ),
                     title: Text(
                       'Gerenciar Usuários',
+                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    trailing: Icon(
+                      Icons.chevron_right,
+                      color: Color(0xFF1565C0),
+                      size: 35,
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 2.5, horizontal: 5),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Color.fromARGB(218, 231, 230, 237),
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.white,
+                  ),
+                  child: ListTile(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const TelaGerenciarTurmas(),
+                        ),
+                      );
+                    },
+                    subtitle: Text(
+                      'Cadastre ou visualize as turmas da EBD',
+                      style: Theme.of(
+                        context,
+                      ).textTheme.labelMedium?.copyWith(fontSize: 12),
+                    ),
+                    leading: Icon(
+                      Icons.class_,
+                      color: Color(0xFF1565C0),
+                      size: 28,
+                    ),
+                    title: Text(
+                      'Gerenciar Turmas',
                       style: Theme.of(context).textTheme.labelMedium?.copyWith(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
