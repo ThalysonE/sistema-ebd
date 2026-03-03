@@ -36,19 +36,16 @@ class _MyAppState extends State<MyApp> {
         appBarTheme: AppBarTheme(
           backgroundColor: Color.fromARGB(255, 13, 95, 167),
         ),
-        scaffoldBackgroundColor: Color(0xFFfaf9fe)
+        scaffoldBackgroundColor: Color(0xFFfaf9fe),
       ),
       routes: {
-        // AppRotas.login: (context) => UsuarioForm(),
-        AppRotas.inicio: (context)=> TelaPrincipal(),
-        AppRotas.cadastro_membros:(context)=> MembroForm(),
+        AppRotas.login: (context) => UsuarioForm(),
+        AppRotas.inicio: (context) => TelaPrincipal(),
+        AppRotas.cadastro_membros: (context) => MembroForm(),
         AppRotas.detalheRegistroAula: (context) => const DetalheRegistroAula(),
         // AppRotas.turmas:(context)=> Turmas()
       },
-      home: Scaffold(
-        backgroundColor: Colors.white,
-        body: TelaPrincipal()
-      ),  
+      home: UsuarioForm(),
     );
   }
 }

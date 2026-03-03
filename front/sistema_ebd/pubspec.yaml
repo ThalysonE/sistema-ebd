@@ -1,12 +1,11 @@
 name: sistema_ebd
 description: "A new Flutter project."
 
-publish_to: 'none'
+publish_to: "none"
 version: 1.0.0+1
 
 environment:
   sdk: ^3.7.0
-
 
 dependencies:
   flutter:
@@ -22,10 +21,10 @@ dependencies:
   flutter_launcher_icons: ^0.14.3
   intl: ^0.20.2
   url_launcher: ^6.3.1
-  
+
 flutter_native_splash:
-  color: "#034279"  # Cor de fundo
-  image: assets/images/logo_ebd.png  # Caminho para a imagem
+  color: "#034279" # Cor de fundo
+  image: assets/images/logo_ebd.png # Caminho para a imagem
   android: true
 
 flutter_icons:
@@ -49,10 +48,9 @@ flutter:
     - assets/images/icone_opcoes/relatorio_icon.png
     - assets/images/icone_opcoes/usuarios_icon.png
     - assets/images/icone_opcoes/chamada_icon.png
+    - assets/images/icone_opcoes/trimestre_icon.png
     - assets/images/github.png
     - assets/images/pin.png
     - assets/images/relatorio/
 
   uses-material-design: true
-
-

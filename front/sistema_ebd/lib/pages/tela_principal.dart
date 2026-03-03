@@ -6,6 +6,7 @@ import 'package:sistema_ebd/pages/forms/trimestre/trimestre_form.dart';
 import 'package:sistema_ebd/pages/perfil_usuario.dart';
 import 'package:sistema_ebd/pages/tela_membros.dart';
 import 'package:sistema_ebd/pages/tela_registro_aula.dart';
+import 'package:sistema_ebd/pages/tela_historico_aluno.dart';
 import 'package:sistema_ebd/pages/turmas.dart';
 
 class TelaPrincipal extends ConsumerStatefulWidget {
@@ -95,7 +96,12 @@ class _TelaPrincipalState extends ConsumerState<TelaPrincipal> {
                           highlightColor: Color.fromARGB(108, 101, 149, 231),
                           splashColor: const Color.fromARGB(108, 101, 149, 231),
                           onTap: () {
-                             Navigator.push(context, MaterialPageRoute(builder: (context)=> TelaRegistroAula()));
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => TelaRegistroAula(),
+                              ),
+                            );
                           },
                           borderRadius: BorderRadius.circular(12),
                           child: Padding(
@@ -136,7 +142,15 @@ class _TelaPrincipalState extends ConsumerState<TelaPrincipal> {
                         child: InkWell(
                           highlightColor: Color.fromARGB(108, 101, 149, 231),
                           splashColor: const Color.fromARGB(108, 101, 149, 231),
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => const TelaHistoricoAluno(),
+                              ),
+                            );
+                          },
                           borderRadius: BorderRadius.circular(12),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
@@ -197,7 +211,13 @@ class _TelaPrincipalState extends ConsumerState<TelaPrincipal> {
                           highlightColor: Color.fromARGB(108, 101, 149, 231),
                           splashColor: const Color.fromARGB(108, 101, 149, 231),
                           onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=> TelaMembros(temSelecao: false)));
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder:
+                            //         (context) => TelaMembros(temSelecao: false),
+                            //   ),
+                            // );
                           },
                           borderRadius: BorderRadius.circular(12),
                           child: Padding(
@@ -215,7 +235,7 @@ class _TelaPrincipalState extends ConsumerState<TelaPrincipal> {
                                 ),
                                 SizedBox(height: 8),
                                 Text(
-                                  'Gerenciar Membros',
+                                  'Relatórios',
                                   style: Theme.of(
                                     context,
                                   ).textTheme.labelMedium?.copyWith(
@@ -239,7 +259,12 @@ class _TelaPrincipalState extends ConsumerState<TelaPrincipal> {
                           highlightColor: Color.fromARGB(108, 101, 149, 231),
                           splashColor: const Color.fromARGB(108, 101, 149, 231),
                           onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>TrimestreForm()));
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => TrimestreForm(),
+                              ),
+                            );
                           },
                           borderRadius: BorderRadius.circular(12),
                           child: Padding(
@@ -252,13 +277,13 @@ class _TelaPrincipalState extends ConsumerState<TelaPrincipal> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Image.asset(
-                                  'assets/images/icone_opcoes/gerenciar_classe_icon.png',
+                                  'assets/images/icone_opcoes/trimestre_icon.png',
                                   width: 63,
                                   height: 63,
                                 ),
                                 SizedBox(height: 8),
                                 Text(
-                                  'Gerenciar Classe',
+                                  'Trimestre',
                                   style: Theme.of(
                                     context,
                                   ).textTheme.labelMedium?.copyWith(
@@ -397,7 +422,7 @@ class _TelaPrincipalState extends ConsumerState<TelaPrincipal> {
             itemMenu == 0
                 ? SingleChildScrollView(child: ListaOpcoes())
                 : (itemMenu == 1)
-                ? Turmas(temCadastro: true,)
+                ? Turmas(temCadastro: true)
                 : PerfilUsuario(),
         bottomNavigationBar: BottomNavigationBar(
           //showSelectedLabels: false,

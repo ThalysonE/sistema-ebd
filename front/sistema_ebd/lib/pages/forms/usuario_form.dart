@@ -26,8 +26,7 @@ class _UsuarioFormState extends ConsumerState<UsuarioForm> {
     final usuarioProvider = refUser.read(usuarioLogado.notifier);
     var statusCode = await usuarioProvider.login(_login, _senha);
     if (statusCode == 200) {
-      Navigator.pushReplacementNamed(
-        context, '/home');
+      Navigator.pushReplacementNamed(context, '/home');
     } else if (statusCode == 401) {
       MostrarErro('Nome de usuário ou senha inválidos.');
     } else if (statusCode == null) {
@@ -36,7 +35,7 @@ class _UsuarioFormState extends ConsumerState<UsuarioForm> {
       );
     }
     setState(() {
-      isLoading = false; 
+      isLoading = false;
     });
   }
 
@@ -56,259 +55,278 @@ class _UsuarioFormState extends ConsumerState<UsuarioForm> {
   void initState() {
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 30),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Login',
-              style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                fontSize: 35,
-                fontWeight: FontWeight.bold,
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 30),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Login',
+                style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                  fontSize: 35,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Bem vindo de volta!',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Color(0xFF4B5768),
-                fontSize: 18,
-                fontWeight: FontWeight.w400,
+              SizedBox(height: 8),
+              Text(
+                'Bem vindo de volta!',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Color(0xFF4B5768),
+                  fontSize: 18,
+                  fontWeight: FontWeight.w400,
+                ),
               ),
-            ),
-            SizedBox(height: 40),
-            Form(
-              key: keyform,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Usuário',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
+              SizedBox(height: 40),
+              Form(
+                key: keyform,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Usuário',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 10),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: 1.5,
-                          color: Color(0xFFD0D5DD),
+                    SizedBox(height: 10),
+                    TextFormField(
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 1.5,
+                            color: Color(0xFFD0D5DD),
+                          ),
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: 1.5,
-                          color:Theme.of(context).buttonTheme.colorScheme!.primary,
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 1.5,
+                            color:
+                                Theme.of(
+                                  context,
+                                ).buttonTheme.colorScheme!.primary,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      errorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(width: 1.5, color: Colors.red),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: 1.5,
-                          color:
-                              Theme.of(
-                                context,
-                              ).buttonTheme.colorScheme!.primary,
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 1.5, color: Colors.red),
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      label: Text(
-                        'Erica',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Color(0xFFAFADBE),
-                          fontWeight: FontWeight.w700,
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 1.5,
+                            color:
+                                Theme.of(
+                                  context,
+                                ).buttonTheme.colorScheme!.primary,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
                         ),
+                        label: Text(
+                          'Erica',
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(
+                            color: Color(0xFFAFADBE),
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        floatingLabelBehavior: FloatingLabelBehavior.never,
                       ),
-                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      textInputAction: TextInputAction.next,
+                      keyboardType: TextInputType.text,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor, insira um nome de usuário.';
+                        } else if (value.length < 3) {
+                          return 'Nome de usuário deve ter mais de 3 caracteres';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _login = value!;
+                      },
                     ),
-                    textInputAction: TextInputAction.next,
-                    keyboardType: TextInputType.text,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Por favor, insira um nome de usuário.';
-                      } else if (value.length < 3) {
-                        return 'Nome de usuário deve ter mais de 3 caracteres';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _login = value!;
-                    },
-                  ),
-                  SizedBox(height: 35),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Senha',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
+                    SizedBox(height: 35),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Senha',
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      Text(
-                        'Esqueceu a senha?',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF538CC1),
+                        Text(
+                          'Esqueceu a senha?',
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF538CC1),
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 10),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: 1.5,
-                          color: Color(0xFFD0D5DD),
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    TextFormField(
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 1.5,
+                            color: Color(0xFFD0D5DD),
+                          ),
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: 1.5,
-                          color:
-                              Theme.of(
-                                context,
-                              ).buttonTheme.colorScheme!.primary,
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 1.5,
+                            color:
+                                Theme.of(
+                                  context,
+                                ).buttonTheme.colorScheme!.primary,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      errorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(width: 1.5, color: Colors.red),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: 1.5,
-                          color:
-                              Theme.of(
-                                context,
-                              ).buttonTheme.colorScheme!.primary,
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 1.5, color: Colors.red),
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            esconderSenha = !esconderSenha;
-                          });
-                        },
-                        icon: Icon(
-                          esconderSenha
-                              ? Icons.remove_red_eye_outlined
-                              : Icons.remove_red_eye,
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 1.5,
+                            color:
+                                Theme.of(
+                                  context,
+                                ).buttonTheme.colorScheme!.primary,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                      ),
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              esconderSenha = !esconderSenha;
+                            });
+                          },
+                          icon: Icon(
+                            esconderSenha
+                                ? Icons.remove_red_eye_outlined
+                                : Icons.remove_red_eye,
+                          ),
+                        ),
 
-                      label: Text(
-                        '. . . . . ',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Color(0xFFAFADBE),
-                          fontWeight: FontWeight.bold,
+                        label: Text(
+                          '. . . . . ',
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(
+                            color: Color(0xFFAFADBE),
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
+                        floatingLabelBehavior: FloatingLabelBehavior.never,
                       ),
-                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      keyboardType: TextInputType.visiblePassword,
+                      obscureText: esconderSenha,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor, insira uma senha válida.';
+                        } else if (value.length < 8) {
+                          return 'Insira uma senha maior que 8 digitos';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _senha = value!;
+                      },
+                      textInputAction: TextInputAction.done,
                     ),
-                    keyboardType: TextInputType.visiblePassword,
-                    obscureText: esconderSenha,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Por favor, insira uma senha válida.';
-                      } else if (value.length < 8) {
-                        return 'Insira uma senha maior que 8 digitos';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _senha = value!;
-                    },
-                    textInputAction: TextInputAction.done,
-                  ),
-                  SizedBox(height: 15),
-                  Row(
-                    children: [
-                      Switch(
-                        value: ativadoLembrar,
-                        activeColor: Colors.white,
-                        activeTrackColor: Color(0xFF1565C0),
-                        inactiveThumbColor: Color(0xFF1565C0),
-                        onChanged: (value) {
-                          setState(() {
-                            ativadoLembrar = value;
-                          });
-                        },
-                      ),
-                      SizedBox(width: 5),
-                      Text(
-                        'Lembrar de mim',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontSize: 12,
-                          color: Color(0xFF6A6C71),
-                          fontWeight: FontWeight.w800,
+                    SizedBox(height: 15),
+                    Row(
+                      children: [
+                        Switch(
+                          value: ativadoLembrar,
+                          activeColor: Colors.white,
+                          activeTrackColor: Color(0xFF1565C0),
+                          inactiveThumbColor: Color(0xFF1565C0),
+                          onChanged: (value) {
+                            setState(() {
+                              ativadoLembrar = value;
+                            });
+                          },
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 42),
-                  Center(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        elevation: 2,
-                        padding: EdgeInsets.symmetric(
-                          vertical: 13,
-                          horizontal: 130,
+                        SizedBox(width: 5),
+                        Text(
+                          'Lembrar de mim',
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(
+                            fontSize: 12,
+                            color: Color(0xFF6A6C71),
+                            fontWeight: FontWeight.w800,
+                          ),
                         ),
-                        backgroundColor: Color(0xFF1565C0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
+                      ],
+                    ),
+                    SizedBox(height: 42),
+                    Center(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          elevation: 2,
+                          padding: EdgeInsets.symmetric(
+                            vertical: 13,
+                            horizontal: 130,
+                          ),
+                          backgroundColor: Color(0xFF1565C0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
                         ),
-                      ),
-                      onPressed:
-                          isLoading
-                              ? null
-                              : () {
-                                if (keyform.currentState!.validate()) {
-                                  AutenticarUsuario(ref);
-                                }
-                              },
-                      child:
-                          isLoading
-                              ? SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(
-                                  color: Color(0xFF1565C0),
-                                ),
-                              )
-                              : Text(
+                        onPressed:
+                            isLoading
+                                ? null
+                                : () {
+                                  if (keyform.currentState!.validate()) {
+                                    AutenticarUsuario(ref);
+                                  }
+                                },
+                        child:
+                            isLoading
+                                ? SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    color: Color(0xFF1565C0),
+                                  ),
+                                )
+                                : Text(
                                   'Login',
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.bodyMedium?.copyWith(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
                                     fontSize: 15,
+                                  ),
                                 ),
-                              ),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

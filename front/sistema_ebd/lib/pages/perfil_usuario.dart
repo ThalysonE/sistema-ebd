@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sistema_ebd/pages/forms/cadastro_usuario_form.dart';
 import 'package:sistema_ebd/pages/sobre.dart';
+import 'package:sistema_ebd/pages/tela_membros.dart';
 import 'package:sistema_ebd/pages/tela_usuarios.dart';
 
 class PerfilUsuario extends StatefulWidget {
@@ -109,8 +111,57 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
                     color: Colors.white,
                   ),
                   child: ListTile(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=> TelaUsuarios(temSelecao: false)));
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TelaMembros(temSelecao: false),
+                        ),
+                      );
+                    },
+                    subtitle: Text(
+                      'Adicione ou edite dados dos membros da igreja',
+                      style: Theme.of(
+                        context,
+                      ).textTheme.labelMedium?.copyWith(fontSize: 12),
+                    ),
+                    leading: Icon(
+                      Icons.group_add,
+                      color: Color(0xFF1565C0),
+                      size: 28,
+                    ),
+                    title: Text(
+                      'Gerenciar Membros',
+                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    trailing: Icon(
+                      Icons.chevron_right,
+                      color: Color(0xFF1565C0),
+                      size: 35,
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 2.5, horizontal: 5),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Color.fromARGB(218, 231, 230, 237),
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.white,
+                  ),
+                  child: ListTile(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TelaUsuarios(temSelecao: false),
+                        ),
+                      );
                     },
                     subtitle: Text(
                       'Adicione ou edite os dados dos usuários',
@@ -125,6 +176,80 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
                     ),
                     title: Text(
                       'Gerenciar Usuários',
+                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    trailing: Icon(
+                      Icons.chevron_right,
+                      color: Color(0xFF1565C0),
+                      size: 35,
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 2.5, horizontal: 5),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Color.fromARGB(218, 231, 230, 237),
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.white,
+                  ),
+                  child: ListTile(
+                    onTap: () {},
+                    subtitle: Text(
+                      'Visualize os relatórios detalhadamente',
+                      style: Theme.of(
+                        context,
+                      ).textTheme.labelMedium?.copyWith(fontSize: 12),
+                    ),
+                    leading: Icon(
+                      Icons.assessment,
+                      color: Color(0xFF1565C0),
+                      size: 28,
+                    ),
+                    title: Text(
+                      'Relatórios',
+                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    trailing: Icon(
+                      Icons.chevron_right,
+                      color: Color(0xFF1565C0),
+                      size: 35,
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 2.5, horizontal: 5),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Color.fromARGB(218, 231, 230, 237),
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.white,
+                  ),
+                  child: ListTile(
+                    onTap: () {},
+                    subtitle: Text(
+                      'Dados financeiros da EBD',
+                      style: Theme.of(
+                        context,
+                      ).textTheme.labelMedium?.copyWith(fontSize: 12),
+                    ),
+                    leading: Icon(
+                      Icons.monetization_on,
+                      color: Color(0xFF1565C0),
+                      size: 28,
+                    ),
+                    title: Text(
+                      'Financeiro',
                       style: Theme.of(context).textTheme.labelMedium?.copyWith(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
@@ -183,7 +308,38 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
                 Center(
                   child: InkWell(
                     borderRadius: BorderRadius.circular(8),
-                    onTap: () {},
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder:
+                            (context) => AlertDialog(
+                              title: Text('Sair'),
+                              content: Text(
+                                'Deseja realmente sair do sistema?',
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: Text('Cancelar'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(
+                                      context,
+                                    ).pushNamedAndRemoveUntil(
+                                      '/login',
+                                      (route) => false,
+                                    );
+                                  },
+                                  child: Text(
+                                    'Sair',
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                ),
+                              ],
+                            ),
+                      );
+                    },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(

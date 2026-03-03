@@ -6,6 +6,7 @@ import 'package:sistema_ebd/Widgets/appbar.dart';
 import 'package:sistema_ebd/models/usuarioLogado.dart';
 import 'package:sistema_ebd/pages/turmas.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 class TrimestreForm extends ConsumerStatefulWidget {
   const TrimestreForm({super.key});
 
@@ -27,44 +28,61 @@ class _TrimestreFormState extends ConsumerState<TrimestreForm> {
   void initState() {
     super.initState();
     usuarioLog = ref.read(usuarioLogado);
+    periodoController.text = '1° Trimestre';
     dataControllerInicio.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
-    dataControllerPrecisao.text = DateFormat('dd/MM/yyyy').format(DateTime.now().add(Duration(days: 7 * 12)));
+    dataControllerPrecisao.text = DateFormat(
+      'dd/MM/yyyy',
+    ).format(DateTime.now().add(Duration(days: 7 * 12)));
   }
-   showError(String msg){
+
+  showError(String msg) {
     return ScaffoldMessenger.of(context).showSnackBar(
-       SnackBar(
+      SnackBar(
         backgroundColor: Colors.red[400],
         duration: Duration(seconds: 2),
-        content: Center(
-          child: Text(msg)
-        )
-      )
+        content: Center(child: Text(msg)),
+      ),
     );
   }
-  Future<void>cadastroTrimestre() async{
+
+  Future<void> cadastroTrimestre() async {
     setState(() {
       isLoadingCadastro = true;
     });
-    if(formKey.currentState!.validate()){
+    if (formKey.currentState!.validate()) {
       int ano = DateFormat('dd/MM/yyyy').parse(dataControllerInicio.text).year;
-      final dataInicio = DateFormat('yyyy-MM-dd').format(DateFormat('dd/MM/yyyy').parse(dataControllerInicio.text));
-      final dataFim = DateFormat('yyyy-MM-dd').format(DateFormat('dd/MM/yyyy').parse(dataControllerPrecisao.text));
-      try{
-        final idTrimestre = await trimestreRepositorio.postTrimestre(token: usuarioLog.token, titulo: periodoController.text, ano: ano, numTrimestre: numPeriodo, dataInicio: dataInicio, dataFim: dataFim);
+      final dataInicio = DateFormat(
+        'yyyy-MM-dd',
+      ).format(DateFormat('dd/MM/yyyy').parse(dataControllerInicio.text));
+      final dataFim = DateFormat(
+        'yyyy-MM-dd',
+      ).format(DateFormat('dd/MM/yyyy').parse(dataControllerPrecisao.text));
+      try {
+        final idTrimestre = await trimestreRepositorio.postTrimestre(
+          token: usuarioLog.token,
+          titulo: periodoController.text,
+          ano: ano,
+          numTrimestre: numPeriodo,
+          dataInicio: dataInicio,
+          dataFim: dataFim,
+        );
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => Turmas(temCadastro: false, idTrimestre: idTrimestre,),
+            builder:
+                (context) =>
+                    Turmas(temCadastro: false, idTrimestre: idTrimestre),
           ),
         );
-      }catch(e){
+      } catch (e) {
         showError(e.toString());
       }
     }
     setState(() {
       isLoadingCadastro = false;
     });
-  } 
+  }
+
   Widget conteudo(context) {
     return Padding(
       padding: EdgeInsets.only(top: 40, right: 25, left: 25),
@@ -83,8 +101,8 @@ class _TrimestreFormState extends ConsumerState<TrimestreForm> {
             SizedBox(height: 8),
             DropdownMenu(
               controller: periodoController,
-              onSelected: (value){
-                if(value!=null){
+              onSelected: (value) {
+                if (value != null) {
                   numPeriodo = value;
                 }
               },
@@ -108,7 +126,7 @@ class _TrimestreFormState extends ConsumerState<TrimestreForm> {
               ),
               width: double.infinity,
               initialSelection: 1,
-              
+
               dropdownMenuEntries: [
                 DropdownMenuEntry(value: 1, label: '1° Trimestre'),
                 DropdownMenuEntry(value: 2, label: '2° Trimestre'),
@@ -144,9 +162,13 @@ class _TrimestreFormState extends ConsumerState<TrimestreForm> {
                 ),
               ),
               validator: (value) {
-                final dataInicio = DateFormat('dd/MM/yyyy').parse(dataControllerInicio.text);
-                final dataFim = DateFormat('dd/MM/yyyy').parse(dataControllerPrecisao.text);
-                if(dataInicio.isAfter(dataFim)){
+                final dataInicio = DateFormat(
+                  'dd/MM/yyyy',
+                ).parse(dataControllerInicio.text);
+                final dataFim = DateFormat(
+                  'dd/MM/yyyy',
+                ).parse(dataControllerPrecisao.text);
+                if (dataInicio.isAfter(dataFim)) {
                   return 'Data de início maior que a data de previsão de termino';
                 }
                 return null;
@@ -194,10 +216,14 @@ class _TrimestreFormState extends ConsumerState<TrimestreForm> {
                   ),
                 ),
               ),
-              validator: (value){
-                final dataInicio = DateFormat('dd/MM/yyyy').parse(dataControllerInicio.text);
-                final dataFim = DateFormat('dd/MM/yyyy').parse(dataControllerPrecisao.text);
-                if(dataInicio.isAfter(dataFim)){
+              validator: (value) {
+                final dataInicio = DateFormat(
+                  'dd/MM/yyyy',
+                ).parse(dataControllerInicio.text);
+                final dataFim = DateFormat(
+                  'dd/MM/yyyy',
+                ).parse(dataControllerPrecisao.text);
+                if (dataInicio.isAfter(dataFim)) {
                   return 'Data de previsão de termino é menor que a data de início';
                 }
                 return null;
@@ -219,7 +245,7 @@ class _TrimestreFormState extends ConsumerState<TrimestreForm> {
             Align(
               alignment: Alignment.center,
               child: ElevatedButton(
-                onPressed: isLoadingCadastro? null: cadastroTrimestre,
+                onPressed: isLoadingCadastro ? null : cadastroTrimestre,
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(vertical: 13, horizontal: 100),
                   backgroundColor: Color(0xFF1565C0),
@@ -228,22 +254,25 @@ class _TrimestreFormState extends ConsumerState<TrimestreForm> {
                     borderRadius: BorderRadius.circular(15),
                   ),
                 ),
-                child: isLoadingCadastro
-                  ? SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      color: Color(0xFF1565C0),
-                    )
-                  )
-                  : Text(
-                    'Continuar',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.white,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ) ,
+                child:
+                    isLoadingCadastro
+                        ? SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            color: Color(0xFF1565C0),
+                          ),
+                        )
+                        : Text(
+                          'Continuar',
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(
+                            color: Colors.white,
+                            fontSize: 17,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
               ),
             ),
             SizedBox(height: 20),

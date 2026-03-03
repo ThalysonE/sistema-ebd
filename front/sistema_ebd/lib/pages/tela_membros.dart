@@ -11,7 +11,8 @@ import 'package:sistema_ebd/pages/forms/membro_form.dart';
 
 class TelaMembros extends ConsumerStatefulWidget {
   final bool temSelecao;
-  TelaMembros({super.key, required this.temSelecao});
+  final bool selecaoUnica;
+  TelaMembros({super.key, required this.temSelecao, this.selecaoUnica = false});
 
   @override
   ConsumerState<TelaMembros> createState() => _TelaMembrosState();
@@ -31,25 +32,27 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
   MembrosRepositories membrosRequisicao = MembrosRepositories();
   List<Membro> membros = [];
 
-  showError(String msg, int cor){
+  showError(String msg, int cor) {
     return ScaffoldMessenger.of(context).showSnackBar(
-       SnackBar(
-        backgroundColor: cor == 1? Colors.red[400]: Colors.orange[400],
+      SnackBar(
+        backgroundColor: cor == 1 ? Colors.red[400] : Colors.orange[400],
         duration: Duration(seconds: 2),
-        content: Center(
-          child: Text(msg)
-        )
-      )
+        content: Center(child: Text(msg)),
+      ),
     );
   }
+
   Future<void> fetchMembros(int page) async {
-    try{
-      final resposta = await membrosRequisicao.getMembros(numeroPage: page, token: userLog.token);
+    try {
+      final resposta = await membrosRequisicao.getMembros(
+        numeroPage: page,
+        token: userLog.token,
+      );
       membros.addAll(resposta);
       setState(() {
         membros;
       });
-    }catch(e){
+    } catch (e) {
       showError(e.toString(), 1);
     }
   }
@@ -58,13 +61,12 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
   void initState() {
     super.initState();
     userLog = ref.read(usuarioLogado);
-    
-    fetchMembros(numeroPage++).then((_){
+
+    fetchMembros(numeroPage++).then((_) {
       setState(() {
         isLoading = false;
       });
     });
-
 
     _controller.addListener(() {
       if (_controller.position.maxScrollExtent == _controller.offset) {
@@ -82,6 +84,66 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
         }
       }
     });
+  }
+
+  Widget _buildTrailing(Membro item) {
+    if (widget.selecaoUnica) {
+      return const Icon(
+        Icons.chevron_right,
+        color: Color(0xFF1565C0),
+        size: 28,
+      );
+    }
+    if (widget.temSelecao == false) {
+      return PopupMenuButton(
+        itemBuilder:
+            (context) => [
+              PopupMenuItem(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MembroForm(membro: item),
+                    ),
+                  );
+                },
+                value: 'editar',
+                child: Row(
+                  children: [
+                    Icon(Icons.edit, color: Colors.amber, size: 20),
+                    SizedBox(width: 10),
+                    Text('Editar'),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                value: 'excluir',
+                child: Row(
+                  children: [
+                    Icon(Icons.delete, color: Colors.red, size: 20),
+                    SizedBox(width: 10),
+                    Text('Excluir'),
+                  ],
+                ),
+              ),
+            ],
+      );
+    }
+    return Checkbox(
+      value: listaIdMembrosSelecionados.contains(item.id),
+      onChanged: (value) {
+        if (value! == true) {
+          setState(() {
+            listaIdMembrosSelecionados.add(item.id);
+          });
+        } else if (value == false) {
+          setState(() {
+            listaIdMembrosSelecionados.remove(item.id);
+          });
+        }
+        print(listaIdMembrosSelecionados);
+      },
+    );
   }
 
   Widget retornaMembroItem(Membro item) {
@@ -102,56 +164,8 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
             fontSize: 15,
           ),
         ),
-        trailing:
-            widget.temSelecao == false
-                ? PopupMenuButton(
-                  itemBuilder:
-                      (context) => [
-                        PopupMenuItem(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => MembroForm(membro: item),
-                              ),
-                            );
-                          },
-                          value: 'editar',
-                          child: Row(
-                            children: [
-                              Icon(Icons.edit, color: Colors.amber, size: 20),
-                              SizedBox(width: 10),
-                              Text('Editar'),
-                            ],
-                          ),
-                        ),
-                        PopupMenuItem(
-                          value: 'excluir',
-                          child: Row(
-                            children: [
-                              Icon(Icons.delete, color: Colors.red, size: 20),
-                              SizedBox(width: 10),
-                              Text('Excluir'),
-                            ],
-                          ),
-                        ),
-                      ],
-                )
-                : Checkbox(
-                  value: listaIdMembrosSelecionados.contains(item.id),
-                  onChanged: (value) {
-                    if (value! == true) {
-                      setState(() {
-                      listaIdMembrosSelecionados.add(item.id);
-                      });
-                    } else if (value == false) {
-                      setState(() {
-                        listaIdMembrosSelecionados.remove(item.id);
-                      });
-                    }
-                    print(listaIdMembrosSelecionados);
-                  },
-                ),
+        onTap: widget.selecaoUnica ? () => Navigator.pop(context, item) : null,
+        trailing: _buildTrailing(item),
       ),
     );
   }
@@ -159,7 +173,10 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
   void searchMembro(String query) async {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(Duration(milliseconds: 700), () async {
-      List<Membro>? resultado = await membrosRequisicao.searchMembro(nome: query, token: userLog.token);
+      List<Membro>? resultado = await membrosRequisicao.searchMembro(
+        nome: query,
+        token: userLog.token,
+      );
       pesquisando = true;
       if (resultado == null) {
         print('Erro na pesquisa/sem internet para pesquisar');
@@ -250,7 +267,10 @@ class _TelaMembrosState extends ConsumerState<TelaMembros> {
     }
     return Material(
       child: Scaffold(
-        appBar: CriarAppBar(context, "Controle de Membros"),
+        appBar: CriarAppBar(
+          context,
+          widget.selecaoUnica ? "Selecionar Membro" : "Controle de Membros",
+        ),
         body: conteudo,
         floatingActionButton:
             widget.temSelecao == false

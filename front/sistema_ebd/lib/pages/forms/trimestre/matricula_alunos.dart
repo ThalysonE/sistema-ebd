@@ -5,32 +5,30 @@ import 'package:sistema_ebd/Data/variaveisGlobais/variaveis_globais.dart';
 import 'package:sistema_ebd/Widgets/appbar.dart';
 import 'package:sistema_ebd/models/trimestre/turma_trimestre.dart';
 import 'package:sistema_ebd/models/usuarioLogado.dart';
-import 'package:sistema_ebd/pages/forms/trimestre/lista_professores.dart';
-import 'package:sistema_ebd/pages/forms/trimestre/matricula_alunos.dart';
+import 'package:sistema_ebd/pages/forms/trimestre/lista_membros_matricula.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AlocacaoProfessores extends ConsumerStatefulWidget {
+class MatriculaAlunos extends ConsumerStatefulWidget {
   final String idTrimestre;
-  const AlocacaoProfessores({super.key, required this.idTrimestre});
+  const MatriculaAlunos({super.key, required this.idTrimestre});
 
   @override
-  ConsumerState<AlocacaoProfessores> createState() =>
-      _AlocacaoProfessoresState();
+  ConsumerState<MatriculaAlunos> createState() => _MatriculaAlunosState();
 }
 
-class _AlocacaoProfessoresState extends ConsumerState<AlocacaoProfessores> {
+class _MatriculaAlunosState extends ConsumerState<MatriculaAlunos> {
   final ScrollController _controller = ScrollController();
   late UsuarioLogado usuarioLog;
 
-  bool isLoading = true; // carregar pagina
-  bool fetchMaisTurmas = false; // loading do infinity scroll
-  bool cadastrandoProfessores =
-      false; //loading do cadastrar professores(quano clica em continuar)
+  bool isLoading = true;
+  bool fetchMaisTurmas = false;
+  bool matriculandoAlunos = false;
 
   int numeroPage = 1;
   List<TurmaTrimestre> turmastrimestre = [];
 
   final trimestreTurmaRequisicao = TrimestreRepository();
+
   @override
   void initState() {
     super.initState();
@@ -58,7 +56,7 @@ class _AlocacaoProfessoresState extends ConsumerState<AlocacaoProfessores> {
     });
   }
 
-  List<Map<String, dynamic>> listaDeProfessoresAlocar = [];
+  List<Map<String, dynamic>> listaDeAlunosMatricular = [];
 
   showError(String msg, int cor) {
     return ScaffoldMessenger.of(context).showSnackBar(
@@ -70,46 +68,42 @@ class _AlocacaoProfessoresState extends ConsumerState<AlocacaoProfessores> {
     );
   }
 
-  Future<void> alocarProfessores() async {
+  Future<void> matricularAlunos() async {
     setState(() {
-      cadastrandoProfessores = true;
+      matriculandoAlunos = true;
     });
     try {
-      for (final item in listaDeProfessoresAlocar) {
-        await trimestreTurmaRequisicao.alocarProfessoresTrimestre(
-          token: usuarioLog.token,
-          idTurmaTrimestre: item['idTrimesterRoom'],
-          professoresId: item['idsProfessoresSelecionados'],
-        );
+      for (final item in listaDeAlunosMatricular) {
+        if ((item['idsAlunosSelecionados'] as List).isNotEmpty) {
+          await trimestreTurmaRequisicao.matricularAlunos(
+            token: usuarioLog.token,
+            idTurmaTrimestre: item['idTrimesterRoom'],
+            alunosId: item['idsAlunosSelecionados'],
+          );
+        }
       }
       setState(() {
-        cadastrandoProfessores = false;
+        matriculandoAlunos = false;
       });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             backgroundColor: Colors.green,
             duration: Duration(seconds: 2),
-            content: Center(child: Text('Professores alocados com sucesso!')),
+            content: Center(child: Text('Alunos matriculados com sucesso!')),
           ),
         );
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder:
-                (context) => MatriculaAlunos(idTrimestre: widget.idTrimestre),
-          ),
-        );
+        Navigator.of(context).popUntil((route) => route.isFirst);
       }
     } catch (e) {
       setState(() {
-        cadastrandoProfessores = false;
+        matriculandoAlunos = false;
       });
       showError(e.toString(), 1);
     }
   }
 
   Future<void> getTurmasTrimestre(int page) async {
-    print('numero da pagina : ${page}');
     try {
       final resposta = await trimestreTurmaRequisicao.getTurmasTrimestre(
         numeroPage: page,
@@ -118,65 +112,65 @@ class _AlocacaoProfessoresState extends ConsumerState<AlocacaoProfessores> {
       );
       setState(() {
         turmastrimestre.addAll(resposta);
-        _inicializarListaProfessores();
+        _inicializarListaAlunos();
       });
     } catch (e) {
       showError(e.toString(), 1);
     }
   }
 
-  void _inicializarListaProfessores() {
-    while (listaDeProfessoresAlocar.length < turmastrimestre.length) {
-      final item = turmastrimestre[listaDeProfessoresAlocar.length];
-      listaDeProfessoresAlocar.add({
+  void _inicializarListaAlunos() {
+    while (listaDeAlunosMatricular.length < turmastrimestre.length) {
+      final item = turmastrimestre[listaDeAlunosMatricular.length];
+      listaDeAlunosMatricular.add({
         "idTrimesterRoom": item.id,
-        "idsProfessoresSelecionados": [],
+        "idsAlunosSelecionados": [],
       });
     }
   }
 
-  direcionaPaginaProfessores(int index, item) async {
-    List<dynamic> idsProfSelecionadosEmOutraTurma = [];
-    List<dynamic> idsProfSelecionados =
-        listaDeProfessoresAlocar[index]["idsProfessoresSelecionados"];
-    for (Map<String, dynamic> x in listaDeProfessoresAlocar) {
-      if (!x['idsProfessoresSelecionados'].isEmpty &&
-          x != listaDeProfessoresAlocar[index]) {
-        idsProfSelecionadosEmOutraTurma.addAll(x['idsProfessoresSelecionados']);
+  direcionaPaginaMembros(int index, TurmaTrimestre item) async {
+    List<dynamic> idsMembrosEmOutraTurma = [];
+    List<dynamic> idsMembrosSelecionados =
+        listaDeAlunosMatricular[index]["idsAlunosSelecionados"];
+    for (Map<String, dynamic> x in listaDeAlunosMatricular) {
+      if (!x['idsAlunosSelecionados'].isEmpty &&
+          x != listaDeAlunosMatricular[index]) {
+        idsMembrosEmOutraTurma.addAll(x['idsAlunosSelecionados']);
       }
     }
-    final retornoIdsProfessores = await Navigator.push(
+    final retornoIdsMembros = await Navigator.push(
       context,
       MaterialPageRoute(
         builder:
-            (context) => Professores(
+            (context) => MembrosMatricula(
               turma: item.nome,
-              listaProfessoresSelecionados: idsProfSelecionados,
-              professoresRemover: idsProfSelecionadosEmOutraTurma,
+              listaMembrosSelecionados: idsMembrosSelecionados,
+              membrosRemover: idsMembrosEmOutraTurma,
             ),
       ),
     );
-    if (retornoIdsProfessores != null) {
-      if (retornoIdsProfessores.length > idsProfSelecionados.length) {
-        for (final id in retornoIdsProfessores) {
-          if (!idsProfSelecionados.contains(id)) {
-            idsProfSelecionados.add(id);
-            turmastrimestre[index].qtdProfessores += 1;
+    if (retornoIdsMembros != null) {
+      if (retornoIdsMembros.length > idsMembrosSelecionados.length) {
+        for (final id in retornoIdsMembros) {
+          if (!idsMembrosSelecionados.contains(id)) {
+            idsMembrosSelecionados.add(id);
+            turmastrimestre[index].registros += 1;
           }
         }
-      } else if (retornoIdsProfessores.length < idsProfSelecionados.length) {
-        for (final id in List.from(idsProfSelecionados)) {
-          if (!retornoIdsProfessores.contains(id)) {
-            idsProfSelecionados.remove(id);
-            turmastrimestre[index].qtdProfessores -= 1;
+      } else if (retornoIdsMembros.length < idsMembrosSelecionados.length) {
+        for (final id in List.from(idsMembrosSelecionados)) {
+          if (!retornoIdsMembros.contains(id)) {
+            idsMembrosSelecionados.remove(id);
+            turmastrimestre[index].registros -= 1;
           }
         }
       }
       setState(() {
-        turmastrimestre[index].qtdProfessores;
+        turmastrimestre[index].registros;
       });
-      listaDeProfessoresAlocar[index]['idsProfessoresSelecionados'] =
-          idsProfSelecionados;
+      listaDeAlunosMatricular[index]['idsAlunosSelecionados'] =
+          idsMembrosSelecionados;
     }
   }
 
@@ -188,7 +182,7 @@ class _AlocacaoProfessoresState extends ConsumerState<AlocacaoProfessores> {
           Align(
             alignment: Alignment.center,
             child: Text(
-              'Selecione a turma que deseje alocar professores',
+              'Selecione a turma para matricular alunos',
               textAlign: TextAlign.center,
               style: Theme.of(
                 context,
@@ -225,16 +219,13 @@ class _AlocacaoProfessoresState extends ConsumerState<AlocacaoProfessores> {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(12),
                       onTap: () {
-                        direcionaPaginaProfessores(index, item);
+                        direcionaPaginaMembros(index, item);
                       },
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
                           border: Border(
-                            left: BorderSide(
-                              width: 10,
-                              color: Colors.deepOrangeAccent,
-                            ),
+                            left: BorderSide(width: 10, color: Colors.teal),
                           ),
                         ),
                         child: ListTile(
@@ -259,14 +250,14 @@ class _AlocacaoProfessoresState extends ConsumerState<AlocacaoProfessores> {
                               ),
                               SizedBox(width: 8),
                               Text(
-                                item.qtdProfessores.toString(),
+                                item.registros.toString(),
                                 style: Theme.of(
                                   context,
                                 ).textTheme.labelMedium!.copyWith(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w700,
                                   color:
-                                      item.qtdProfessores == 0
+                                      item.registros == 0
                                           ? Colors.red
                                           : Colors.green,
                                 ),
@@ -302,7 +293,7 @@ class _AlocacaoProfessoresState extends ConsumerState<AlocacaoProfessores> {
   Widget build(BuildContext context) {
     return Material(
       child: Scaffold(
-        appBar: CriarAppBar(context, 'Alocar Professores'),
+        appBar: CriarAppBar(context, 'Matricular Alunos'),
         body:
             isLoading
                 ? Center(child: CircularProgressIndicator())
@@ -315,27 +306,25 @@ class _AlocacaoProfessoresState extends ConsumerState<AlocacaoProfessores> {
             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 50),
             child: ElevatedButton(
               onPressed:
-                  cadastrandoProfessores
+                  matriculandoAlunos
                       ? null
                       : () {
-                        if (listaDeProfessoresAlocar.isNotEmpty) {
-                          bool todasAsTurmasTemProfessor = true;
-                          for (final x in turmastrimestre) {
-                            if (x.qtdProfessores == 0) {
-                              todasAsTurmasTemProfessor = false;
+                        if (listaDeAlunosMatricular.isNotEmpty) {
+                          bool algumAlunoSelecionado = false;
+                          for (final x in listaDeAlunosMatricular) {
+                            if ((x['idsAlunosSelecionados'] as List)
+                                .isNotEmpty) {
+                              algumAlunoSelecionado = true;
                               break;
                             }
                           }
-                          if (todasAsTurmasTemProfessor) {
-                            alocarProfessores();
+                          if (algumAlunoSelecionado) {
+                            matricularAlunos();
                           } else {
-                            showError(
-                              'Todas as turmas precisam ter professores',
-                              1,
-                            );
+                            showError('Nenhum aluno selecionado', 2);
                           }
                         } else {
-                          showError('Nenhum professor selecionado', 2);
+                          showError('Nenhum aluno selecionado', 2);
                         }
                       },
               style: ElevatedButton.styleFrom(
@@ -347,7 +336,7 @@ class _AlocacaoProfessoresState extends ConsumerState<AlocacaoProfessores> {
                 ),
               ),
               child:
-                  cadastrandoProfessores
+                  matriculandoAlunos
                       ? SizedBox(
                         height: 20,
                         width: 20,
@@ -356,7 +345,7 @@ class _AlocacaoProfessoresState extends ConsumerState<AlocacaoProfessores> {
                         ),
                       )
                       : Text(
-                        'Continuar',
+                        'Finalizar',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Colors.white,
                           fontSize: 17,
