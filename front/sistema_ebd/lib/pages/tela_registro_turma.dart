@@ -233,15 +233,30 @@ class _TelaRegistroTurmaState extends ConsumerState<TelaRegistroTurma> {
               const SizedBox(height: 12),
               _buildCampoTitulo(),
               const SizedBox(height: 16),
-              _buildContadorRow('Visitantes', _visitantes, (v) {
-                setState(() => _visitantes = v);
-              }, assetPath: 'assets/images/relatorio/visitantes.png'),
-              _buildContadorRow('Bíblias', _biblias, (v) {
-                setState(() => _biblias = v);
-              }, assetPath: 'assets/images/relatorio/biblias.png'),
-              _buildContadorRow('Revistas', _revistas, (v) {
-                setState(() => _revistas = v);
-              }, assetPath: 'assets/images/relatorio/revista.png'),
+              _buildContadorRow(
+                'Visitantes',
+                _visitantes,
+                (v) {
+                  setState(() => _visitantes = v);
+                },
+                assetPath: 'assets/images/relatorio/visitantes.png',
+              ),
+              _buildContadorRow(
+                'Bíblias',
+                _biblias,
+                (v) {
+                  setState(() => _biblias = v);
+                },
+                assetPath: 'assets/images/relatorio/biblias.png',
+              ),
+              _buildContadorRow(
+                'Revistas',
+                _revistas,
+                (v) {
+                  setState(() => _revistas = v);
+                },
+                assetPath: 'assets/images/relatorio/revista.png',
+              ),
               _buildContadorRowOfertas(),
 
               const SizedBox(height: 24),
@@ -449,12 +464,7 @@ class _TelaRegistroTurmaState extends ConsumerState<TelaRegistroTurma> {
       child: Row(
         children: [
           if (assetPath != null) ...[
-            Image.asset(
-              assetPath,
-              width: 24,
-              height: 24,
-              fit: BoxFit.contain,
-            ),
+            Image.asset(assetPath, width: 24, height: 24, fit: BoxFit.contain),
             const SizedBox(width: 10),
           ],
           Expanded(
