@@ -66,15 +66,19 @@ class DetalheTurma extends StatelessWidget {
         title: Text(
           nomeTurma,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: _corTexto,
-              ),
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: _corTexto,
+          ),
         ),
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(
-            _margemHorizontal, 20, _margemHorizontal, 24),
+          _margemHorizontal,
+          20,
+          _margemHorizontal,
+          24,
+        ),
         children: [
           _buildTituloSecao('Chamada'),
           const SizedBox(height: _espacamentoEntreTituloELista),
@@ -85,10 +89,9 @@ class DetalheTurma extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute<void>(
-                  builder: (context) => const TelaChamada(),
-                  settings: RouteSettings(
-                    arguments: TelaChamadaArgs(nomeTurma: nomeTurma),
-                  ),
+                  builder:
+                      (context) =>
+                          TelaChamada(nomeTurma: nomeTurma, alunos: const []),
                 ),
               );
             },
@@ -199,8 +202,7 @@ class _CardChamada extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             color: DetalheTurma._corFundoCard,
-            borderRadius:
-                BorderRadius.circular(DetalheTurma._raioBordaCard),
+            borderRadius: BorderRadius.circular(DetalheTurma._raioBordaCard),
           ),
           child: Row(
             children: [
@@ -221,8 +223,11 @@ class _CardChamada extends StatelessWidget {
                   ),
                 ),
               ),
-              const Icon(Icons.chevron_right,
-                  color: DetalheTurma._corTexto, size: 24),
+              const Icon(
+                Icons.chevron_right,
+                color: DetalheTurma._corTexto,
+                size: 24,
+              ),
             ],
           ),
         ),
@@ -246,24 +251,19 @@ class _ItemRelatorioTurma extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(
-          bottom: DetalheTurma._espacamentoEntreItens),
+        bottom: DetalheTurma._espacamentoEntreItens,
+      ),
       padding: const EdgeInsets.symmetric(
         horizontal: DetalheTurma._paddingCard,
         vertical: DetalheTurma._paddingCard,
       ),
       decoration: BoxDecoration(
         color: DetalheTurma._corFundoCard,
-        borderRadius:
-            BorderRadius.circular(DetalheTurma._raioBordaCard),
+        borderRadius: BorderRadius.circular(DetalheTurma._raioBordaCard),
       ),
       child: Row(
         children: [
-          Image.asset(
-            assetPath,
-            width: 28,
-            height: 28,
-            fit: BoxFit.contain,
-          ),
+          Image.asset(assetPath, width: 28, height: 28, fit: BoxFit.contain),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
@@ -325,21 +325,14 @@ class _BoxPercentualState extends State<_BoxPercentual>
           duration: _duracaoAnimacao,
         );
         final fracao = (widget.percentual / 100).clamp(0.0, 1.0);
-        _animacaoPreenchimento =
-            Tween<double>(begin: 0.0, end: fracao).animate(
-          CurvedAnimation(
-            parent: _controller!,
-            curve: Curves.easeOutCubic,
-          ),
+        _animacaoPreenchimento = Tween<double>(begin: 0.0, end: fracao).animate(
+          CurvedAnimation(parent: _controller!, curve: Curves.easeOutCubic),
         );
         _animacaoNumero = Tween<double>(
           begin: 0.0,
           end: widget.percentual.toDouble(),
         ).animate(
-          CurvedAnimation(
-            parent: _controller!,
-            curve: Curves.easeOutCubic,
-          ),
+          CurvedAnimation(parent: _controller!, curve: Curves.easeOutCubic),
         );
         _controller!.forward();
         if (mounted) setState(() {});
@@ -358,10 +351,7 @@ class _BoxPercentualState extends State<_BoxPercentual>
     if (_controller == null ||
         _animacaoPreenchimento == null ||
         _animacaoNumero == null) {
-      return _buildContainerBase(
-        heightFactor: 0.0,
-        valorPercentual: 0,
-      );
+      return _buildContainerBase(heightFactor: 0.0, valorPercentual: 0);
     }
     return AnimatedBuilder(
       animation: _controller!,
@@ -382,8 +372,7 @@ class _BoxPercentualState extends State<_BoxPercentual>
       height: DetalheTurma._alturaMinimaCardPercentual,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius:
-            BorderRadius.circular(DetalheTurma._raioBordaCard),
+        borderRadius: BorderRadius.circular(DetalheTurma._raioBordaCard),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.06),
@@ -393,8 +382,7 @@ class _BoxPercentualState extends State<_BoxPercentual>
         ],
       ),
       child: ClipRRect(
-        borderRadius:
-            BorderRadius.circular(DetalheTurma._raioBordaCard),
+        borderRadius: BorderRadius.circular(DetalheTurma._raioBordaCard),
         child: Stack(
           alignment: Alignment.center,
           children: [
@@ -407,8 +395,7 @@ class _BoxPercentualState extends State<_BoxPercentual>
                   decoration: BoxDecoration(
                     color: widget.corFundo,
                     borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(
-                          DetalheTurma._raioBordaCard),
+                      top: Radius.circular(DetalheTurma._raioBordaCard),
                     ),
                   ),
                 ),

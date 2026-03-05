@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sistema_ebd/Data/providers/usuario_provider.dart';
 import 'package:sistema_ebd/models/usuarioLogado.dart';
-import 'package:sistema_ebd/pages/forms/trimestre/trimestre_form.dart';
 import 'package:sistema_ebd/pages/perfil_usuario.dart';
 import 'package:sistema_ebd/pages/tela_membros.dart';
+import 'package:sistema_ebd/pages/forms/trimestre/trimestre_form.dart';
 import 'package:sistema_ebd/pages/tela_registro_aula.dart';
-import 'package:sistema_ebd/pages/tela_historico_aluno.dart';
+import 'package:sistema_ebd/pages/tela_pre_lesson.dart';
 import 'package:sistema_ebd/pages/turmas.dart';
 
 class TelaPrincipal extends ConsumerStatefulWidget {
@@ -146,8 +146,7 @@ class _TelaPrincipalState extends ConsumerState<TelaPrincipal> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder:
-                                    (context) => const TelaHistoricoAluno(),
+                                builder: (context) => const TelaPreLesson(),
                               ),
                             );
                           },

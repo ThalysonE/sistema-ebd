@@ -1,31 +1,11 @@
 import 'package:flutter/material.dart';
-
-/// Argumentos para a tela de chamada (lista de alunos da turma).
-class TelaChamadaArgs {
-  final String nomeTurma;
-  final List<String> nomesAlunos;
-
-  TelaChamadaArgs({
-    required this.nomeTurma,
-    List<String>? nomesAlunos,
-  }) : nomesAlunos = nomesAlunos ?? _listaAlunosPadrao;
-
-  static const _listaAlunosPadrao = [
-    'Adriele de Assis do Nascimento',
-    'Alany Silva dos Santos',
-    'Ana Letícia dos Santos',
-    'Calebe Conceição',
-    'Eduardo da Silva',
-    'Ester Cavalcante',
-    'Gabriel Oliveira',
-    'Isabela Ferreira',
-    'João Pedro Santos',
-    'Maria Eduarda Lima',
-  ];
-}
+import 'package:sistema_ebd/models/matricula.dart';
 
 class TelaChamada extends StatefulWidget {
-  const TelaChamada({super.key});
+  final String nomeTurma;
+  final List<Matricula> alunos;
+
+  const TelaChamada({super.key, required this.nomeTurma, required this.alunos});
 
   @override
   State<TelaChamada> createState() => _TelaChamadaState();
@@ -47,27 +27,13 @@ class _TelaChamadaState extends State<TelaChamada> {
   static const _espacamentoTextoCheckbox = 12.0;
   static const _raioBotao = 12.0;
 
-  late List<String> _nomesAlunos;
   late List<bool> _presentes;
   bool _selecionarTudo = false;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final args = ModalRoute.of(context)?.settings.arguments as TelaChamadaArgs?;
-    if (args != null && _nomesAlunos.isEmpty) {
-      setState(() {
-        _nomesAlunos = List.from(args.nomesAlunos);
-        _presentes = List.filled(_nomesAlunos.length, false);
-      });
-    }
-  }
-
-  @override
   void initState() {
     super.initState();
-    _nomesAlunos = [];
-    _presentes = [];
+    _presentes = List.filled(widget.alunos.length, false);
   }
 
   void _aplicarSelecionarTudo(bool valor) {
@@ -86,20 +52,28 @@ class _TelaChamadaState extends State<TelaChamada> {
     });
   }
 
-  int get _totalPresentes =>
-      _presentes.where((e) => e).length;
+  int get _totalPresentes => _presentes.where((e) => e).length;
 
   void _concluirChamada() {
+    // Monta o resultado da chamada com registrationId e present
+    final resultado = <Map<String, dynamic>>[];
+    for (int i = 0; i < widget.alunos.length; i++) {
+      resultado.add({
+        'registrationId': widget.alunos[i].registrationId,
+        'present': _presentes[i],
+      });
+    }
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          'Chamada registrada: $_totalPresentes de ${_nomesAlunos.length} presentes.',
+          'Chamada registrada: $_totalPresentes de ${widget.alunos.length} presentes.',
         ),
         backgroundColor: _corCheckboxAtivo,
         behavior: SnackBarBehavior.floating,
       ),
     );
-    Navigator.pop(context);
+    Navigator.pop(context, resultado);
   }
 
   @override
@@ -117,10 +91,10 @@ class _TelaChamadaState extends State<TelaChamada> {
         title: Text(
           'Chamada',
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontSize: 17,
-                fontWeight: FontWeight.bold,
-                color: _corTitulo,
-              ),
+            fontSize: 17,
+            fontWeight: FontWeight.bold,
+            color: _corTitulo,
+          ),
         ),
         actions: [
           Padding(
@@ -136,10 +110,10 @@ class _TelaChamadaState extends State<TelaChamada> {
                     Text(
                       'Selecionar Tudo',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontSize: 14,
-                            color: _corTitulo,
-                            fontWeight: FontWeight.w500,
-                          ),
+                        fontSize: 14,
+                        color: _corTitulo,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                     const SizedBox(width: 8),
                     SizedBox(
@@ -166,81 +140,88 @@ class _TelaChamadaState extends State<TelaChamada> {
           ),
         ],
       ),
-      body: _nomesAlunos.isEmpty
-          ? _buildEstadoVazio()
-          : Column(
-              children: [
-                _buildResumoPresentes(),
-                Expanded(
-                  child: ListView.separated(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: _paddingHorizontal,
-                      vertical: _paddingVertical,
-                    ),
-                    itemCount: _nomesAlunos.length,
-                    separatorBuilder: (_, __) => const Divider(
-                      height: 1,
-                      thickness: 1,
-                      color: _corDivisor,
-                    ),
-                    itemBuilder: (context, index) {
-                      final nome = _nomesAlunos[index];
-                      final presente =
-                          index < _presentes.length && _presentes[index];
-                      return Material(
-                        color: presente ? _corFundoPresente : _corFundo,
-                        child: InkWell(
-                          onTap: () => _alternarPresenca(index),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 4,
-                              vertical: _paddingVerticalItem,
-                            ),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    '${index + 1}. $nome',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      color: presente
-                                          ? _corTexto
-                                          : _corTextoSuave,
-                                      fontWeight: presente
-                                          ? FontWeight.w500
-                                          : FontWeight.normal,
+      body:
+          widget.alunos.isEmpty
+              ? _buildEstadoVazio()
+              : Column(
+                children: [
+                  _buildResumoPresentes(),
+                  Expanded(
+                    child: ListView.separated(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: _paddingHorizontal,
+                        vertical: _paddingVertical,
+                      ),
+                      itemCount: widget.alunos.length,
+                      separatorBuilder:
+                          (_, __) => const Divider(
+                            height: 1,
+                            thickness: 1,
+                            color: _corDivisor,
+                          ),
+                      itemBuilder: (context, index) {
+                        final nome = widget.alunos[index].name;
+                        final presente =
+                            index < _presentes.length && _presentes[index];
+                        return Material(
+                          color: presente ? _corFundoPresente : _corFundo,
+                          child: InkWell(
+                            onTap: () => _alternarPresenca(index),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 4,
+                                vertical: _paddingVerticalItem,
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      '${index + 1}. $nome',
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        color:
+                                            presente
+                                                ? _corTexto
+                                                : _corTextoSuave,
+                                        fontWeight:
+                                            presente
+                                                ? FontWeight.w500
+                                                : FontWeight.normal,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                const SizedBox(width: _espacamentoTextoCheckbox),
-                                SizedBox(
-                                  width: 22,
-                                  height: 22,
-                                  child: Checkbox(
-                                    value: presente,
-                                    onChanged: (_) => _alternarPresenca(index),
-                                    activeColor: _corCheckboxAtivo,
-                                    checkColor: Colors.white,
-                                    side: const BorderSide(
-                                      color: _corCheckboxBorda,
-                                      width: 1.5,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(4),
+                                  const SizedBox(
+                                    width: _espacamentoTextoCheckbox,
+                                  ),
+                                  SizedBox(
+                                    width: 22,
+                                    height: 22,
+                                    child: Checkbox(
+                                      value: presente,
+                                      onChanged:
+                                          (_) => _alternarPresenca(index),
+                                      activeColor: _corCheckboxAtivo,
+                                      checkColor: Colors.white,
+                                      side: const BorderSide(
+                                        color: _corCheckboxBorda,
+                                        width: 1.5,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
-                ),
-                _buildBotaoConcluir(),
-              ],
-            ),
+                  _buildBotaoConcluir(),
+                ],
+              ),
     );
   }
 
@@ -282,11 +263,14 @@ class _TelaChamadaState extends State<TelaChamada> {
   }
 
   Widget _buildResumoPresentes() {
-    final total = _nomesAlunos.length;
+    final total = widget.alunos.length;
     final presentes = _totalPresentes;
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: _paddingHorizontal),
+      padding: const EdgeInsets.symmetric(
+        vertical: 12,
+        horizontal: _paddingHorizontal,
+      ),
       color: _corFundoResumo,
       child: Row(
         children: [

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sistema_ebd/pages/forms/membro_form.dart';
 import 'package:sistema_ebd/pages/tela_membros.dart';
@@ -29,6 +30,13 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [Locale('pt', 'BR'), Locale('en', 'US')],
+      locale: const Locale('pt', 'BR'),
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.light(primary: Color(0xFF034279)),

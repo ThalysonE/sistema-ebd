@@ -11,6 +11,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  flutter_localizations:
+    sdk: flutter
+
   cupertino_icons: ^1.0.8
   google_fonts: ^6.1.0
   path_provider: ^2.1.2
@@ -19,7 +22,7 @@ dependencies:
   dio: ^5.8.0+1
   flutter_native_splash: ^2.4.5
   flutter_launcher_icons: ^0.14.3
-  intl: ^0.20.2
+  intl: ^0.19.0
   url_launcher: ^6.3.1
 
 flutter_native_splash:
